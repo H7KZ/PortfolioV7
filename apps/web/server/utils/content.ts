@@ -84,8 +84,8 @@ const loaders = {
 		const [page, projects, services, testimonials] = await Promise.all([
 			global<Home>('home', { locale, draft }),
 			list<Project>('projects', { locale, draft, sort: 'order' }, true),
-			list<Service>('services', { locale, draft, sort: 'order' }),
-			list<Testimonial>('testimonials', { locale, draft, sort: 'order' })
+			list<Service>('services', { locale, draft, sort: 'order' }, true),
+			list<Testimonial>('testimonials', { locale, draft, sort: 'order' }, true)
 		])
 		const cards: ProjectCard[] = projects.docs
 			.filter(project => project.card?.show)
@@ -96,7 +96,7 @@ const loaders = {
 	async resume(locale: Locale, draft: boolean): Promise<ResumeData> {
 		const [page, experience] = await Promise.all([
 			global<Resume>('resume', { locale, draft }),
-			list<Experience>('experience', { locale, draft, sort: 'order' })
+			list<Experience>('experience', { locale, draft, sort: 'order' }, true)
 		])
 		return { page, experience: experience.docs }
 	},

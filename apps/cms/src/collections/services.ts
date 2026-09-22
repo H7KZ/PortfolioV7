@@ -6,6 +6,7 @@ import { revalidateCollectionAfterChange, revalidateCollectionAfterDelete } from
 export const Services: CollectionConfig = {
 	slug: 'services',
 	admin: { group: 'Content', useAsTitle: 'title', defaultColumns: ['title', 'number', 'order'] },
+	versions: { drafts: true, maxPerDoc: 25 },
 	access: {
 		read: canReadContent,
 		create: isAdmin,

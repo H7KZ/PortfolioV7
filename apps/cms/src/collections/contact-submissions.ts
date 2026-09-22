@@ -15,7 +15,8 @@ export const ContactSubmissions: CollectionConfig = {
 	access: {
 		create: canSubmitContact,
 		read: isAdmin,
-		update: isAdmin,
+		// A submission is a record of what the visitor sent; nobody edits it.
+		update: () => false,
 		delete: isAdmin
 	},
 	defaultSort: '-createdAt',

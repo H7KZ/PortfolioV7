@@ -218,8 +218,8 @@ async function writeGlobal(slug: GlobalSlug, build: (locale: Locale) => Json, dr
 async function replaceAll(collection: 'experience' | 'testimonials' | 'services', rows: Record<Locale, Json>[]): Promise<void> {
 	await payload.delete({ collection, where: { id: { exists: true } } })
 	for (const row of rows) {
-		const saved = await payload.create({ collection, locale: 'en', data: row.en as never, depth: 0 })
-		await payload.update({ collection, id: saved.id, locale: 'cs', data: withRowIds(saved, row.cs) as never, depth: 0 })
+		const saved = await payload.create({ collection, locale: 'en', data: { ...row.en, _status: 'published' } as never, depth: 0 })
+		await payload.update({ collection, id: saved.id, locale: 'cs', data: withRowIds(saved, { ...row.cs, _status: 'published' }) as never, depth: 0 })
 	}
 	log(`${collection}: ${rows.length}`)
 }

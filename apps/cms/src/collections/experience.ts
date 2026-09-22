@@ -12,6 +12,7 @@ export const Experience: CollectionConfig = {
 		defaultColumns: ['role', 'organization', 'kind', 'order'],
 		description: 'Resume timeline entries.'
 	},
+	versions: { drafts: true, maxPerDoc: 25 },
 	access: {
 		read: canReadContent,
 		create: isAdmin,

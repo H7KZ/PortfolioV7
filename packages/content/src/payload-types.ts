@@ -368,6 +368,7 @@ export interface Experience {
     | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -389,6 +390,7 @@ export interface Testimonial {
   linkedinUrl?: string | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -406,6 +408,7 @@ export interface Service {
   chips?: string[] | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Messages from the contact form. Deleted automatically after 12 months.
@@ -803,6 +806,7 @@ export interface ExperienceSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -817,6 +821,7 @@ export interface TestimonialsSelect<T extends boolean = true> {
   linkedinUrl?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -830,6 +835,7 @@ export interface ServicesSelect<T extends boolean = true> {
   chips?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

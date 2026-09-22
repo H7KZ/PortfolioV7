@@ -6,6 +6,7 @@ import { revalidateCollectionAfterChange, revalidateCollectionAfterDelete } from
 export const Testimonials: CollectionConfig = {
 	slug: 'testimonials',
 	admin: { group: 'Content', useAsTitle: 'name', defaultColumns: ['name', 'role', 'order'] },
+	versions: { drafts: true, maxPerDoc: 25 },
 	access: {
 		read: canReadContent,
 		create: isAdmin,
