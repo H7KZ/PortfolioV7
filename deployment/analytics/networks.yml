@@ -1,0 +1,14 @@
+# ==============================================================================
+# Networks: Analytics (portfolio-analytics)
+#   public-network:                        Infrastructure's shared Traefik network.
+#   portfolio-analytics-internal-network:  umami <-> its postgres only.
+# ==============================================================================
+
+networks:
+  public-network:
+    name: public-network
+    external: true
+
+  portfolio-analytics-internal-network:
+    name: portfolio-analytics-internal-network
+    external: true

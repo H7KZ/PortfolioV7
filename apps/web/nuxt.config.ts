@@ -58,7 +58,6 @@ export default defineNuxtConfig({
 
 	runtimeConfig: {
 		cmsInternalUrl: 'http://localhost:43000',
-		cmsPublicUrl: 'http://localhost:43000',
 		cmsReadApiKey: '',
 		cmsContactApiKey: '',
 		previewSecret: 'local-preview-secret',

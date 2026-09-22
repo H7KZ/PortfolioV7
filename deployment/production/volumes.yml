@@ -1,0 +1,14 @@
+# ==============================================================================
+# Volumes: Production (portfolio)
+# External so they survive teardown and version rotation; deploy.sh creates them.
+# Renaming a populated external volume orphans its data.
+# ==============================================================================
+
+volumes:
+  portfolio-postgres-volume:
+    name: portfolio-postgres-volume
+    external: true
+
+  portfolio-uploads-volume:
+    name: portfolio-uploads-volume
+    external: true

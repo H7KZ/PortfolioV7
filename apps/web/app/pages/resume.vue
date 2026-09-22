@@ -219,7 +219,7 @@ useSeo(() => ({
 }
 
 .tl-highlights li::before {
-	content: '—';
+	content: '\2014';
 	position: absolute;
 	left: 0;
 	color: var(--fg-5);

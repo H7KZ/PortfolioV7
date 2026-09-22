@@ -144,7 +144,7 @@ roles, HTML attribute plumbing).
 | **Experience**          | kind (work, own product, leadership, education), dates, duration, role, company/org, description, highlights[], order                                                                    |
 | **Testimonials**        | quote, name, role, order                                                                                                                                                                 |
 | **Services**            | number, title, description, order                                                                                                                                                        |
-| **Media**               | uploads (images, PDFs incl. CV), alt text (localized), stored in `portfolio-cms-uploads-volume`                                                                                          |
+| **Media**               | uploads (images, PDFs incl. CV), alt text (localized), stored in `portfolio-uploads-volume`                                                                                              |
 | **Redirects**           | from, to, status; seeded by the migration                                                                                                                                                |
 | **Contact submissions** | read-only in admin; option keys + label snapshot; auto-deleted after 12 months                                                                                                           |
 | **Users**               | Payload auth; you only                                                                                                                                                                   |
@@ -153,7 +153,7 @@ roles, HTML attribute plumbing).
 
 | Global          | Contents                                                                                                                                                                                                                                           |
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Site**        | name, contact email, LinkedIn, availability (the single place it lives), JSON-LD Person data (job title, description, skills, services), default SEO + share image                                                                                 |
+| **Site**        | name, contact email, LinkedIn, JSON-LD Person data (job title, description, skills, services), default SEO + share image                                                                                                                           |
 | **Navigation**  | nav items: label, link, order, visible; hire button                                                                                                                                                                                                |
 | **Footer**      | contact block copy and links, legal links                                                                                                                                                                                                          |
 | **Home**        | hero, value prop, stats, "now" block, section headings for work / services / testimonials, SEO                                                                                                                                                     |
@@ -254,16 +254,16 @@ Mirrors Kreditožrouti / Ohlídáme: images on GHCR, `~/portfolio/versions/<env>
 secrets, **manual `workflow_dispatch` only, for both environments**. Own self-hosted runner
 (`portfolio-runner`).
 
-| Container                  | Image                              | Compose project       | Networks                                                  |
-| -------------------------- | ---------------------------------- | --------------------- | --------------------------------------------------------- |
-| `portfolio-web`            | `ghcr.io/h7kz/portfolio/web:<sha>` | `portfolio`           | public, portfolio-cms-network                             |
-| `portfolio-cms`            | `ghcr.io/h7kz/portfolio/cms:<sha>` | `portfolio`           | public, portfolio-cms-network, portfolio-internal-network |
-| `portfolio-postgres`       | `postgres:18-alpine`               | `portfolio`           | portfolio-internal-network                                |
-| `portfolio-web-dev`        | `ghcr.io/h7kz/portfolio/web:<sha>` | `portfolio-dev`       | public, portfolio-cms-network                             |
-| `portfolio-umami`          | `ghcr.io/umami-software/umami:3.x` | `portfolio-analytics` | public, portfolio-analytics-internal-network              |
-| `portfolio-umami-postgres` | `postgres:18-alpine`               | `portfolio-analytics` | portfolio-analytics-internal-network                      |
+| Container                  | Image                                | Compose project       | Networks                                                  |
+| -------------------------- | ------------------------------------ | --------------------- | --------------------------------------------------------- |
+| `portfolio-web-prod`       | `ghcr.io/h7kz/portfoliov7/web:<sha>` | `portfolio`           | public, portfolio-cms-network                             |
+| `portfolio-cms`            | `ghcr.io/h7kz/portfoliov7/cms:<sha>` | `portfolio`           | public, portfolio-cms-network, portfolio-internal-network |
+| `portfolio-postgres`       | `postgres:18-alpine`                 | `portfolio`           | portfolio-internal-network                                |
+| `portfolio-web-dev`        | `ghcr.io/h7kz/portfoliov7/web:<sha>` | `portfolio-dev`       | public, portfolio-cms-network                             |
+| `portfolio-umami`          | `ghcr.io/umami-software/umami:3.3.1` | `portfolio-analytics` | public, portfolio-analytics-internal-network              |
+| `portfolio-umami-postgres` | `postgres:18-alpine`                 | `portfolio-analytics` | portfolio-analytics-internal-network                      |
 
-Volumes (external): `portfolio-postgres-volume`, `portfolio-cms-uploads-volume`,
+Volumes (external): `portfolio-postgres-volume`, `portfolio-uploads-volume`,
 `portfolio-umami-postgres-volume`.
 
 Traefik routers `portfolio-<router>-${PROJECT}`, `certresolver=letsencrypt`: `web`

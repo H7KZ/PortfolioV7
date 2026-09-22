@@ -1,0 +1,58 @@
+# ==============================================================================
+# Docker Compose: Development Environment (portfolio-dev)
+# Description: dev.jankominek.com, the web only. It reads the production CMS
+#              (portfolio-cms on portfolio-cms-network) with the read-only key,
+#              is noindex, loads no analytics and sits behind Cloudflare Access.
+#              It has no contact key, so its contact form cannot create inquiries.
+#
+# Required Environment Variables (from the deploy-time .env):
+#   IMAGE_REGISTRY, IMAGE_PREFIX, WEB_IMAGE_TAG
+#   PROJECT (must differ from production), DOMAIN
+#   CMS_READ_API_KEY, PREVIEW_SECRET, REVALIDATE_SECRET (same value as production)
+# ==============================================================================
+
+services:
+  portfolio-web:
+    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/web:${WEB_IMAGE_TAG:-latest}
+    container_name: portfolio-web-dev
+    restart: unless-stopped
+    environment:
+      - NUXT_CMS_INTERNAL_URL=http://portfolio-cms:3000
+      - NUXT_CMS_READ_API_KEY=${CMS_READ_API_KEY}
+      - NUXT_PREVIEW_SECRET=${PREVIEW_SECRET}
+      - NUXT_REVALIDATE_SECRET=${REVALIDATE_SECRET}
+      - NUXT_PUBLIC_SITE_URL=https://${DOMAIN}
+      - NUXT_PUBLIC_I18N_BASE_URL=https://${DOMAIN}
+      # Search engines stay away; Umami is not loaded (no website id).
+      - NUXT_PUBLIC_NOINDEX=true
+    networks:
+      - public-network
+      - portfolio-cms-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=public-network
+      - traefik.http.routers.portfolio-web-${PROJECT}.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.portfolio-web-${PROJECT}.priority=10
+      - traefik.http.routers.portfolio-web-${PROJECT}.entrypoints=websecure
+      - traefik.http.routers.portfolio-web-${PROJECT}.tls=true
+      - traefik.http.routers.portfolio-web-${PROJECT}.tls.certresolver=letsencrypt
+      - traefik.http.routers.portfolio-web-${PROJECT}.service=portfolio-web-${PROJECT}
+      - traefik.http.services.portfolio-web-${PROJECT}.loadbalancer.server.port=3000
+    healthcheck:
+      # 127.0.0.1, not localhost: localhost resolves to ::1 first in Alpine.
+      test: ['CMD', 'wget', '-qO', '/dev/null', 'http://127.0.0.1:3000/robots.txt']
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+      start_interval: 3s
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M

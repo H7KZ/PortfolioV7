@@ -5,7 +5,7 @@
  * .editorconfig declares `charset = utf-8`, not utf-8-bom, but nothing enforced it: Prettier
  * preserves a BOM, and Windows tooling (PowerShell's Out-File / Set-Content) writes one by
  * default. The result was a phantom byte at file head that makes git report line 1 changed
- * whenever any tool normalises it — diff noise unrelated to the actual edit.
+ * whenever any tool normalises it: diff noise unrelated to the actual edit.
  *
  * This runs from lint-staged, so it FIXES rather than fails: a BOM written by any tool is
  * removed before the file is committed.

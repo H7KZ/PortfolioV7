@@ -1,0 +1,44 @@
+# ==============================================================================
+# Workflow: CI Pipeline
+# Description: Type-check, lint, and format-check the whole monorepo. No tests
+#              step - this repo has none yet. Runs on GitHub-hosted runners.
+# Trigger: pull_request targeting main, and push to main
+# ==============================================================================
+
+name: Verify
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 12.4.1
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Type-check
+        run: pnpm type-check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check

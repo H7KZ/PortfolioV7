@@ -1,0 +1,9 @@
+# ==============================================================================
+# Volumes: Analytics (portfolio-analytics)
+# External so the data survives teardown; deploy.sh creates it.
+# ==============================================================================
+
+volumes:
+  portfolio-umami-postgres-volume:
+    name: portfolio-umami-postgres-volume
+    external: true
