@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+**/.nuxt/
+**/.output/
+**/.next/
+apps/cms/src/app/(payload)/admin/importMap.js
+apps/cms/src/migrations/
+packages/content/src/payload-types.ts

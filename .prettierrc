@@ -1,0 +1,22 @@
+{
+	"semi": false,
+	"singleQuote": true,
+	"trailingComma": "none",
+	"tabWidth": 4,
+	"useTabs": true,
+	"printWidth": 160,
+	"arrowParens": "avoid",
+	"plugins": ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
+	"importOrder": ["<THIRD_PARTY_MODULES>", "^@portfolio/(.*)$", "^[~@]/(.*)$", "^[./]"],
+	"importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
+	"tailwindStylesheet": "./apps/web/app/assets/css/app.css",
+	"overrides": [
+		{
+			"files": ["*.yml", "*.yaml", "*.json", "*.md"],
+			"options": {
+				"useTabs": false,
+				"tabWidth": 2
+			}
+		}
+	]
+}
