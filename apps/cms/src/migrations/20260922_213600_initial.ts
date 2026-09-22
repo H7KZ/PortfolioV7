@@ -16,6 +16,16 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__posts_v_version_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum__posts_v_published_locale" AS ENUM('en', 'cs');
   CREATE TYPE "public"."enum_experience_kind" AS ENUM('work', 'ownProduct', 'leadership', 'education');
+  CREATE TYPE "public"."enum_experience_status" AS ENUM('draft', 'published');
+  CREATE TYPE "public"."enum__experience_v_version_kind" AS ENUM('work', 'ownProduct', 'leadership', 'education');
+  CREATE TYPE "public"."enum__experience_v_version_status" AS ENUM('draft', 'published');
+  CREATE TYPE "public"."enum__experience_v_published_locale" AS ENUM('en', 'cs');
+  CREATE TYPE "public"."enum_testimonials_status" AS ENUM('draft', 'published');
+  CREATE TYPE "public"."enum__testimonials_v_version_status" AS ENUM('draft', 'published');
+  CREATE TYPE "public"."enum__testimonials_v_published_locale" AS ENUM('en', 'cs');
+  CREATE TYPE "public"."enum_services_status" AS ENUM('draft', 'published');
+  CREATE TYPE "public"."enum__services_v_version_status" AS ENUM('draft', 'published');
+  CREATE TYPE "public"."enum__services_v_published_locale" AS ENUM('en', 'cs');
   CREATE TYPE "public"."enum_users_role" AS ENUM('admin', 'reader', 'contact');
   CREATE TYPE "public"."enum_payload_jobs_log_task_slug" AS ENUM('inline', 'purgeContactSubmissions');
   CREATE TYPE "public"."enum_payload_jobs_log_state" AS ENUM('failed', 'succeeded');
@@ -293,7 +303,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   );
   
   CREATE TABLE "experience_highlights_locales" (
-  	"text" varchar NOT NULL,
+  	"text" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" varchar NOT NULL
@@ -303,25 +313,76 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
   	"id" varchar PRIMARY KEY NOT NULL,
-  	"label" varchar NOT NULL,
+  	"label" varchar,
   	"accent" boolean
   );
   
   CREATE TABLE "experience" (
   	"id" serial PRIMARY KEY NOT NULL,
-  	"kind" "enum_experience_kind" DEFAULT 'work' NOT NULL,
+  	"kind" "enum_experience_kind" DEFAULT 'work',
   	"order" numeric DEFAULT 99,
   	"current" boolean,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"_status" "enum_experience_status" DEFAULT 'draft'
   );
   
   CREATE TABLE "experience_locales" (
-  	"dates" varchar NOT NULL,
+  	"dates" varchar,
   	"duration" varchar,
-  	"role" varchar NOT NULL,
-  	"organization" varchar NOT NULL,
+  	"role" varchar,
+  	"organization" varchar,
   	"description" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
+  );
+  
+  CREATE TABLE "_experience_v_version_highlights" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_uuid" varchar
+  );
+  
+  CREATE TABLE "_experience_v_version_highlights_locales" (
+  	"text" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
+  );
+  
+  CREATE TABLE "_experience_v_version_chips" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"label" varchar,
+  	"accent" boolean,
+  	"_uuid" varchar
+  );
+  
+  CREATE TABLE "_experience_v" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"parent_id" integer,
+  	"version_kind" "enum__experience_v_version_kind" DEFAULT 'work',
+  	"version_order" numeric DEFAULT 99,
+  	"version_current" boolean,
+  	"version_updated_at" timestamp(3) with time zone,
+  	"version_created_at" timestamp(3) with time zone,
+  	"version__status" "enum__experience_v_version_status" DEFAULT 'draft',
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"snapshot" boolean,
+  	"published_locale" "enum__experience_v_published_locale",
+  	"latest" boolean
+  );
+  
+  CREATE TABLE "_experience_v_locales" (
+  	"version_dates" varchar,
+  	"version_duration" varchar,
+  	"version_role" varchar,
+  	"version_organization" varchar,
+  	"version_description" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" integer NOT NULL
@@ -330,16 +391,42 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE "testimonials" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"order" numeric DEFAULT 99,
-  	"name" varchar NOT NULL,
-  	"initials" varchar NOT NULL,
+  	"name" varchar,
+  	"initials" varchar,
   	"linkedin_url" varchar,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"_status" "enum_testimonials_status" DEFAULT 'draft'
   );
   
   CREATE TABLE "testimonials_locales" (
-  	"role" varchar NOT NULL,
-  	"quote" varchar NOT NULL,
+  	"role" varchar,
+  	"quote" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
+  );
+  
+  CREATE TABLE "_testimonials_v" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"parent_id" integer,
+  	"version_order" numeric DEFAULT 99,
+  	"version_name" varchar,
+  	"version_initials" varchar,
+  	"version_linkedin_url" varchar,
+  	"version_updated_at" timestamp(3) with time zone,
+  	"version_created_at" timestamp(3) with time zone,
+  	"version__status" "enum__testimonials_v_version_status" DEFAULT 'draft',
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"snapshot" boolean,
+  	"published_locale" "enum__testimonials_v_published_locale",
+  	"latest" boolean
+  );
+  
+  CREATE TABLE "_testimonials_v_locales" (
+  	"version_role" varchar,
+  	"version_quote" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" integer NOT NULL
@@ -349,19 +436,51 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"id" serial PRIMARY KEY NOT NULL,
   	"order" numeric DEFAULT 99,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"_status" "enum_services_status" DEFAULT 'draft'
   );
   
   CREATE TABLE "services_locales" (
-  	"number" varchar NOT NULL,
-  	"title" varchar NOT NULL,
-  	"description" varchar NOT NULL,
+  	"number" varchar,
+  	"title" varchar,
+  	"description" varchar,
   	"id" serial PRIMARY KEY NOT NULL,
   	"_locale" "_locales" NOT NULL,
   	"_parent_id" integer NOT NULL
   );
   
   CREATE TABLE "services_texts" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"order" integer NOT NULL,
+  	"parent_id" integer NOT NULL,
+  	"path" varchar NOT NULL,
+  	"text" varchar
+  );
+  
+  CREATE TABLE "_services_v" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"parent_id" integer,
+  	"version_order" numeric DEFAULT 99,
+  	"version_updated_at" timestamp(3) with time zone,
+  	"version_created_at" timestamp(3) with time zone,
+  	"version__status" "enum__services_v_version_status" DEFAULT 'draft',
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"snapshot" boolean,
+  	"published_locale" "enum__services_v_published_locale",
+  	"latest" boolean
+  );
+  
+  CREATE TABLE "_services_v_locales" (
+  	"version_number" varchar,
+  	"version_title" varchar,
+  	"version_description" varchar,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
+  );
+  
+  CREATE TABLE "_services_v_texts" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"order" integer NOT NULL,
   	"parent_id" integer NOT NULL,
@@ -1856,9 +1975,19 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "experience_highlights_locales" ADD CONSTRAINT "experience_highlights_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."experience_highlights"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "experience_chips" ADD CONSTRAINT "experience_chips_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."experience"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "experience_locales" ADD CONSTRAINT "experience_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."experience"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_experience_v_version_highlights" ADD CONSTRAINT "_experience_v_version_highlights_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_experience_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_experience_v_version_highlights_locales" ADD CONSTRAINT "_experience_v_version_highlights_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_experience_v_version_highlights"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_experience_v_version_chips" ADD CONSTRAINT "_experience_v_version_chips_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_experience_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_experience_v" ADD CONSTRAINT "_experience_v_parent_id_experience_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."experience"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "_experience_v_locales" ADD CONSTRAINT "_experience_v_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_experience_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "testimonials_locales" ADD CONSTRAINT "testimonials_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."testimonials"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_testimonials_v" ADD CONSTRAINT "_testimonials_v_parent_id_testimonials_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."testimonials"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "_testimonials_v_locales" ADD CONSTRAINT "_testimonials_v_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_testimonials_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "services_locales" ADD CONSTRAINT "services_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."services"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "services_texts" ADD CONSTRAINT "services_texts_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."services"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_services_v" ADD CONSTRAINT "_services_v_parent_id_services_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."services"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "_services_v_locales" ADD CONSTRAINT "_services_v_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_services_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_services_v_texts" ADD CONSTRAINT "_services_v_texts_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."_services_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "media_locales" ADD CONSTRAINT "media_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "users_sessions" ADD CONSTRAINT "users_sessions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_jobs_log" ADD CONSTRAINT "payload_jobs_log_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."payload_jobs"("id") ON DELETE cascade ON UPDATE no action;
@@ -2067,14 +2196,53 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "experience_chips_parent_id_idx" ON "experience_chips" USING btree ("_parent_id");
   CREATE INDEX "experience_updated_at_idx" ON "experience" USING btree ("updated_at");
   CREATE INDEX "experience_created_at_idx" ON "experience" USING btree ("created_at");
+  CREATE INDEX "experience__status_idx" ON "experience" USING btree ("_status");
   CREATE UNIQUE INDEX "experience_locales_locale_parent_id_unique" ON "experience_locales" USING btree ("_locale","_parent_id");
+  CREATE INDEX "_experience_v_version_highlights_order_idx" ON "_experience_v_version_highlights" USING btree ("_order");
+  CREATE INDEX "_experience_v_version_highlights_parent_id_idx" ON "_experience_v_version_highlights" USING btree ("_parent_id");
+  CREATE UNIQUE INDEX "_experience_v_version_highlights_locales_locale_parent_id_un" ON "_experience_v_version_highlights_locales" USING btree ("_locale","_parent_id");
+  CREATE INDEX "_experience_v_version_chips_order_idx" ON "_experience_v_version_chips" USING btree ("_order");
+  CREATE INDEX "_experience_v_version_chips_parent_id_idx" ON "_experience_v_version_chips" USING btree ("_parent_id");
+  CREATE INDEX "_experience_v_parent_idx" ON "_experience_v" USING btree ("parent_id");
+  CREATE INDEX "_experience_v_version_version_updated_at_idx" ON "_experience_v" USING btree ("version_updated_at");
+  CREATE INDEX "_experience_v_version_version_created_at_idx" ON "_experience_v" USING btree ("version_created_at");
+  CREATE INDEX "_experience_v_version_version__status_idx" ON "_experience_v" USING btree ("version__status");
+  CREATE INDEX "_experience_v_created_at_idx" ON "_experience_v" USING btree ("created_at");
+  CREATE INDEX "_experience_v_updated_at_idx" ON "_experience_v" USING btree ("updated_at");
+  CREATE INDEX "_experience_v_snapshot_idx" ON "_experience_v" USING btree ("snapshot");
+  CREATE INDEX "_experience_v_published_locale_idx" ON "_experience_v" USING btree ("published_locale");
+  CREATE INDEX "_experience_v_latest_idx" ON "_experience_v" USING btree ("latest");
+  CREATE UNIQUE INDEX "_experience_v_locales_locale_parent_id_unique" ON "_experience_v_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "testimonials_updated_at_idx" ON "testimonials" USING btree ("updated_at");
   CREATE INDEX "testimonials_created_at_idx" ON "testimonials" USING btree ("created_at");
+  CREATE INDEX "testimonials__status_idx" ON "testimonials" USING btree ("_status");
   CREATE UNIQUE INDEX "testimonials_locales_locale_parent_id_unique" ON "testimonials_locales" USING btree ("_locale","_parent_id");
+  CREATE INDEX "_testimonials_v_parent_idx" ON "_testimonials_v" USING btree ("parent_id");
+  CREATE INDEX "_testimonials_v_version_version_updated_at_idx" ON "_testimonials_v" USING btree ("version_updated_at");
+  CREATE INDEX "_testimonials_v_version_version_created_at_idx" ON "_testimonials_v" USING btree ("version_created_at");
+  CREATE INDEX "_testimonials_v_version_version__status_idx" ON "_testimonials_v" USING btree ("version__status");
+  CREATE INDEX "_testimonials_v_created_at_idx" ON "_testimonials_v" USING btree ("created_at");
+  CREATE INDEX "_testimonials_v_updated_at_idx" ON "_testimonials_v" USING btree ("updated_at");
+  CREATE INDEX "_testimonials_v_snapshot_idx" ON "_testimonials_v" USING btree ("snapshot");
+  CREATE INDEX "_testimonials_v_published_locale_idx" ON "_testimonials_v" USING btree ("published_locale");
+  CREATE INDEX "_testimonials_v_latest_idx" ON "_testimonials_v" USING btree ("latest");
+  CREATE UNIQUE INDEX "_testimonials_v_locales_locale_parent_id_unique" ON "_testimonials_v_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "services_updated_at_idx" ON "services" USING btree ("updated_at");
   CREATE INDEX "services_created_at_idx" ON "services" USING btree ("created_at");
+  CREATE INDEX "services__status_idx" ON "services" USING btree ("_status");
   CREATE UNIQUE INDEX "services_locales_locale_parent_id_unique" ON "services_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "services_texts_order_parent" ON "services_texts" USING btree ("order","parent_id");
+  CREATE INDEX "_services_v_parent_idx" ON "_services_v" USING btree ("parent_id");
+  CREATE INDEX "_services_v_version_version_updated_at_idx" ON "_services_v" USING btree ("version_updated_at");
+  CREATE INDEX "_services_v_version_version_created_at_idx" ON "_services_v" USING btree ("version_created_at");
+  CREATE INDEX "_services_v_version_version__status_idx" ON "_services_v" USING btree ("version__status");
+  CREATE INDEX "_services_v_created_at_idx" ON "_services_v" USING btree ("created_at");
+  CREATE INDEX "_services_v_updated_at_idx" ON "_services_v" USING btree ("updated_at");
+  CREATE INDEX "_services_v_snapshot_idx" ON "_services_v" USING btree ("snapshot");
+  CREATE INDEX "_services_v_published_locale_idx" ON "_services_v" USING btree ("published_locale");
+  CREATE INDEX "_services_v_latest_idx" ON "_services_v" USING btree ("latest");
+  CREATE UNIQUE INDEX "_services_v_locales_locale_parent_id_unique" ON "_services_v_locales" USING btree ("_locale","_parent_id");
+  CREATE INDEX "_services_v_texts_order_parent" ON "_services_v_texts" USING btree ("order","parent_id");
   CREATE INDEX "media_legacy_path_idx" ON "media" USING btree ("legacy_path");
   CREATE INDEX "media_updated_at_idx" ON "media" USING btree ("updated_at");
   CREATE INDEX "media_created_at_idx" ON "media" USING btree ("created_at");
@@ -2359,11 +2527,21 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "experience_chips" CASCADE;
   DROP TABLE "experience" CASCADE;
   DROP TABLE "experience_locales" CASCADE;
+  DROP TABLE "_experience_v_version_highlights" CASCADE;
+  DROP TABLE "_experience_v_version_highlights_locales" CASCADE;
+  DROP TABLE "_experience_v_version_chips" CASCADE;
+  DROP TABLE "_experience_v" CASCADE;
+  DROP TABLE "_experience_v_locales" CASCADE;
   DROP TABLE "testimonials" CASCADE;
   DROP TABLE "testimonials_locales" CASCADE;
+  DROP TABLE "_testimonials_v" CASCADE;
+  DROP TABLE "_testimonials_v_locales" CASCADE;
   DROP TABLE "services" CASCADE;
   DROP TABLE "services_locales" CASCADE;
   DROP TABLE "services_texts" CASCADE;
+  DROP TABLE "_services_v" CASCADE;
+  DROP TABLE "_services_v_locales" CASCADE;
+  DROP TABLE "_services_v_texts" CASCADE;
   DROP TABLE "media" CASCADE;
   DROP TABLE "media_locales" CASCADE;
   DROP TABLE "contact_submissions" CASCADE;
@@ -2515,6 +2693,16 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum__posts_v_version_status";
   DROP TYPE "public"."enum__posts_v_published_locale";
   DROP TYPE "public"."enum_experience_kind";
+  DROP TYPE "public"."enum_experience_status";
+  DROP TYPE "public"."enum__experience_v_version_kind";
+  DROP TYPE "public"."enum__experience_v_version_status";
+  DROP TYPE "public"."enum__experience_v_published_locale";
+  DROP TYPE "public"."enum_testimonials_status";
+  DROP TYPE "public"."enum__testimonials_v_version_status";
+  DROP TYPE "public"."enum__testimonials_v_published_locale";
+  DROP TYPE "public"."enum_services_status";
+  DROP TYPE "public"."enum__services_v_version_status";
+  DROP TYPE "public"."enum__services_v_published_locale";
   DROP TYPE "public"."enum_users_role";
   DROP TYPE "public"."enum_payload_jobs_log_task_slug";
   DROP TYPE "public"."enum_payload_jobs_log_state";

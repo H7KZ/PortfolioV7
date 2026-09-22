@@ -11,13 +11,12 @@ interface TextNode {
 	text?: string
 	fields?: { code?: string }
 	children?: TextNode[]
-	root?: TextNode
 }
 
 function countWords(node: TextNode | undefined): number {
 	if (!node) return 0
 	const own = `${node.text ?? ''} ${node.fields?.code ?? ''}`.split(/\s+/).filter(Boolean).length
-	return own + countWords(node.root) + (node.children ?? []).reduce((sum, child) => sum + countWords(child), 0)
+	return own + (node.children ?? []).reduce((sum, child) => sum + countWords(child), 0)
 }
 
 export const Posts: CollectionConfig = {
