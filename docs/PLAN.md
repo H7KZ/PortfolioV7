@@ -12,7 +12,7 @@ Status: agreed (grilling session, 2026-09-22). Decision log in [section 12](#12-
 ## 1. Architecture
 
 ```
-                     Cloudflare (orange cloud) + Cloudflare Access on cms. and dev.
+                     Cloudflare (orange cloud) + Access on dev., cms., and umami.
                                              |
                                Infrastructure Traefik (-p global)
                                              |  public-network
@@ -50,7 +50,7 @@ Status: agreed (grilling session, 2026-09-22). Decision log in [section 12](#12-
 | `jankominek.com/stats/*`   | Umami tracker + collect, first-party     | public                            |
 | `cms.jankominek.com`       | Payload admin                            | Cloudflare Access + Payload login |
 | `dev.jankominek.com`       | dev site, `noindex`, not tracked         | Cloudflare Access                 |
-| `umami.jankominek.com`     | Umami dashboard                          | Umami login                       |
+| `umami.jankominek.com`     | Umami dashboard                          | Cloudflare Access + Umami login   |
 
 Redirects (301, Nuxt server middleware):
 
@@ -208,7 +208,7 @@ copied from Kreditožrouti's monitoring compose, nothing else. `postgres:18-alpi
 `CLIENT_IP_HEADER=cf-connecting-ip`, 13-month retention via `umami/retention.sql` +
 `umami-retention.yml`.
 
-- Dashboard at `umami.jankominek.com` (Umami login). Tracker first-party at
+- Dashboard at `umami.jankominek.com` (Cloudflare Access and Umami login). Tracker first-party at
   `jankominek.com/stats` (Traefik stripprefix), so ad blockers do not break it.
 - Nuxt client plugin ported from Kreditožrouti `analytics.ts`: `data-exclude-search`,
   `data-exclude-hash`, `data-before-send` URL redaction. Off when `NUXT_PUBLIC_UMAMI_WEBSITE_ID` is
@@ -281,7 +281,7 @@ Secrets / vars (GitHub Environments `production`, `development`): `DOMAIN`, `PRO
 `PREVIEW_SECRET`, `DISCORD_WEBHOOK_URL`, `UMAMI_DB_*`, `UMAMI_APP_SECRET`,
 `NUXT_PUBLIC_UMAMI_WEBSITE_ID` (production only).
 
-Cloudflare (manual, one time): DNS for `cms`, `dev`, `umami`; Access applications for `cms` and `dev`.
+Cloudflare (manual, one time): DNS for `cms`, `dev`, `umami`; Access applications for all three protected hostnames. See the [setup guides](README.md#setup) for the current operational procedure.
 
 ---
 

@@ -71,8 +71,8 @@ and confirm which of the two mechanisms is in use; this cannot be verified from 
    the placeholder record before adding a Custom Domain). Then create a new proxied A and/or AAAA
    record for `jankominek.com` pointing at the VPS's public IP(s), matching the pattern already used
    for `Kreditozrouti`/`Ohlidame` apex records (`Kreditozrouti/deployment/production/docker-compose.production.yml:199`,
-   `Ohlidame/deployment/production/docker-compose.production.yml:185`, both `Host(\`${DOMAIN}\`)`
-   with `certresolver=letsencrypt`, no DNS-specific config in the repo since DNS is dashboard-only).
+   `Ohlidame/deployment/production/docker-compose.production.yml:185`; both use a Traefik `Host`
+   rule and `certresolver=letsencrypt`, with no DNS config in this repo because DNS is dashboard-only).
 3. If it is a **Route**: a DNS record already exists (Cloudflare requires one for Routes). Edit that
    record in place to point at the VPS IP, keep it proxied, then delete the Route from the Worker.
 4. Either way, the router that will answer for `jankominek.com` on the VPS
@@ -390,14 +390,9 @@ Cache-Control, but confirm the extension is not on Cloudflare's default-cached s
 
 ### Cloudflare Access for cms/dev/umami
 
-`PortfolioV7/docs/PLAN.md:284` states plainly: "Cloudflare (manual, one time): DNS for `cms`, `dev`,
-`umami`; Access applications for `cms` and `dev`." (Note: `umami.jankominek.com` is protected by
-Umami's own login per `PLAN.md:53`'s table, not Cloudflare Access; only `cms` and `dev` get Access
-apps per that same table, "Cloudflare Access + Payload login" and "Cloudflare Access"
-respectively). `README.md`'s one-time setup step 1 restates this: "Cloudflare DNS (proxied) for
-`jankominek.com`, `dev`, `cms`, `umami`. Cloudflare Access policies on `dev`, `cms`, `umami`" (the
-README's wording differs slightly from the PLAN, listing `umami` under Access policies too; treat
-this discrepancy as an open question to resolve before cutover, see below).
+At the time of this research, `PLAN.md` listed Access applications for `cms` and `dev`, while the
+`README.md` setup list also included `umami`. The [current plan](../PLAN.md#2-hosts-and-urls) resolves
+that difference: all three dashboard hostnames use Cloudflare Access, and Umami keeps its own login.
 
 Cloudflare's own guidance on ordering, in the context of publishing a self-hosted app behind Access,
 is direct: "We recommend creating an Access application before setting up the tunnel route. If you do
@@ -406,8 +401,8 @@ Internet." (<https://developers.cloudflare.com/cloudflare-one/access-controls/ap
 V7 does not use Cloudflare Tunnel (it is a direct proxied DNS record to a Traefik-routed VPS
 container), so the exact "tunnel route" mechanic does not apply, but the underlying principle is the
 same and directly relevant here: **create the Access application and its policy before creating (or
-at minimum before letting resolve) the public DNS record for that hostname**, so `cms.jankominek.com`
-and `dev.jankominek.com` are never reachable, even briefly, without Access in front of them. Since
+at minimum before letting resolve) the public DNS record for that hostname**, so `cms.jankominek.com`,
+`dev.jankominek.com`, and `umami.jankominek.com` are never reachable, even briefly, without Access in front of them. Since
 Traefik will start routing and issuing a valid cert for these hostnames as soon as their containers
 and labels are deployed (`docker-compose.production.yml:95-100` for `cms`), the practical ordering
 that avoids any exposure window is: deploy the Access application and policy in Cloudflare first,
@@ -422,16 +417,17 @@ then create the DNS record, then (or concurrently) deploy the container/router o
    `Host(jankominek.com)` is healthy and has already obtained (or can obtain) its Let's Encrypt cert
    via the existing DNS-01 `letsencrypt` resolver, independent of the apex's current DNS state
    (section 3).
-2. Verify the new origin end-to-end through a Cloudflare-proxied path that does not touch the live
-   apex: a temporary/staging proxied hostname, or `dev.jankominek.com` if already deployed and
-   Access-protected (section 1). Do not rely on a direct `curl --resolve` from an arbitrary machine;
-   the VPS firewall drops non-Cloudflare traffic on 80/443 by default (section 1).
+2. Verify CMS and development web through their Access-protected hostnames without touching the
+   live apex. Check the production web container's health separately. The dev site is a separate
+   deployment and cannot submit contact forms; full production routing and contact checks follow
+   the apex cutover. Do not rely on a direct `curl --resolve` from an arbitrary machine; the VPS
+   firewall drops non-Cloudflare traffic on 80/443 by default (section 1).
 3. In the Cloudflare dashboard, confirm SSL/TLS mode is Full or Full (strict) for the zone (section
    3); this should already be true given the other apps on the same VPS, but is a one-click check
    worth doing explicitly for this hostname before flipping DNS.
-4. Set up the Cloudflare Access applications and policies for `cms.jankominek.com` and
-   `dev.jankominek.com` (and `umami.jankominek.com`, pending the PLAN/README discrepancy noted
-   below) **before** creating their DNS records, per Cloudflare's own ordering guidance (section 6).
+4. Set up the Cloudflare Access applications and policies for `cms.jankominek.com`,
+   `dev.jankominek.com`, and `umami.jankominek.com` **before** creating their DNS records, per
+   Cloudflare's own ordering guidance (section 6).
    Create those DNS records (proxied), confirm Access is enforced, and only then rely on them for
    anything.
 5. Manually check the Cloudflare dashboard (Rules > Overview, SSL/TLS legacy Page Rules list) for any
@@ -461,11 +457,6 @@ then create the DNS record, then (or concurrently) deploy the container/router o
 
 - **Custom Domain vs Route for V6 today**: not verifiable from the repo; check the Cloudflare
   dashboard directly before planning the exact removal step (section 1).
-- **PLAN.md vs README.md disagree on whether `umami.jankominek.com` gets a Cloudflare Access
-  application.** `PLAN.md:284` lists Access apps only for `cms` and `dev`; `README.md`'s setup step 1
-  lists Access policies for `dev`, `cms`, **and** `umami`. `PLAN.md:53`'s own hosts table says Umami's
-  protection is "Umami login," not Access. Resolve this discrepancy before provisioning Access apps
-  (section 6).
 - **Exact downtime/propagation tolerance for the apex cutover** is not quantified by Cloudflare's
   docs for this specific operation (Custom Domain removal plus new proxied record creation); no
   official SLA number was found. Decide how much of a gap (if any) is acceptable, and whether to
