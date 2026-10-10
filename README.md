@@ -17,8 +17,8 @@ Start with the [documentation index](docs/README.md). The [migration plan](docs/
 apps/web          Nuxt site (port 45173)
 apps/cms          Payload CMS on Next (port 43000), migrations, V6 import script
 packages/content  generated Payload types + contact form schema shared by both
-deployment/       compose stacks, deploy scripts (production, development, analytics, runner)
-.github/workflows verify, deploy, rollback, deploy-analytics, umami-retention
+deployment/       compose stacks, toolkit release adapters, boot reconcile, disabled retention timer
+.github/workflows verify, deploy, rollback, deploy-analytics
 ```
 
 ## Local development
@@ -46,6 +46,6 @@ pnpm dev
 
 ## Deploy
 
-Deploys are manual through the **Deploy**, **Rollback Deployment**, and **Deploy Analytics** workflows. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. A CMS deploy takes a pre-migration database dump on the VPS; there are no other backups.
+Deploys are manual through the **Deploy**, **Rollback Deployment**, and **Deploy Analytics** workflows on GitHub-hosted runners. Production is main-only and deploys one complete web+CMS snapshot through pinned toolkit 0.8.1. Rollback restores an existing immutable snapshot. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. A CMS deploy takes a pre-migration database dump on the VPS; there are no other backups. Analytics retention uses an initially disabled host timer.
 
 For first deployment and later changes, use the [setup guides](docs/README.md#setup): Cloudflare, GitHub and VPS, analytics, and the one-time V6 content import.

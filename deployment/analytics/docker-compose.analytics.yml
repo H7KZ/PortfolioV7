@@ -5,7 +5,7 @@
 #              first-party at https://jankominek.com/stats/* so no third-party
 #              host appears on the site. Only production is tracked.
 #
-# Required Environment Variables (exported by deploy.sh):
+# Required Environment Variables (from the private snapshot dotenv):
 #   UMAMI_DB_NAME, UMAMI_DB_USER, UMAMI_DB_PASSWORD, UMAMI_APP_SECRET
 #   SITE_DOMAIN (jankominek.com), UMAMI_DOMAIN (umami.jankominek.com)
 # ==============================================================================

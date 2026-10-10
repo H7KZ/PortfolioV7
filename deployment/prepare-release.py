@@ -1,0 +1,122 @@
+#!/usr/bin/env python3
+"""Render private dotenv and package tracked deployment contents for toolkit."""
+
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+import tarfile
+
+
+def fail(message):
+    raise SystemExit(message)
+
+
+def value(name, required=True):
+    result = os.environ.get(name, "")
+    if required and not result:
+        fail(f"Missing {name}")
+    if any(character in result for character in "\r\n\0$`'\\"):
+        fail(f"Unsupported dotenv characters in {name}")
+    return result
+
+
+def main():
+    if len(sys.argv) != 3:
+        fail("usage: prepare-release.py <environment> <output-directory>")
+    environment = sys.argv[1]
+    projects = {"production": "portfolio", "development": "portfolio-dev", "monitoring": "portfolio-analytics"}
+    if environment not in projects:
+        fail("Invalid environment")
+    if environment in ("production", "monitoring") and value("GITHUB_REF") != "refs/heads/main":
+        fail("Production and analytics releases require main")
+    commit = value("GITHUB_SHA")
+    if not re.fullmatch(r"[a-f0-9]{40}", commit):
+        fail("Invalid source commit")
+    run = value("GITHUB_RUN_ID")
+    attempt = value("GITHUB_RUN_ATTEMPT")
+    if not re.fullmatch(r"[0-9]+", run) or not re.fullmatch(r"[0-9]+", attempt):
+        fail("Invalid run identity")
+    release_id = f"{commit}-{run}-{attempt}"
+    config = {}
+    images = {}
+    variables = {}
+    health_urls = []
+    folder = "analytics" if environment == "monitoring" else environment
+    if environment == "monitoring":
+        for name in ("SITE_DOMAIN", "UMAMI_DOMAIN", "UMAMI_DB_NAME", "UMAMI_DB_USER", "UMAMI_DB_PASSWORD", "UMAMI_APP_SECRET"):
+            config[name] = value(name)
+        health_urls = [f"https://{config['SITE_DOMAIN']}/stats/stats.js"]
+    else:
+        for name in ("PROJECT", "DOMAIN", "PREVIEW_SECRET", "REVALIDATE_SECRET", "CMS_READ_API_KEY"):
+            config[name] = value(name)
+        expected_project = "prod" if environment == "production" else "dev"
+        if config["PROJECT"] != expected_project:
+            fail(f"PROJECT must be {expected_project}")
+        if environment == "production":
+            for name in ("CMS_DOMAIN", "POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "PAYLOAD_SECRET", "CMS_CONTACT_API_KEY"):
+                config[name] = value(name)
+            for name in ("UMAMI_WEBSITE_ID", "DISCORD_WEBHOOK_URL"):
+                config[name] = value(name, required=False)
+            health_urls = [f"https://{config['DOMAIN']}/", f"https://{config['DOMAIN']}/robots.txt"]
+        prefix = value("GITHUB_REPOSITORY").lower()
+        if prefix != "h7kz/portfoliov7":
+            fail("Unexpected image repository")
+        variables.update(IMAGE_REGISTRY="ghcr.io", IMAGE_PREFIX=prefix)
+        for service in (["web", "cms"] if environment == "production" else ["web"]):
+            digest = value(f"{service.upper()}_DIGEST")
+            if not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
+                fail(f"Invalid {service} image digest")
+            reference = f"ghcr.io/{prefix}/{service}@{digest}"
+            images[f"portfolio-{service}"] = reference
+            variables[f"{service.upper()}_IMAGE_REFERENCE"] = reference
+            variables[f"{service.upper()}_IMAGE_TAG"] = commit
+        config.update(variables)
+    for name in ("DOMAIN", "CMS_DOMAIN", "SITE_DOMAIN", "UMAMI_DOMAIN"):
+        if name in config and not re.fullmatch(r"[a-z0-9]+(?:[a-z0-9.-]*[a-z0-9])?", config[name]):
+            fail(f"Invalid hostname in {name}")
+    manifest = {
+        "schema_version": 1,
+        "repository": "portfolio",
+        "environment": environment,
+        "release_id": release_id,
+        "source_commit": commit,
+        "project": projects[environment],
+        "compose_files": [f"{folder}/networks.yml", f"{folder}/volumes.yml", f"{folder}/docker-compose.{folder}.yml"],
+        "images": images,
+        "health_urls": health_urls,
+        "environment_variables": variables,
+    }
+    if environment == "production":
+        manifest["prepare_script"] = "scripts/pre-migrate-dump.sh"
+    output = Path(sys.argv[2]).resolve()
+    output.mkdir(mode=0o700, parents=True, exist_ok=False)
+    os.umask(0o077)
+    (output / "release.env").write_text("".join(f"{name}='{setting}'\n" for name, setting in config.items()))
+    (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    root = Path(__file__).resolve().parent
+    tracked = subprocess.check_output(["git", "ls-files", "-z", "deployment/"], cwd=root.parent).decode().split("\0")
+    with tarfile.open(output / "release.tar.gz", "w:gz", format=tarfile.USTAR_FORMAT) as archive:
+        for entry in sorted(filter(None, tracked)):
+            relative = Path(entry).relative_to("deployment")
+            if any(part.startswith(".") or not re.fullmatch(r"[A-Za-z0-9_-][A-Za-z0-9._-]*", part) for part in relative.parts):
+                fail("Unsafe deployment archive path")
+            path = root / relative
+            if path.is_symlink() or not path.is_file():
+                fail("Deployment archive requires regular files")
+            info = tarfile.TarInfo(relative.as_posix())
+            info.size = path.stat().st_size
+            info.mode = 0o755 if path.suffix == ".sh" else 0o644
+            with path.open("rb") as source:
+                archive.addfile(info, source)
+    with (output / "release.tar.gz").open("rb") as source:
+        digest = hashlib.file_digest(source, "sha256").hexdigest()
+    (output / "release.tar.gz.sha256").write_text(f"{digest}  release.tar.gz\n")
+    print(f"Prepared {environment} release {release_id}")
+
+
+if __name__ == "__main__":
+    main()

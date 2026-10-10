@@ -1,7 +1,7 @@
 # ==============================================================================
 # Docker Compose: Production Environment (portfolio)
 # Description: jankominek.com (web), cms.jankominek.com (Payload) and the CMS
-#              database. Images are built by CI and pulled by tag; networks and
+#              database. Application images use CI-provided digests; networks and
 #              volumes live in networks.yml / volumes.yml and are merged at deploy.
 #
 # The CMS is global: development (dev.jankominek.com) reads it too, over
@@ -11,7 +11,7 @@
 # collide on the one shared Infrastructure Traefik.
 #
 # Required Environment Variables (from the deploy-time .env):
-#   IMAGE_REGISTRY, IMAGE_PREFIX, WEB_IMAGE_TAG, CMS_IMAGE_TAG
+#   WEB_IMAGE_REFERENCE, CMS_IMAGE_REFERENCE (full digest references)
 #   PROJECT, DOMAIN, CMS_DOMAIN, UMAMI_WEBSITE_ID (optional)
 #   POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
 #   PAYLOAD_SECRET, PREVIEW_SECRET, REVALIDATE_SECRET (same value in development)
@@ -20,7 +20,7 @@
 
 services:
   portfolio-web:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/web:${WEB_IMAGE_TAG:-latest}
+    image: ${WEB_IMAGE_REFERENCE:?A web digest reference is required}
     container_name: portfolio-web-prod
     restart: unless-stopped
     environment:
@@ -66,7 +66,7 @@ services:
           memory: 256M
 
   portfolio-cms:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/cms:${CMS_IMAGE_TAG:-latest}
+    image: ${CMS_IMAGE_REFERENCE:?A CMS digest reference is required}
     container_name: portfolio-cms
     restart: unless-stopped
     depends_on:

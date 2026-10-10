@@ -26,3 +26,4 @@ jankominek.com. Read [README.md](README.md) for setup and [docs/PLAN.md](docs/PL
 - No comments that restate the code; comments explain why.
 - Conventional commits.
 - Deploys are manual (`workflow_dispatch`). Never push or deploy unless asked.
+- Deployment changes: read [docs/setup/deployment.md](docs/setup/deployment.md) for toolkit snapshots, migration hooks, rollback and host unit constraints.

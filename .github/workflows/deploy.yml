@@ -1,177 +1,61 @@
-# ==============================================================================
-# Workflow: Deploy
-# Description: Unified deploy for both PortfolioV7 services (web, cms):
-#              pre-build images to GHCR, then a versioned deploy on the
-#              self-hosted runner. Manual only - a push to main does NOT
-#              deploy; deploy when you're satisfied a commit is ready, not on
-#              every push. Pick any service subset AND the target environment.
-#
-#              The CMS exists ONLY in production; deploy_cms is ignored for
-#              development. When both deploy, web waits for the cms.
-#
-# Trigger: manual dispatch only
-# ==============================================================================
-
 name: Deploy
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Deploy target
+        description: Whole environment to deploy (production includes web and CMS)
         type: choice
-        options:
-          - production
-          - development
-        default: production
-      deploy_web:
-        description: Deploy Web
-        type: boolean
-        default: true
-      deploy_cms:
-        description: Deploy CMS (production only, ignored for development)
-        type: boolean
-        default: true
-      image_tag:
-        description: Specific image tag to deploy (skips build if set)
-        required: false
-        type: string
-        default: ''
-      skip_build:
-        description: Skip build (images must already exist in registry)
-        required: false
-        type: boolean
-        default: false
+        options: [production, development]
+        default: development
 
 permissions:
   contents: read
   packages: write
 
-# One group per target so a development dispatch never queues behind production.
 concurrency:
   group: deploy-${{ inputs.environment }}
   cancel-in-progress: false
 
 jobs:
-  # ---------------------------------------------------------------------------
-  # Validate dispatch inputs before any work starts
-  # ---------------------------------------------------------------------------
-  validate:
-    name: Validate Inputs
-    runs-on: self-hosted
+  preflight:
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Reject skip_build without image_tag
+      - uses: actions/checkout@v7
+      - name: Validate branch and toolkit pin
+        env:
+          TARGET: ${{ inputs.environment }}
         run: |
-          if [[ "${{ inputs.skip_build }}" == "true" && -z "${{ inputs.image_tag }}" ]]; then
-            echo "ERROR: image_tag must be set when skip_build is true"
-            exit 1
-          fi
-
+          set -euo pipefail
+          [[ "$TARGET" == development || "$GITHUB_REF" == refs/heads/main ]] || {
+            echo 'Production releases require main.' >&2; exit 1;
+          }
+          bash deployment/verify-toolkit-pin.sh
   build-web:
-    name: Build Web
-    needs: [validate]
-    if: needs.validate.result == 'success' && inputs.deploy_web && !inputs.skip_build && inputs.image_tag == ''
+    needs: preflight
     uses: ./.github/workflows/_build-service.yml
     with:
       service: web
-      float_tag: ${{ inputs.environment == 'development' && 'dev-latest' || 'latest' }}
-      cache_scope: ${{ inputs.environment == 'development' && 'web-dev' || 'web-prod' }}
+      cache_scope: web-${{ inputs.environment }}
     secrets: inherit
-
   build-cms:
-    name: Build CMS
-    needs: [validate]
-    if: needs.validate.result == 'success' && inputs.deploy_cms && inputs.environment == 'production' && !inputs.skip_build && inputs.image_tag == ''
+    needs: preflight
+    if: inputs.environment == 'production'
     uses: ./.github/workflows/_build-service.yml
     with:
       service: cms
-      float_tag: ${{ inputs.environment == 'development' && 'dev-latest' || 'latest' }}
-      cache_scope: ${{ inputs.environment == 'development' && 'cms-dev' || 'cms-prod' }}
+      cache_scope: cms-production
     secrets: inherit
-
-  # ---------------------------------------------------------------------------
-  # Resolve image prefix - always github.repository lowercased; derived from a
-  # build output to stay consistent with _build-service.yml
-  # ---------------------------------------------------------------------------
-  resolve:
-    name: Resolve Image Prefix
-    runs-on: self-hosted
-    timeout-minutes: 5
-    needs: [validate, build-web, build-cms]
-    if: always() && needs.validate.result == 'success'
-    outputs:
-      image_prefix: ${{ steps.prefix.outputs.value }}
-    steps:
-      - name: Compute lowercase prefix
-        id: prefix
-        run: |
-          RAW="${{ needs.build-web.outputs.image_prefix || needs.build-cms.outputs.image_prefix || github.repository }}"
-          echo "value=${RAW,,}" >> "$GITHUB_OUTPUT"
-
-  # ---------------------------------------------------------------------------
-  # Deploy (parallel per service, each conditional on service selection)
-  # ---------------------------------------------------------------------------
-  deploy-web:
-    name: Deploy Web
-    # After the cms: a new web may read fields only the new cms schema has.
-    needs: [build-web, resolve, deploy-cms]
+  deploy:
+    needs: [build-web, build-cms]
     if: >-
-      always() &&
-      needs.resolve.result == 'success' &&
-      (needs.build-web.result == 'success' || needs.build-web.result == 'skipped') &&
-      (needs.deploy-cms.result == 'success' || needs.deploy-cms.result == 'skipped') &&
-      inputs.deploy_web
-    uses: ./.github/workflows/_deploy-service.yml
+      always() && needs.build-web.result == 'success' &&
+      (needs.build-cms.result == 'success' ||
+      (inputs.environment == 'development' && needs.build-cms.result == 'skipped'))
+    uses: ./.github/workflows/_deploy-environment.yml
     with:
-      service: web
-      image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-web.outputs.image_tag }}
-      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
       environment: ${{ inputs.environment }}
-      project_name: ${{ inputs.environment == 'production' && 'portfolio' || 'portfolio-dev' }}
-    secrets: inherit
-
-  deploy-cms:
-    name: Deploy CMS
-    needs: [build-cms, resolve]
-    if: >-
-      always() &&
-      needs.resolve.result == 'success' &&
-      (needs.build-cms.result == 'success' || needs.build-cms.result == 'skipped') &&
-      inputs.deploy_cms &&
-      inputs.environment == 'production'
-    uses: ./.github/workflows/_deploy-service.yml
-    with:
-      service: cms
-      image_tag: ${{ inputs.image_tag != '' && inputs.image_tag || needs.build-cms.outputs.image_tag }}
-      image_prefix: ${{ needs.resolve.outputs.image_prefix }}
-      environment: ${{ inputs.environment }}
-      project_name: ${{ inputs.environment == 'production' && 'portfolio' || 'portfolio-dev' }}
-    secrets: inherit
-
-  # ---------------------------------------------------------------------------
-  # Cleanup old package versions after successful deploy
-  # ---------------------------------------------------------------------------
-  cleanup-web:
-    name: Cleanup Web packages
-    needs: [deploy-web]
-    # always() overrides the implicit success()-prefix GitHub adds to any `if:`
-    # that doesn't call a status function itself. Without it, success() walks
-    # the FULL transitive graph (deploy-web -> resolve -> build-web/build-cms),
-    # not just this job's direct `needs:` - so a skip_build/image_tag deploy
-    # (which leaves the build-* jobs `skipped`) silently kills this job even
-    # though deploy-web succeeded.
-    if: always() && needs.deploy-web.result == 'success'
-    uses: ./.github/workflows/_cleanup-package.yml
-    with:
-      package-name: portfoliov7/web
-    secrets: inherit
-
-  cleanup-cms:
-    name: Cleanup CMS packages
-    needs: [deploy-cms]
-    if: always() && needs.deploy-cms.result == 'success'
-    uses: ./.github/workflows/_cleanup-package.yml
-    with:
-      package-name: portfoliov7/cms
+      web_digest: ${{ needs.build-web.outputs.image_digest }}
+      cms_digest: ${{ needs.build-cms.outputs.image_digest }}
     secrets: inherit

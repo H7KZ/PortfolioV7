@@ -79,14 +79,13 @@ PortfolioV7/
 ├─ scripts/
 │  └─ migrate-v6.ts   one-shot import of all V6 content via Payload Local API (section 5)
 ├─ deployment/
-│  ├─ deploy.sh, lib.sh           vendored from Kreditožrouti
+│  ├─ deploy.sh, rollback.sh      pinned toolkit release adapters
 │  ├─ production/                 web, cms, postgres
 │  ├─ development/                web-dev only (reads the production CMS)
 │  ├─ analytics/                  umami, umami-postgres, umami/retention.sql
-│  ├─ github-runner/              self-hosted runner for this repo
-│  ├─ boot-recovery/
+│  ├─ boot-recovery/              root toolkit reconcile; install disabled
 │  └─ scripts/pre-migrate-dump.sh
-├─ .github/workflows/  verify.yml, deploy.yml, deploy-analytics.yml, rollback.yml, umami-retention.yml
+├─ .github/workflows/  hosted verify, build, environment deploy, analytics and rollback
 ├─ docker-compose.local.yml       local Postgres for development
 ├─ AGENTS.md / CLAUDE.md          house rules (section 11)
 └─ docs/
@@ -206,7 +205,7 @@ Stack `deployment/analytics/` (compose project `portfolio-analytics`): `umami` +
 copied from Kreditožrouti's monitoring compose, nothing else. `postgres:18-alpine` mounted at
 `/var/lib/postgresql`, `TRACKER_SCRIPT_NAME=stats.js`, `DISABLE_TELEMETRY=1`,
 `CLIENT_IP_HEADER=cf-connecting-ip`, 13-month retention via `umami/retention.sql` +
-`umami-retention.yml`.
+an initially disabled host timer/service under the toolkit repository lock.
 
 - Dashboard at `umami.jankominek.com` (Cloudflare Access and Umami login). Tracker first-party at
   `jankominek.com/stats` (Traefik stripprefix), so ad blockers do not break it.
@@ -249,10 +248,13 @@ live is sensible.
 
 ## 9. Deployment
 
-Mirrors Kreditožrouti / Ohlídáme: images on GHCR, `~/portfolio/versions/<env>/<sha>/` with a
-`current` symlink, `deploy.sh <project> <env> <service>`, `.env` written from GitHub Environment
-secrets, **manual `workflow_dispatch` only, for both environments**. Own self-hosted runner
-(`portfolio-runner`).
+Images live on GHCR. GitHub-hosted workflows create complete immutable environment snapshots
+through pinned toolkit 0.8.1 at `~/portfolio/versions/<env>/<fullSHA>-<run>-<attempt>/`.
+Toolkit owns `current`/`previous`, private dotenv, resolved Compose, digest pins, locks and health.
+All deployment is manual; production and analytics require main. Production includes web and CMS
+together; development includes web only. Rollback restores an existing snapshot exactly.
+Analytics uses environment `monitoring` with analytics-specific Compose files. See the
+[deployment guide](setup/deployment.md) for installation, migration and host units.
 
 | Container                  | Image                                | Compose project       | Networks                                                  |
 | -------------------------- | ------------------------------------ | --------------------- | --------------------------------------------------------- |
@@ -272,11 +274,11 @@ Traefik routers `portfolio-<router>-${PROJECT}`, `certresolver=letsencrypt`: `we
 (Host umami.jankominek.com). Infrastructure's global middlewares apply automatically.
 
 **CMS deploys:** `deployment/scripts/pre-migrate-dump.sh` runs `pg_dump` into
-`~/portfolio/dumps/` right before the new CMS container starts (keeps the last 3), then the
+`~/portfolio/dumps/` in toolkit's locked prepare hook before the new CMS container starts (no automatic pruning), then the
 container runs `payload migrate` on start. Schema changes are tested locally against a copy of
 production content first; there is no dev CMS.
 
-Secrets / vars (GitHub Environments `production`, `development`): `DOMAIN`, `PROJECT`,
+Secrets / vars (GitHub Environments `production`, `development`, `monitoring`): `DOMAIN`, `PROJECT`,
 `POSTGRES_*`, `PAYLOAD_SECRET`, `CMS_READ_API_KEY`, `CMS_CONTACT_API_KEY`, `REVALIDATE_SECRET`,
 `PREVIEW_SECRET`, `DISCORD_WEBHOOK_URL`, `UMAMI_DB_*`, `UMAMI_APP_SECRET`,
 `NUXT_PUBLIC_UMAMI_WEBSITE_ID` (production only).
@@ -295,7 +297,7 @@ Cloudflare (manual, one time): DNS for `cms`, `dev`, `umami`; Access application
 | 3   | Site reads CMS    | local content removed, `@portfolio/content` client, Nitro cache + revalidate hook, media proxy, redirects, feeds / sitemap / llms, parity re-checked                                                | M    |
 | 4   | Contact form      | `/api/contact`, CMS-built Zod schema, submissions, Discord hook, retention job                                                                                                                      | S    |
 | 5   | Analytics + legal | Umami plugin + events, GA and banner removed, Cal.com lazy, privacy + terms content, opt-out                                                                                                        | M    |
-| 6   | Deployment        | Dockerfiles, compose stacks, workflows, runner, pre-migrate dump, Cloudflare setup                                                                                                                  | M    |
+| 6   | Deployment        | Dockerfiles, compose stacks, hosted workflows, toolkit snapshots, pre-migrate dump, Cloudflare setup                                                                                                | M    |
 | 7   | Cutover           | deploy CMS + run migration on the VPS, deploy dev, final parity + Lighthouse, switch `jankominek.com` origin from Cloudflare Workers to the VPS; V6 Worker stays 2 weeks as rollback, then archived | S    |
 
 ---
@@ -327,7 +329,7 @@ visual parity with V6 until you decide otherwise.
 | Cookie banner     | removed                                                                                    |
 | Legal             | privacy + website-use terms, Czech prevails                                                |
 | Deploys           | manual dispatch, both environments                                                         |
-| Backups           | **none (accepted risk)**; only a pre-migration `pg_dump`, last 3 kept on the VPS           |
+| Backups           | **none (accepted risk)**; migration recovery dumps on the VPS, no automatic pruning        |
 
 ### Accepted risks
 

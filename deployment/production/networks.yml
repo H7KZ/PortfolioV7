@@ -4,7 +4,7 @@
 #   portfolio-cms-network:       web (both environments) <-> cms. Shared by both
 #                                stacks, so it is external to both.
 #   portfolio-internal-network:  cms <-> postgres only.
-# deploy.sh creates any that are missing. Naming: Infrastructure docs/NAMING.md.
+# Toolkit creates portfolio-* networks; Infrastructure must provision public-network.
 # ==============================================================================
 
 networks:

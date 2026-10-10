@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily PortfolioV7 analytics retention (install disabled)
+
+[Timer]
+OnCalendar=*-*-* 03:17:00 Europe/Prague
+Persistent=true
+Unit=portfoliov7-umami-retention.service
+
+[Install]
+WantedBy=timers.target

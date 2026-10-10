@@ -6,14 +6,14 @@
 #              It has no contact key, so its contact form cannot create inquiries.
 #
 # Required Environment Variables (from the deploy-time .env):
-#   IMAGE_REGISTRY, IMAGE_PREFIX, WEB_IMAGE_TAG
+#   WEB_IMAGE_REFERENCE (full digest reference)
 #   PROJECT (must differ from production), DOMAIN
 #   CMS_READ_API_KEY, PREVIEW_SECRET, REVALIDATE_SECRET (same value as production)
 # ==============================================================================
 
 services:
   portfolio-web:
-    image: ${IMAGE_REGISTRY}/${IMAGE_PREFIX}/web:${WEB_IMAGE_TAG:-latest}
+    image: ${WEB_IMAGE_REFERENCE:?A web digest reference is required}
     container_name: portfolio-web-dev
     restart: unless-stopped
     environment:

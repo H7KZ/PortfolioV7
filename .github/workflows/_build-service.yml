@@ -3,12 +3,12 @@
 # Description: Builds and pushes a single service Docker image to GHCR.
 #              Dockerfiles live under apps/<service>/ in this pnpm/turbo
 #              monorepo; build context is the repo root. Called by
-#              deploy.yml/rollback.yml. Runs on a GitHub-hosted runner
+#              deploy.yml. Runs on a GitHub-hosted runner
 #              (ubuntu-latest). GHCR push uses GITHUB_TOKEN, so this needs no
 #              extra secrets.
 #
-# Inputs:  service (web | cms), float_tag, cache_scope
-# Outputs: image_tag (short SHA), image_prefix (e.g. h7kz/portfoliov7)
+# Inputs:  service (web | cms), cache_scope
+# Outputs: full commit tag, image prefix and pushed image digest.
 # ==============================================================================
 
 name: Build Service Image (reusable)
@@ -20,17 +20,16 @@ on:
         description: 'Service to build: web | cms'
         required: true
         type: string
-      float_tag:
-        description: 'Floating tag to push alongside the versioned tag (e.g. latest)'
-        required: true
-        type: string
       cache_scope:
         description: 'GHA cache scope (e.g. web-prod)'
         required: true
         type: string
     outputs:
+      image_digest:
+        description: 'Immutable digest returned by Buildx'
+        value: ${{ jobs.build.outputs.image_digest }}
       image_tag:
-        description: 'Short SHA used as the versioned image tag'
+        description: 'Full commit used as the versioned image tag'
         value: ${{ jobs.build.outputs.image_tag }}
       image_prefix:
         description: 'Registry path prefix without registry host (e.g. h7kz/portfoliov7)'
@@ -47,6 +46,7 @@ jobs:
       packages: write
 
     outputs:
+      image_digest: ${{ steps.push.outputs.digest }}
       image_tag: ${{ steps.meta.outputs.image_tag }}
       image_prefix: ${{ steps.meta.outputs.image_prefix }}
 
@@ -57,7 +57,7 @@ jobs:
       - name: Extract Metadata
         id: meta
         run: |
-          TAG="${GITHUB_SHA::8}"
+          TAG="$GITHUB_SHA"
           PREFIX="$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
           echo "image_tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "image_prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
@@ -75,6 +75,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push
+        id: push
         uses: docker/build-push-action@v7
         with:
           context: .
@@ -82,7 +83,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
-            ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.float_tag }}
           build-args: |
             APP_VERSION=${{ steps.meta.outputs.image_tag }}
             GIT_SHA=${{ github.sha }}

@@ -1,0 +1,12 @@
+[Unit]
+Description=PortfolioV7 analytics retention under toolkit repository lock
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+User=root
+EnvironmentFile=/etc/portfoliov7-release.conf
+ExecStart=/bin/bash /opt/portfoliov7-deployment/analytics/retention.sh
+TimeoutStartSec=90min
+UMask=0077
