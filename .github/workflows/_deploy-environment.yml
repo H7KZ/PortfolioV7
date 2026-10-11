@@ -49,7 +49,7 @@ jobs:
           [[ "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
           bash deployment/verify-toolkit-pin.sh
           version="$(awk -F= '$1 == "TOOLKIT_VERSION" {print $2}' deployment/toolkit.lock)"
-          [[ "$version" == 0.8.1 ]] || { echo 'Toolkit 0.8.1 required.' >&2; exit 1; }
+          [[ "$version" =~ ^0\.[0-9]+\.[0-9]+$ && "$(printf '%s\n' 0.8.1 "$version" | sort -V | head -1)" == 0.8.1 ]] || { echo 'Toolkit snapshot API requires >=0.8.1, <1.0.0.' >&2; exit 1; }
           echo "toolkit_version=$version" >> "$GITHUB_OUTPUT"
           echo "release_id=$GITHUB_SHA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
       - name: Prepare archive, manifest and private environment
@@ -78,6 +78,13 @@ jobs:
           UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
           TARGET: ${{ inputs.environment }}
         run: python3 deployment/prepare-release.py "$TARGET" "$GITHUB_WORKSPACE/bundle"
+      - name: Prepare repository toolkit packet
+        run: |
+          mkdir -p bundle
+          version="$(sed -n 's/^TOOLKIT_VERSION=//p' deployment/toolkit.lock)"
+          cp "deployment/vendor/toolkit/toolkit-$version.tar.gz" "$PWD/bundle/toolkit.tar.gz"
+          cp "deployment/toolkit.lock" "$PWD/bundle/toolkit.lock"
+          printf '%s  toolkit.tar.gz\n' "$(sed -n 's/^TOOLKIT_ARCHIVE_SHA256=//p' deployment/toolkit.lock)" > "$PWD/bundle/toolkit.tar.gz.sha256"
       - name: Host preflight
         uses: appleboy/ssh-action@v1
         env:
@@ -94,21 +101,14 @@ jobs:
           envs: TOOLKIT_VERSION,RELEASE_ID,OPERATION,TARGET
           script: |
             set -euo pipefail
-            [[ -x /usr/local/bin/toolkit ]] || { echo 'Install pinned toolkit first.' >&2; exit 1; }
-            actual="$(/usr/local/bin/toolkit version)"
-            [[ "$actual" == "toolkit_version=$TOOLKIT_VERSION" ]] || {
-              echo 'Active toolkit does not match repository pin.' >&2; exit 1;
-            }
-            if [[ "$OPERATION" == deploy ]]; then
-              umask 077
-              case "$TARGET" in production|development|monitoring) ;; *) exit 1 ;; esac
-              install -d -m 0700 "$HOME/portfolio/versions/$TARGET"
-              mkdir -p "$HOME/portfolio/incoming"
-              chmod 700 "$HOME/portfolio/incoming"
-              mkdir -m 700 "$HOME/portfolio/incoming/$RELEASE_ID"
-            fi
+            [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install CI bundle runner first (deployment/install-toolkit.sh --ci-only --deploy-user <account>)' >&2; exit 1; }
+            umask 077
+            case "$TARGET" in production|development|monitoring) ;; *) exit 1 ;; esac
+            install -d -m 0700 "$HOME/portfolio/versions/$TARGET"
+            mkdir -p "$HOME/portfolio/incoming"
+            chmod 700 "$HOME/portfolio/incoming"
+            mkdir -m 700 "$HOME/portfolio/incoming/$RELEASE_ID"
       - name: Upload private release inputs
-        if: inputs.operation == 'deploy'
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -142,14 +142,12 @@ jobs:
             case "$TARGET" in production|development|monitoring) ;; *) exit 1 ;; esac
             [[ "$RELEASE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
             [[ "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
-            actual="$(/usr/local/bin/toolkit version)"
-            [[ "$actual" == "toolkit_version=$TOOLKIT_VERSION" ]] || exit 1
             umask 077
             incoming="$HOME/portfolio/incoming/$RELEASE_ID"
             registry="$(mktemp -d "$HOME/portfolio/.registry.XXXXXXXX")"
             cleanup() {
               rm -rf -- "$registry"
-              if [[ "$OPERATION" == deploy ]]; then rm -rf -- "$incoming"; fi
+              rm -rf -- "$incoming"
             }
             trap cleanup EXIT
             printf '%s' "$GH_TOKEN" | docker --config "$registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
@@ -158,12 +156,12 @@ jobs:
             case "$OPERATION" in
               deploy)
                 chmod 600 "$incoming/release.env"
-                sudo -n /usr/local/bin/toolkit release deploy "${args[@]}" \
+                sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release deploy "${args[@]}" \
                   --archive "$incoming/release.tar.gz" --checksum "$incoming/release.tar.gz.sha256" \
                   --manifest "$incoming/manifest.json" --env-file "$incoming/release.env"
                 ;;
               rollback)
-                sudo -n /usr/local/bin/toolkit release rollback "${args[@]}" --release-id "$RESTORE_ID"
+                sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release rollback "${args[@]}" --release-id "$RESTORE_ID"
                 ;;
               *) exit 1 ;;
             esac
@@ -171,7 +169,7 @@ jobs:
         if: always()
         run: rm -rf -- "$GITHUB_WORKSPACE/bundle"
       - name: Remove remote incoming inputs
-        if: always() && inputs.operation == 'deploy' && steps.meta.outcome == 'success'
+        if: always() && steps.meta.outcome == 'success'
         uses: appleboy/ssh-action@v1
         env:
           RELEASE_ID: ${{ steps.meta.outputs.release_id }}

@@ -5,11 +5,8 @@ validate_target() {
 }
 
 require_toolkit() {
-  bash "$SCRIPT_DIR/verify-toolkit-pin.sh" >/dev/null
-  local expected actual
-  expected="$(awk -F= '$1 == "TOOLKIT_VERSION" {print $2}' "$SCRIPT_DIR/toolkit.lock")"
-  [[ -x /usr/local/bin/toolkit ]] || { echo 'Install and explicitly activate the pinned toolkit first.' >&2; exit 1; }
-  actual="$(/usr/local/bin/toolkit version)"
-  [[ "$actual" == "toolkit_version=$expected" ]] || { echo 'Active toolkit differs from deployment/toolkit.lock.' >&2; exit 1; }
-  [[ "$expected" == 0.8.1 ]] || { echo 'Immutable releases require toolkit 0.8.1.' >&2; exit 1; }
+  local actual
+  [[ -x /usr/local/bin/toolkit ]] || { echo 'Install and activate a host toolkit first.' >&2; exit 1; }
+  actual="$(/usr/local/bin/toolkit version | sed -n 's/^toolkit_version=\([^ ]*\).*/\1/p')"
+  [[ "$actual" =~ ^0\.[0-9]+\.[0-9]+$ && "$(printf '%s\n' 0.8.1 "$actual" | sort -V | head -1)" == 0.8.1 ]] || { echo 'Host toolkit snapshot API requires >=0.8.1, <1.0.0' >&2; exit 1; }
 }

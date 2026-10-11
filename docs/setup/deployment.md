@@ -18,19 +18,24 @@ Development's preview, revalidation and read keys must match production. Generat
 
 ## Toolkit installation
 
-`deployment/toolkit.lock`, the corresponding `deployment/vendor/toolkit/toolkit-<version>.tar.gz` and checksum must be supplied by the shared toolkit release owner. Missing or mismatched pins block deployment. This consumer requires toolkit 0.8.1; final lock and archive repinning belongs to the parent toolkit change.
+`deployment/toolkit.lock` and the corresponding archive/checksum pin toolkit 0.9.0. CI sends them
+on every deploy and rollback, then calls the root-installed stable bundle runner. It validates and
+executes those exact bytes independently of the active VPS administrator toolkit.
 
-From a trusted checkout on the VPS:
+From a trusted checkout, install the CI runner and grant the actual deployment account access:
 
 ```bash
 bash deployment/verify-toolkit-pin.sh
-sudo bash deployment/install-toolkit.sh
-# Installer prints the exact activation command. Explicitly activate that version.
-sudo /opt/toolkit/releases/0.8.1/bin/toolkit activate 0.8.1
-/usr/local/bin/toolkit version
+sudo bash deployment/install-toolkit.sh --ci-only --deploy-user YOUR_DEPLOY_USER
+# Optional: omit --ci-only to install the administrator CLI inactive.
+# Add --activate only when explicitly selecting a new host default.
 ```
 
-The deploy account needs Docker access and noninteractive sudo for toolkit release operations. Version checks run without sudo. Installation and toolkit activation are operator actions. Workflows verify the active version; they do not install it.
+Manual admin, boot recovery and retention use the independently activated host toolkit
+(>=0.8.1, <1.0.0 shared lock/snapshot API). Refresh root-owned boot/retention controls using their
+owner installer to remove old pin equality checks. CI never changes `/opt/toolkit/current`.
+The deploy account is root-equivalent through Docker and the trusted bundle execution sudo rule.
+See [bundle installation](../../deployment/vendor/toolkit/README.md).
 
 ## Immutable releases and rollback
 
@@ -38,7 +43,7 @@ The deploy account needs Docker access and noninteractive sudo for toolkit relea
 
 `prepare-release.py` packages tracked deployment contents at archive root, rejecting symlinks, special files, hidden/generated paths and dotenv. Manifest v1 identifies repository `portfolio`, environment, Compose project, exact images, Compose files and health URLs. This slug matches the existing `portfolio-*` resources. Analytics uses environment `monitoring`, project `portfolio-analytics`, and only `analytics/{networks,volumes,docker-compose.analytics}.yml`. Toolkit resolves and pins third-party images during staging, including both analytics images and application Postgres.
 
-The reusable environment job provisions its release root as the deploy user, sends private inputs to a unique incoming directory and calls `sudo -n /usr/local/bin/toolkit release deploy` with absolute paths, the deploy user and an isolated temporary registry configuration. Toolkit owns release locks, health checks, immutable snapshot metadata, private runtime, and `current`/`previous` under `~/portfolio/versions/<environment>`. No workflow updates pointers or prunes images or snapshots.
+The reusable environment job provisions its release root as the deploy user, sends private inputs to a unique incoming directory and calls `sudo -n /usr/local/libexec/toolkit-run-bundle ... -- release deploy` with absolute paths, the deploy user and an isolated temporary registry configuration. Toolkit owns release locks, health checks, immutable snapshot metadata, private runtime, and `current`/`previous` under `~/portfolio/versions/<environment>`. No workflow updates pointers or prunes images or snapshots.
 
 The apply SSH command allows 110 minutes inside a 120-minute job, covering separate 30-minute repository and host lock waits plus downloads and health checks. Installed host services allow 90 minutes.
 

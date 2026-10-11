@@ -16,7 +16,7 @@ for environment in production development monitoring; do
     continue
   fi
   # Toolkit checks each current pointer and its recorded project and immutable metadata.
-  /usr/local/bin/toolkit release reconcile --repository portfolio --environment "$environment" \
+  /usr/local/bin/toolkit reconcile --repository portfolio --environment "$environment" \
     --root "$deploy_home/portfolio/versions/$environment" --user "$DEPLOY_USER" || failures=1
 done
 exit "$failures"
