@@ -7,7 +7,7 @@
 #              (ubuntu-latest). GHCR push uses GITHUB_TOKEN, so this needs no
 #              extra secrets.
 #
-# Inputs:  service (web | cms), cache_scope
+# Inputs: service (web | cms), environment, source_sha, no_cache
 # Outputs: full commit tag, image prefix and pushed image digest.
 # ==============================================================================
 
@@ -20,16 +20,21 @@ on:
         description: 'Service to build: web | cms'
         required: true
         type: string
-      cache_scope:
-        description: 'GHA cache scope (e.g. web-prod)'
+      environment:
         required: true
         type: string
+      source_sha:
+        required: true
+        type: string
+      no_cache:
+        type: boolean
+        default: false
     outputs:
       image_digest:
         description: 'Immutable digest returned by Buildx'
         value: ${{ jobs.build.outputs.image_digest }}
       image_tag:
-        description: 'Full commit used as the versioned image tag'
+        description: 'Environment and full commit used as the versioned image tag'
         value: ${{ jobs.build.outputs.image_tag }}
       image_prefix:
         description: 'Registry path prefix without registry host (e.g. h7kz/portfoliov7)'
@@ -53,11 +58,19 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.source_sha }}
 
       - name: Extract Metadata
         id: meta
+        env:
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          TARGET: ${{ inputs.environment }}
         run: |
-          TAG="$GITHUB_SHA"
+          set -euo pipefail
+          [[ "$SOURCE_SHA" =~ ^[a-f0-9]{40}$ ]]
+          case "$TARGET" in production|development) ;; *) exit 1 ;; esac
+          TAG="$TARGET-$SOURCE_SHA"
           PREFIX="$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
           echo "image_tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "image_prefix=${PREFIX}" >> "$GITHUB_OUTPUT"
@@ -84,10 +97,11 @@ jobs:
           tags: |
             ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
           build-args: |
-            APP_VERSION=${{ steps.meta.outputs.image_tag }}
-            GIT_SHA=${{ github.sha }}
-          cache-from: type=gha,scope=${{ inputs.cache_scope }}
-          cache-to: type=gha,mode=max,scope=${{ inputs.cache_scope }}
+            APP_VERSION=${{ inputs.source_sha }}
+            GIT_SHA=${{ inputs.source_sha }}
+          no-cache: ${{ inputs.no_cache }}
+          cache-from: type=gha,scope=${{ inputs.service }}-${{ inputs.environment }}
+          cache-to: type=gha,mode=max,scope=${{ inputs.service }}-${{ inputs.environment }}
           platforms: linux/amd64
 
       - name: Summarize image digest

@@ -5,18 +5,30 @@
 # Trigger: pull_request targeting main, or called by Deploy before image builds
 # ==============================================================================
 
-name: Verify
+name: Verify Code
 
 on:
   pull_request:
     branches: [main]
   workflow_call:
+    inputs:
+      ref:
+        type: string
+        default: ''
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Source branch, tag or SHA; blank = workflow ref
+        type: string
+        default: ''
 
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - uses: actions/setup-node@v7
         with:

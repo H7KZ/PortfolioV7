@@ -15,13 +15,26 @@
 #              protected_digests.
 # ==============================================================================
 
-name: Registry Cleanup
+name: Cleanup Registry
+run-name: Cleanup registry (${{ github.event_name == 'schedule' && 'preview' || inputs.dry_run && 'preview' || 'delete' }})
 
 on:
   schedule:
     - cron: '17 4 * * 1'
   workflow_dispatch:
     inputs:
+      packages:
+        description: Packages (space/comma separated); blank = portfoliov7/web + portfoliov7/cms
+        type: string
+        default: ''
+      keep_newest:
+        description: Newest tagged versions to keep per package (minimum 1)
+        type: number
+        default: 6
+      min_age_days:
+        description: Minimum version age before deletion (days)
+        type: number
+        default: 7
       dry_run:
         description: 'Only log what would be deleted'
         required: true
@@ -40,9 +53,6 @@ concurrency:
 permissions:
   contents: read
   packages: write
-
-env:
-  KEEP_NEWEST: '6'
 
 jobs:
   cleanup:
@@ -63,15 +73,35 @@ jobs:
           OWNER: ${{ github.repository_owner }}
           DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == false && 'false' || 'true' }}
           PROTECTED: ${{ inputs.protected_digests }}
+          SELECTED_PACKAGES: ${{ inputs.packages }}
+          KEEP_NEWEST: ${{ github.event_name == 'workflow_dispatch' && toJSON(inputs.keep_newest) || '6' }}
+          MIN_AGE_DAYS: ${{ github.event_name == 'workflow_dispatch' && toJSON(inputs.min_age_days) || '7' }}
         run: |
           set -euo pipefail
+          [[ "$KEEP_NEWEST" =~ ^[1-9][0-9]{0,5}$ ]] || { echo 'keep_newest must be an integer from 1 to 999999' >&2; exit 1; }
+          [[ "$MIN_AGE_DAYS" =~ ^(0|[1-9][0-9]{0,4})$ ]] || { echo 'min_age_days must be an integer from 0 to 99999' >&2; exit 1; }
+          selected="${SELECTED_PACKAGES//,/ }"
+          protected_tokens="${PROTECTED//,/ }"
+          for selected_package in $selected; do
+            case "$selected_package" in portfoliov7/web|portfoliov7/cms) ;; *) echo 'Unknown package' >&2; exit 1 ;; esac
+          done
+          for digest in $protected_tokens; do
+            [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]] || { echo 'protected_digests requires complete sha256 digests' >&2; exit 1; }
+          done
+          if [[ -n "$selected" ]]; then
+            found=false
+            for selected_package in $selected; do
+              [[ "$selected_package" != "$PACKAGE" ]] || found=true
+            done
+            [[ "$found" == true ]] || { echo "Skip $PACKAGE"; exit 0; }
+          fi
           enc="${PACKAGE//\//%2F}"
           base="users/${OWNER}/packages/container/${enc}/versions"
           gh api --paginate "${base}?per_page=100" --jq '.[]' | jq -s 'sort_by(.created_at) | reverse' > versions.json
           total="$(jq 'length' versions.json)"
           untagged="$(jq '[.[] | select((.metadata.container.tags // []) | length == 0)] | length' versions.json)"
           echo "::notice::${PACKAGE}: ${total} versions (${untagged} untagged, never deleted); keep newest ${KEEP_NEWEST}; dry_run=${DRY_RUN}"
-          jq -r --argjson keep "$KEEP_NEWEST" --arg prot "$PROTECTED" '
+          jq -r --argjson keep "$KEEP_NEWEST" --argjson age "$MIN_AGE_DAYS" --arg prot "$PROTECTED" '
             ([$prot | scan("sha256:[0-9a-f]+")]) as $p
             | [.[] | select((.metadata.container.tags // []) | length > 0)]
             | to_entries[]
@@ -79,6 +109,7 @@ jobs:
             | (if $i < $keep then "keep-newest"
                elif ($t | any(test("^(latest|prod|current)$") or test("-latest$"))) then "keep-tag"
                elif ($p | index($v.name)) then "keep-protected"
+               elif ($v.created_at | fromdateiso8601) > (now - $age * 86400) then "keep-recent"
                else "delete" end) as $a
             | [$a, ($v.id | tostring), $v.name, ($t | join(",")), $v.created_at] | @tsv
           ' versions.json > plan.tsv
