@@ -1,9 +1,12 @@
-name: Deploy Service (reusable)
+name: Deploy Environment (reusable)
 
 on:
   workflow_call:
     inputs:
       environment:
+        required: true
+        type: string
+      source_sha:
         required: true
         type: string
       operation:
@@ -29,31 +32,46 @@ jobs:
       packages: read
     steps:
       - uses: actions/checkout@v7
+      - name: Checkout release source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.source_sha }}
+          path: release-source
       - name: Validate release request and pin
         id: meta
         env:
           TARGET: ${{ inputs.environment }}
           OPERATION: ${{ inputs.operation }}
           RESTORE_ID: ${{ inputs.release_id }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
           HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
         run: |
           set -euo pipefail
           case "$TARGET" in production|development|monitoring) ;; *) exit 1 ;; esac
-          case "$OPERATION" in deploy|rollback) ;; *) exit 1 ;; esac
-          [[ "$TARGET" == development || "$GITHUB_REF" == refs/heads/main ]] || {
-            echo 'Production and analytics require main.' >&2; exit 1;
-          }
+          case "$OPERATION" in deploy|stage|rollback|activate|reconcile) ;; *) exit 1 ;; esac
+          [[ "$SOURCE_SHA" =~ ^[a-f0-9]{40}$ ]] || exit 1
           [[ "$HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || {
             echo 'SSH_HOST_FINGERPRINT must pin the verified server key.' >&2; exit 1;
           }
-          [[ "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
-          bash deployment/verify-toolkit-pin.sh
-          version="$(awk -F= '$1 == "TOOLKIT_VERSION" {print $2}' deployment/toolkit.lock)"
+          [[ "$RESTORE_ID" == current || "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
+          bash release-source/deployment/verify-toolkit-pin.sh
+          version="$(awk -F= '$1 == "TOOLKIT_VERSION" {print $2}' release-source/deployment/toolkit.lock)"
           [[ "$version" =~ ^0\.[0-9]+\.[0-9]+$ && "$(printf '%s\n' 0.8.1 "$version" | sort -V | head -1)" == 0.8.1 ]] || { echo 'Toolkit snapshot API requires >=0.8.1, <1.0.0.' >&2; exit 1; }
           echo "toolkit_version=$version" >> "$GITHUB_OUTPUT"
-          echo "release_id=$GITHUB_SHA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
+          echo "release_id=$SOURCE_SHA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
+          case "$OPERATION" in
+            deploy|stage)
+              echo "${OPERATION}: ${TARGET}, source ${SOURCE_SHA}, release ${SOURCE_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            reconcile)
+              echo "Reconcile: ${TARGET}, snapshot current, toolkit source ${SOURCE_SHA}" >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            rollback|activate)
+              echo "${OPERATION}: ${TARGET}, snapshot ${RESTORE_ID}, toolkit source ${SOURCE_SHA}" >> "$GITHUB_STEP_SUMMARY"
+              ;;
+          esac
       - name: Prepare archive, manifest and private environment
-        if: inputs.operation == 'deploy'
+        if: inputs.operation == 'deploy' || inputs.operation == 'stage'
         env:
           WEB_DIGEST: ${{ inputs.web_digest }}
           CMS_DIGEST: ${{ inputs.cms_digest }}
@@ -77,14 +95,16 @@ jobs:
           UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
           UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
           TARGET: ${{ inputs.environment }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          SOURCE_ROOT: ${{ github.workspace }}/release-source
         run: python3 deployment/prepare-release.py "$TARGET" "$GITHUB_WORKSPACE/bundle"
       - name: Prepare repository toolkit packet
         run: |
           mkdir -p bundle
-          version="$(sed -n 's/^TOOLKIT_VERSION=//p' deployment/toolkit.lock)"
-          cp "deployment/vendor/toolkit/toolkit-$version.tar.gz" "$PWD/bundle/toolkit.tar.gz"
-          cp "deployment/toolkit.lock" "$PWD/bundle/toolkit.lock"
-          printf '%s  toolkit.tar.gz\n' "$(sed -n 's/^TOOLKIT_ARCHIVE_SHA256=//p' deployment/toolkit.lock)" > "$PWD/bundle/toolkit.tar.gz.sha256"
+          version="$(sed -n 's/^TOOLKIT_VERSION=//p' release-source/deployment/toolkit.lock)"
+          cp "release-source/deployment/vendor/toolkit/toolkit-$version.tar.gz" "$PWD/bundle/toolkit.tar.gz"
+          cp "release-source/deployment/toolkit.lock" "$PWD/bundle/toolkit.lock"
+          printf '%s  toolkit.tar.gz\n' "$(sed -n 's/^TOOLKIT_ARCHIVE_SHA256=//p' release-source/deployment/toolkit.lock)" > "$PWD/bundle/toolkit.tar.gz.sha256"
       - name: Host preflight
         uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
         env:
@@ -141,7 +161,7 @@ jobs:
             set -euo pipefail
             case "$TARGET" in production|development|monitoring) ;; *) exit 1 ;; esac
             [[ "$RELEASE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
-            [[ "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
+            [[ "$RESTORE_ID" == current || "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
             umask 077
             incoming="$HOME/portfolio/incoming/$RELEASE_ID"
             registry="$(mktemp -d "$HOME/portfolio/.registry.XXXXXXXX")"
@@ -154,14 +174,17 @@ jobs:
             args=(--repository portfolio --environment "$TARGET"
               --root "$HOME/portfolio/versions/$TARGET" --user "$(id -un)" --registry-config "$registry")
             case "$OPERATION" in
-              deploy)
+              deploy|stage)
                 chmod 600 "$incoming/release.env"
-                sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release deploy "${args[@]}" \
+                sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release "$OPERATION" "${args[@]}" \
                   --archive "$incoming/release.tar.gz" --checksum "$incoming/release.tar.gz.sha256" \
                   --manifest "$incoming/manifest.json" --env-file "$incoming/release.env"
                 ;;
-              rollback)
-                sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release rollback "${args[@]}" --release-id "$RESTORE_ID"
+              rollback|activate)
+                sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release "$OPERATION" "${args[@]}" --release-id "$RESTORE_ID"
+                ;;
+              reconcile)
+                sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release reconcile "${args[@]}"
                 ;;
               *) exit 1 ;;
             esac

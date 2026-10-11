@@ -252,7 +252,7 @@ Images live on GHCR. GitHub-hosted workflows create complete immutable environme
 through the repository's pinned toolkit at `~/portfolio/versions/<env>/<fullSHA>-<run>-<attempt>/`.
 Toolkit owns `current`/`previous`, private dotenv, resolved Compose, digest pins, locks and health.
 Pushes to main verify, build and deploy development. Manual dispatch also supports development;
-production and analytics remain manual and require main. Production includes web and CMS
+production and analytics remain manual, with source ref independent of target environment. Production includes web and CMS
 together; development includes web only. Rollback restores an existing snapshot exactly.
 Analytics uses environment `monitoring` with analytics-specific Compose files. See the
 [deployment guide](setup/deployment.md) for installation, migration and host units.

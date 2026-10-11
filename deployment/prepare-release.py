@@ -31,9 +31,7 @@ def main():
     projects = {"production": "portfolio", "development": "portfolio-dev", "monitoring": "portfolio-analytics"}
     if environment not in projects:
         fail("Invalid environment")
-    if environment in ("production", "monitoring") and value("GITHUB_REF") != "refs/heads/main":
-        fail("Production and analytics releases require main")
-    commit = value("GITHUB_SHA")
+    commit = os.environ.get("SOURCE_SHA") or value("GITHUB_SHA")
     if not re.fullmatch(r"[a-f0-9]{40}", commit):
         fail("Invalid source commit")
     run = value("GITHUB_RUN_ID")
@@ -97,7 +95,7 @@ def main():
     os.umask(0o077)
     (output / "release.env").write_text("".join(f"{name}='{setting}'\n" for name, setting in config.items()))
     (output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
-    root = Path(__file__).resolve().parent
+    root = Path(os.environ.get("SOURCE_ROOT", str(Path(__file__).resolve().parent.parent))).resolve() / "deployment"
     tracked = subprocess.check_output(["git", "ls-files", "-z", "deployment/"], cwd=root.parent).decode().split("\0")
     with tarfile.open(output / "release.tar.gz", "w:gz", format=tarfile.USTAR_FORMAT) as archive:
         for entry in sorted(filter(None, tracked)):

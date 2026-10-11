@@ -1,7 +1,18 @@
-name: Deploy Analytics
+name: Deploy Monitoring
+run-name: Monitoring ${{ inputs.ref || github.ref_name }} (${{ inputs.operation }})
 
 on:
   workflow_dispatch:
+    inputs:
+      ref:
+        description: Source branch, tag or SHA; blank = workflow ref
+        type: string
+        default: ''
+      operation:
+        description: Deploy now or stage a release for later activation
+        type: choice
+        options: [deploy, stage]
+        default: deploy
 
 permissions:
   contents: read
@@ -12,9 +23,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  source:
+    uses: ./.github/workflows/_resolve.yml
+    with:
+      ref: ${{ inputs.ref }}
   deploy:
-    if: github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/_deploy-service.yml
+    needs: source
+    uses: ./.github/workflows/_deploy.yml
     with:
       environment: monitoring
+      source_sha: ${{ needs.source.outputs.sha }}
+      operation: ${{ inputs.operation }}
     secrets: inherit

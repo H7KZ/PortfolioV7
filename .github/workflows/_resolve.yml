@@ -1,0 +1,29 @@
+name: Resolve Source (reusable)
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        default: ''
+    outputs:
+      sha:
+        value: ${{ jobs.source.outputs.sha }}
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      sha: ${{ steps.source.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - id: source
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          [[ "$sha" =~ ^[a-f0-9]{40}$ ]]
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "Source: $sha" >> "$GITHUB_STEP_SUMMARY"
