@@ -37,6 +37,11 @@ owner installer to remove old pin equality checks. CI never changes `/opt/toolki
 The deploy account is root-equivalent through Docker and the trusted bundle execution sudo rule.
 See [bundle installation](../../deployment/vendor/toolkit/README.md).
 
+Manual `deployment/deploy.sh` and `rollback.sh` wrappers additionally require separately authorized
+passwordless sudo for `/usr/local/bin/toolkit release`. Infrastructure bootstrap supplies this for
+its deployment account; `--ci-only --deploy-user` grants only bundle runner access. Boot recovery
+and installed retention already run as root and do not require deployment-account sudo privileges.
+
 ## Immutable releases and rollback
 
 **Deploy** builds the selected environment's complete application images. Buildx returns each digest; production records both `portfolio-web` and `portfolio-cms`, development records web. Tags use the full source commit. Release IDs are `<fullSHA>-<run>-<attempt>`.
