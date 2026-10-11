@@ -249,9 +249,10 @@ live is sensible.
 ## 9. Deployment
 
 Images live on GHCR. GitHub-hosted workflows create complete immutable environment snapshots
-through pinned toolkit 0.8.1 at `~/portfolio/versions/<env>/<fullSHA>-<run>-<attempt>/`.
+through the repository's pinned toolkit at `~/portfolio/versions/<env>/<fullSHA>-<run>-<attempt>/`.
 Toolkit owns `current`/`previous`, private dotenv, resolved Compose, digest pins, locks and health.
-All deployment is manual; production and analytics require main. Production includes web and CMS
+Pushes to main verify, build and deploy development. Manual dispatch also supports development;
+production and analytics remain manual and require main. Production includes web and CMS
 together; development includes web only. Rollback restores an existing snapshot exactly.
 Analytics uses environment `monitoring` with analytics-specific Compose files. See the
 [deployment guide](setup/deployment.md) for installation, migration and host units.
@@ -328,7 +329,7 @@ visual parity with V6 until you decide otherwise.
 | Umami             | in this repo, `umami.jankominek.com`, first-party `/stats`, six events                     |
 | Cookie banner     | removed                                                                                    |
 | Legal             | privacy + website-use terms, Czech prevails                                                |
-| Deploys           | manual dispatch, both environments                                                         |
+| Deploys           | main pushes deploy development after verification; manual dispatch for both environments   |
 | Backups           | **none (accepted risk)**; migration recovery dumps on the VPS, no automatic pruning        |
 
 ### Accepted risks

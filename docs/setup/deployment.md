@@ -1,6 +1,6 @@
 # GitHub and VPS deployment
 
-Manual workflows run on GitHub-hosted runners. Production deploys the complete web, CMS and Postgres project; development deploys web only and reads the global production CMS. Production, analytics and their rollbacks require `main`.
+Every push to `main` runs **Deploy** on GitHub-hosted runners: type-check, lint and format-check, then build and deploy development. Failed verification blocks image builds and deployment. Manual **Deploy** supports both environments. Production deploys the complete web, CMS and Postgres project; development deploys web only and reads the global production CMS. Production, analytics and their rollbacks require `main` and remain manual.
 
 ## Repository and host configuration
 
@@ -18,7 +18,7 @@ Development's preview, revalidation and read keys must match production. Generat
 
 ## Toolkit installation
 
-`deployment/toolkit.lock` and the corresponding archive/checksum pin toolkit 0.9.0. CI sends them
+`deployment/toolkit.lock` and the corresponding archive/checksum pin the repository toolkit. CI sends them
 on every deploy and rollback, then calls the root-installed stable bundle runner. It validates and
 executes those exact bytes independently of the active VPS administrator toolkit.
 
@@ -82,5 +82,5 @@ For legacy migration, preserve the old deployment and database data, install the
 2. Ensure public health URLs already route to the VPS when activating. For a cutover that cannot yet satisfy them, stage first and activate only after routing is ready. Container health checks cover the protected CMS and development site; unauthenticated Access pages are excluded from public health URLs.
 3. Dispatch **Deploy Analytics** from main. Complete [Umami setup](analytics.md) and set `UMAMI_WEBSITE_ID`.
 4. Dispatch **Deploy** for production from main. Create the Payload admin and complete [V6 content import](content-import.md).
-5. Dispatch **Deploy** for development. Verify it reads production CMS and remains unindexed and untracked.
+5. Push to `main` or dispatch **Deploy** for development. Verify it reads production CMS and remains unindexed and untracked. Automatic development releases need the production CMS and shared networks provisioned first.
 6. Follow [Cloudflare cutover](cloudflare.md#apex-cutover-from-v6), checking public pages and the first-party tracker after routing changes.

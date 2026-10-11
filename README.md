@@ -46,6 +46,6 @@ pnpm dev
 
 ## Deploy
 
-Deploys are manual through the **Deploy**, **Rollback Deployment**, and **Deploy Analytics** workflows on GitHub-hosted runners. Production is main-only and deploys one complete web+CMS snapshot through pinned toolkit 0.8.1. Rollback restores an existing immutable snapshot. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. A CMS deploy takes a pre-migration database dump on the VPS; there are no other backups. Analytics retention uses an initially disabled host timer.
+Every push to `main` runs verification, builds the web image and deploys development through **Deploy** on GitHub-hosted runners. Manual **Deploy** also supports development or production; production is main-only and deploys one complete web+CMS snapshot through the repository's pinned toolkit. **Rollback Deployment** restores an existing immutable snapshot; **Deploy Analytics** remains manual. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. A CMS deploy takes a pre-migration database dump on the VPS; there are no other backups. Analytics retention uses an initially disabled host timer.
 
 For first deployment and later changes, use the [setup guides](docs/README.md#setup): Cloudflare, GitHub and VPS, analytics, and the one-time V6 content import.
