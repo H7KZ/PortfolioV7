@@ -26,10 +26,12 @@ concurrency:
 
 jobs:
   verify:
+    name: Verify Code
     permissions:
       contents: read
     uses: ./.github/workflows/verify.yml
-  preflight:
+  validate:
+    name: Validate Inputs
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -67,30 +69,33 @@ jobs:
           }
           [[ "$built" == "$WEB_DIGEST" ]] || { echo "web_image_digest is not the image built from $GITHUB_SHA (expected $built)" >&2; exit 1; }
   build-web:
-    needs: preflight
+    name: Build Web
+    needs: validate
     if: inputs.web_image_digest == ''
     uses: ./.github/workflows/_build-service.yml
     with:
       service: web
-      cache_scope: web-${{ needs.preflight.outputs.environment }}
+      cache_scope: web-${{ needs.validate.outputs.environment }}
     secrets: inherit
   build-cms:
-    needs: preflight
-    if: needs.preflight.outputs.environment == 'production'
+    name: Build CMS
+    needs: validate
+    if: needs.validate.outputs.environment == 'production'
     uses: ./.github/workflows/_build-service.yml
     with:
       service: cms
       cache_scope: cms-production
     secrets: inherit
   deploy:
-    needs: [preflight, build-web, build-cms]
+    name: Deploy complete environment snapshot
+    needs: [validate, build-web, build-cms]
     if: >-
-      !cancelled() && needs.preflight.result == 'success' && (needs.build-web.result == 'success' || inputs.web_image_digest != '') &&
+      !cancelled() && needs.validate.result == 'success' && (needs.build-web.result == 'success' || inputs.web_image_digest != '') &&
       (needs.build-cms.result == 'success' ||
-      (needs.preflight.outputs.environment == 'development' && needs.build-cms.result == 'skipped'))
-    uses: ./.github/workflows/_deploy-environment.yml
+      (needs.validate.outputs.environment == 'development' && needs.build-cms.result == 'skipped'))
+    uses: ./.github/workflows/_deploy-service.yml
     with:
-      environment: ${{ needs.preflight.outputs.environment }}
+      environment: ${{ needs.validate.outputs.environment }}
       web_digest: ${{ inputs.web_image_digest || needs.build-web.outputs.image_digest }}
       cms_digest: ${{ needs.build-cms.outputs.image_digest }}
     secrets: inherit

@@ -14,7 +14,7 @@ concurrency:
 jobs:
   deploy:
     if: github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/_deploy-environment.yml
+    uses: ./.github/workflows/_deploy-service.yml
     with:
       environment: monitoring
     secrets: inherit
