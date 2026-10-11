@@ -10,11 +10,10 @@ on:
         type: choice
         options: [production, development]
         default: development
-      web_image_digest:
-        description: Reuse this web image digest (sha256:...) instead of building. Development only. Must be the image built from the dispatched commit.
-        type: string
-        required: false
-        default: ''
+      reuse_images:
+        description: 'Development only: skip rebuilding the web image if it already exists in ghcr for this commit.'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -37,6 +36,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       environment: ${{ steps.target.outputs.environment }}
+      web_digest: ${{ steps.reuse.outputs.web_digest }}
     steps:
       - uses: actions/checkout@v7
       - name: Validate branch and toolkit pin
@@ -51,27 +51,29 @@ jobs:
           }
           bash deployment/verify-toolkit-pin.sh
           echo "environment=$TARGET" >> "$GITHUB_OUTPUT"
-      - name: Validate reused web image digest
-        if: inputs.web_image_digest != ''
+      - name: Resolve reusable web image digest from ghcr
+        id: reuse
+        if: inputs.reuse_images
         env:
           TARGET: ${{ inputs.environment || 'development' }}
-          WEB_DIGEST: ${{ inputs.web_image_digest }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_ACTOR: ${{ github.actor }}
         run: |
           set -euo pipefail
-          [[ "$TARGET" == development ]] || { echo 'Production builds cannot reuse image digests.' >&2; exit 1; }
-          [[ "$WEB_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]] || { echo 'web_image_digest must be sha256 plus 64 hex characters.' >&2; exit 1; }
+          [[ "$TARGET" == development ]] || { echo 'Production builds cannot reuse images.' >&2; exit 1; }
           prefix="$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')"
           printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
-          built="$(docker buildx imagetools inspect "ghcr.io/$prefix/web:$GITHUB_SHA" --format '{{json .Manifest}}' | jq -r '.digest')" || {
-            echo "ERROR: no web image tagged $GITHUB_SHA; run a normal development deploy to build it" >&2; exit 1
-          }
-          [[ "$built" == "$WEB_DIGEST" ]] || { echo "web_image_digest is not the image built from $GITHUB_SHA (expected $built)" >&2; exit 1; }
+          digest="$(docker buildx imagetools inspect "ghcr.io/$prefix/web:$GITHUB_SHA" --format '{{json .Manifest}}' 2>/dev/null | jq -r '.digest // empty' || true)"
+          if [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]]; then
+            echo "web: reusing ghcr.io/$prefix/web:$GITHUB_SHA ($digest)"
+            echo "web_digest=$digest" >> "$GITHUB_OUTPUT"
+          else
+            echo "web: no image tagged $GITHUB_SHA; it will be built"
+          fi
   build-web:
     name: Build Web
     needs: validate
-    if: inputs.web_image_digest == ''
+    if: needs.validate.outputs.web_digest == ''
     uses: ./.github/workflows/_build-service.yml
     with:
       service: web
@@ -90,12 +92,12 @@ jobs:
     name: Deploy complete environment snapshot
     needs: [validate, build-web, build-cms]
     if: >-
-      !cancelled() && needs.validate.result == 'success' && (needs.build-web.result == 'success' || inputs.web_image_digest != '') &&
+      !cancelled() && needs.validate.result == 'success' && (needs.build-web.result == 'success' || needs.validate.outputs.web_digest != '') &&
       (needs.build-cms.result == 'success' ||
       (needs.validate.outputs.environment == 'development' && needs.build-cms.result == 'skipped'))
     uses: ./.github/workflows/_deploy-service.yml
     with:
       environment: ${{ needs.validate.outputs.environment }}
-      web_digest: ${{ inputs.web_image_digest || needs.build-web.outputs.image_digest }}
+      web_digest: ${{ needs.validate.outputs.web_digest || needs.build-web.outputs.image_digest }}
       cms_digest: ${{ needs.build-cms.outputs.image_digest }}
     secrets: inherit
