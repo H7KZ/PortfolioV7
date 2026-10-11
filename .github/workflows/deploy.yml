@@ -1,6 +1,8 @@
 name: Deploy
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       environment:
@@ -8,54 +10,87 @@ on:
         type: choice
         options: [production, development]
         default: development
+      web_image_digest:
+        description: Reuse this web image digest (sha256:...) instead of building. Development only. Must be the image built from the dispatched commit.
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
   packages: write
 
 concurrency:
-  group: deploy-${{ inputs.environment }}
+  group: deploy-${{ inputs.environment || 'development' }}
   cancel-in-progress: false
 
 jobs:
+  verify:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/verify.yml
   preflight:
+    needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      environment: ${{ steps.target.outputs.environment }}
     steps:
       - uses: actions/checkout@v7
       - name: Validate branch and toolkit pin
+        id: target
         env:
-          TARGET: ${{ inputs.environment }}
+          TARGET: ${{ inputs.environment || 'development' }}
         run: |
           set -euo pipefail
+          case "$TARGET" in production|development) ;; *) exit 1 ;; esac
           [[ "$TARGET" == development || "$GITHUB_REF" == refs/heads/main ]] || {
             echo 'Production releases require main.' >&2; exit 1;
           }
           bash deployment/verify-toolkit-pin.sh
+          echo "environment=$TARGET" >> "$GITHUB_OUTPUT"
+      - name: Validate reused web image digest
+        if: inputs.web_image_digest != ''
+        env:
+          TARGET: ${{ inputs.environment || 'development' }}
+          WEB_DIGEST: ${{ inputs.web_image_digest }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          [[ "$TARGET" == development ]] || { echo 'Production builds cannot reuse image digests.' >&2; exit 1; }
+          [[ "$WEB_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]] || { echo 'web_image_digest must be sha256 plus 64 hex characters.' >&2; exit 1; }
+          prefix="$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')"
+          printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
+          built="$(docker buildx imagetools inspect "ghcr.io/$prefix/web:$GITHUB_SHA" --format '{{json .Manifest}}' | jq -r '.digest')" || {
+            echo "ERROR: no web image tagged $GITHUB_SHA; run a normal development deploy to build it" >&2; exit 1
+          }
+          [[ "$built" == "$WEB_DIGEST" ]] || { echo "web_image_digest is not the image built from $GITHUB_SHA (expected $built)" >&2; exit 1; }
   build-web:
     needs: preflight
+    if: inputs.web_image_digest == ''
     uses: ./.github/workflows/_build-service.yml
     with:
       service: web
-      cache_scope: web-${{ inputs.environment }}
+      cache_scope: web-${{ needs.preflight.outputs.environment }}
     secrets: inherit
   build-cms:
     needs: preflight
-    if: inputs.environment == 'production'
+    if: needs.preflight.outputs.environment == 'production'
     uses: ./.github/workflows/_build-service.yml
     with:
       service: cms
       cache_scope: cms-production
     secrets: inherit
   deploy:
-    needs: [build-web, build-cms]
+    needs: [preflight, build-web, build-cms]
     if: >-
-      always() && needs.build-web.result == 'success' &&
+      !cancelled() && needs.preflight.result == 'success' && (needs.build-web.result == 'success' || inputs.web_image_digest != '') &&
       (needs.build-cms.result == 'success' ||
-      (inputs.environment == 'development' && needs.build-cms.result == 'skipped'))
+      (needs.preflight.outputs.environment == 'development' && needs.build-cms.result == 'skipped'))
     uses: ./.github/workflows/_deploy-environment.yml
     with:
-      environment: ${{ inputs.environment }}
-      web_digest: ${{ needs.build-web.outputs.image_digest }}
+      environment: ${{ needs.preflight.outputs.environment }}
+      web_digest: ${{ inputs.web_image_digest || needs.build-web.outputs.image_digest }}
       cms_digest: ${{ needs.build-cms.outputs.image_digest }}
     secrets: inherit
