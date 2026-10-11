@@ -1,5 +1,5 @@
 # ==============================================================================
-# Workflow: CI Pipeline
+# Workflow: Verify
 # Description: Type-check, lint, and format-check the whole monorepo. No tests
 #              step - this repo has none yet. Runs on GitHub-hosted runners.
 # Trigger: pull_request targeting main, or called by Deploy before image builds

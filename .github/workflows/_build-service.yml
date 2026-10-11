@@ -1,5 +1,5 @@
 # ==============================================================================
-# Workflow: Build Service Image (reusable)
+# Workflow: Build Service (reusable)
 # Description: Builds and pushes a single service Docker image to GHCR.
 #              Dockerfiles live under apps/<service>/ in this pnpm/turbo
 #              monorepo; build context is the repo root. Called by
@@ -11,7 +11,7 @@
 # Outputs: full commit tag, image prefix and pushed image digest.
 # ==============================================================================
 
-name: Build Service Image (reusable)
+name: Build Service (reusable)
 
 on:
   workflow_call:

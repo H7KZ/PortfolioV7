@@ -1,4 +1,4 @@
-name: Deploy Environment (reusable)
+name: Deploy Service (reusable)
 
 on:
   workflow_call:
@@ -86,7 +86,7 @@ jobs:
           cp "deployment/toolkit.lock" "$PWD/bundle/toolkit.lock"
           printf '%s  toolkit.tar.gz\n' "$(sed -n 's/^TOOLKIT_ARCHIVE_SHA256=//p' deployment/toolkit.lock)" > "$PWD/bundle/toolkit.tar.gz.sha256"
       - name: Host preflight
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
         env:
           TOOLKIT_VERSION: ${{ steps.meta.outputs.toolkit_version }}
           RELEASE_ID: ${{ steps.meta.outputs.release_id }}
@@ -94,7 +94,7 @@ jobs:
           TARGET: ${{ inputs.environment }}
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
@@ -109,10 +109,10 @@ jobs:
             chmod 700 "$HOME/portfolio/incoming"
             mkdir -m 700 "$HOME/portfolio/incoming/$RELEASE_ID"
       - name: Upload private release inputs
-        uses: appleboy/scp-action@v1
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
@@ -120,7 +120,7 @@ jobs:
           target: ~/portfolio/incoming/${{ steps.meta.outputs.release_id }}
           strip_components: 1
       - name: Apply exact release through toolkit
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
         env:
           TARGET: ${{ inputs.environment }}
           OPERATION: ${{ inputs.operation }}
@@ -131,7 +131,7 @@ jobs:
           GH_ACTOR: ${{ github.actor }}
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
@@ -170,12 +170,12 @@ jobs:
         run: rm -rf -- "$GITHUB_WORKSPACE/bundle"
       - name: Remove remote incoming inputs
         if: always() && steps.meta.outcome == 'success'
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
         env:
           RELEASE_ID: ${{ steps.meta.outputs.release_id }}
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}

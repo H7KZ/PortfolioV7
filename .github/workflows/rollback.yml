@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
   rollback:
-    uses: ./.github/workflows/_deploy-environment.yml
+    uses: ./.github/workflows/_deploy-service.yml
     with:
       operation: rollback
       environment: ${{ inputs.environment }}
