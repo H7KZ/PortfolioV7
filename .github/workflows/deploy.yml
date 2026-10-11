@@ -10,6 +10,11 @@ on:
         type: choice
         options: [production, development]
         default: development
+      web_image_digest:
+        description: Reuse this web image digest (sha256:...) instead of building. Development only. Must be the image built from the dispatched commit.
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -44,8 +49,26 @@ jobs:
           }
           bash deployment/verify-toolkit-pin.sh
           echo "environment=$TARGET" >> "$GITHUB_OUTPUT"
+      - name: Validate reused web image digest
+        if: inputs.web_image_digest != ''
+        env:
+          TARGET: ${{ inputs.environment || 'development' }}
+          WEB_DIGEST: ${{ inputs.web_image_digest }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          [[ "$TARGET" == development ]] || { echo 'Production builds cannot reuse image digests.' >&2; exit 1; }
+          [[ "$WEB_DIGEST" =~ ^sha256:[a-f0-9]{64}$ ]] || { echo 'web_image_digest must be sha256 plus 64 hex characters.' >&2; exit 1; }
+          prefix="$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')"
+          printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
+          built="$(docker buildx imagetools inspect "ghcr.io/$prefix/web:$GITHUB_SHA" --format '{{json .Manifest}}' | jq -r '.digest')" || {
+            echo "ERROR: no web image tagged $GITHUB_SHA; run a normal development deploy to build it" >&2; exit 1
+          }
+          [[ "$built" == "$WEB_DIGEST" ]] || { echo "web_image_digest is not the image built from $GITHUB_SHA (expected $built)" >&2; exit 1; }
   build-web:
     needs: preflight
+    if: inputs.web_image_digest == ''
     uses: ./.github/workflows/_build-service.yml
     with:
       service: web
@@ -62,12 +85,12 @@ jobs:
   deploy:
     needs: [preflight, build-web, build-cms]
     if: >-
-      !cancelled() && needs.preflight.result == 'success' && needs.build-web.result == 'success' &&
+      !cancelled() && needs.preflight.result == 'success' && (needs.build-web.result == 'success' || inputs.web_image_digest != '') &&
       (needs.build-cms.result == 'success' ||
       (needs.preflight.outputs.environment == 'development' && needs.build-cms.result == 'skipped'))
     uses: ./.github/workflows/_deploy-environment.yml
     with:
       environment: ${{ needs.preflight.outputs.environment }}
-      web_digest: ${{ needs.build-web.outputs.image_digest }}
+      web_digest: ${{ inputs.web_image_digest || needs.build-web.outputs.image_digest }}
       cms_digest: ${{ needs.build-cms.outputs.image_digest }}
     secrets: inherit
