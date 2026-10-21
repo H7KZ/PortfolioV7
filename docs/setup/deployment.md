@@ -60,7 +60,7 @@ These dumps guard migrations on the same host, not host loss. The optional Disco
 | Unit                                      | Runs                                                        | When                                                            |
 | ----------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------- |
 | `toolkit-portfolio-reconcile.service`     | `reconcile` of production, development and monitoring       | boot (enable it)                                                |
-| `toolkit-portfolio-umami-retention.timer` | `deployment/analytics/retention.sh` (job `umami-retention`) | daily 02:17 UTC                                                 |
+| `toolkit-portfolio-umami-retention.timer` | `deployment/analytics/retention.sh` (job `umami-retention`) | daily 03:17 Europe/Prague                                       |
 | `toolkit-portfolio-backup@4h.timer`       | `backup run 4h` (CMS database)                              | `00/4:45 UTC`; see [backups](../../deployment/backup/README.md) |
 | `toolkit-portfolio-backup@daily.timer`    | `backup run daily` (Umami database, CMS media)              | 01:45 UTC                                                       |
 
