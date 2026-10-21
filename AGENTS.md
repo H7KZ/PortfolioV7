@@ -27,3 +27,4 @@ jankominek.com. Read [README.md](README.md) for setup and [docs/PLAN.md](docs/PL
 - Conventional commits.
 - Pushes to `main` deploy development after verification; manual deploys select any source ref and target environment. Never push or deploy unless asked.
 - Deployment changes: read [docs/setup/deployment.md](docs/setup/deployment.md) for toolkit snapshots, migration hooks, rollback and host unit constraints.
+- Never hand-edit `deployment/toolkit.lock`, `deployment/vendor/toolkit/`, `deployment/verify-toolkit-pin.sh` or `deployment/install-toolkit.sh`; Infrastructure's `npm run toolkit:repin` regenerates them.

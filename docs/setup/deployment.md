@@ -37,6 +37,11 @@ owner installer to remove old pin equality checks. CI never changes `/opt/toolki
 The deploy account is root-equivalent through Docker and the trusted bundle execution sudo rule.
 See [bundle installation](../../deployment/vendor/toolkit/README.md).
 
+Toolkit files are managed by Infrastructure: `deployment/toolkit.lock`, `deployment/vendor/toolkit/`,
+`deployment/verify-toolkit-pin.sh` and `deployment/install-toolkit.sh`. Update them only by running
+`npm run toolkit:repin` in an Infrastructure checkout, then commit the result here; `verify-toolkit-pin.sh`
+rejects hand edits. See [consumer integration](https://github.com/H7KZ/Infrastructure/blob/main/docs/toolkit/consumers.md).
+
 Manual `deployment/deploy.sh` and `rollback.sh` wrappers additionally require separately authorized
 passwordless sudo for `/usr/local/bin/toolkit release`. Infrastructure bootstrap supplies this for
 its deployment account; `--ci-only --deploy-user` grants only bundle runner access. Boot recovery
