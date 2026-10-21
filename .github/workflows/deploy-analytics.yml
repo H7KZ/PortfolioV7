@@ -1,5 +1,5 @@
 name: Deploy Monitoring
-run-name: Monitoring ${{ inputs.ref || github.ref_name }} (${{ inputs.operation }})
+run-name: 'Deploy Monitoring · monitoring · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
 
 on:
   workflow_dispatch:
@@ -24,14 +24,16 @@ concurrency:
 
 jobs:
   source:
+    name: Resolve source
     uses: ./.github/workflows/_resolve.yml
     with:
       ref: ${{ inputs.ref }}
   deploy:
+    name: Deploy release
     needs: source
     uses: ./.github/workflows/_deploy.yml
     with:
       environment: monitoring
-      source_sha: ${{ needs.source.outputs.sha }}
+      source_commit: ${{ needs.source.outputs.sha }}
       operation: ${{ inputs.operation }}
     secrets: inherit

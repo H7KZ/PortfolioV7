@@ -1,6 +1,6 @@
 # ==============================================================================
 # Volumes: Production (portfolio)
-# External so they survive teardown and version rotation; deploy.sh creates them.
+# External so they survive teardown and version rotation; toolkit creates them.
 # Renaming a populated external volume orphans its data.
 # ==============================================================================
 

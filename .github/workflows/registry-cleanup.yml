@@ -16,7 +16,7 @@
 # ==============================================================================
 
 name: Cleanup Registry
-run-name: Cleanup registry (${{ github.event_name == 'schedule' && 'preview' || inputs.dry_run && 'preview' || 'delete' }})
+run-name: "Cleanup Registry · ${{ github.event_name == 'schedule' && 'preview' || inputs.dry_run && 'preview' || 'delete' }}"
 
 on:
   schedule:

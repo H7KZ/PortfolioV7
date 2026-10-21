@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
+# Analytics retention: run the current monitoring snapshot's retention SQL against Umami's database.
+# Declared as the umami-retention job in deployment/toolkit.conf; `deployment/toolkit job
+# umami-retention` runs it as root from the installed control copy, under the portfolio repository
+# lock, with TOOLKIT_DEPLOY_USER and TOOLKIT_DEPLOY_HOME set.
+# Exit codes: 0 success, 1 failure, 2 usage error.
 set -Eeuo pipefail
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)"
-source "$SCRIPT_DIR/release-common.sh"
-[[ "$EUID" == 0 ]] || { echo 'Run the retention service as root.' >&2; exit 1; }
-: "${DEPLOY_USER:?Set DEPLOY_USER in /etc/portfoliov7-release.conf}"
-record="$(getent passwd "$DEPLOY_USER")"
-IFS=: read -r account _ uid _ _ deploy_home _ <<< "$record"
-[[ "$account" == "$DEPLOY_USER" && "$uid" != 0 && "$deploy_home" == /* ]] || exit 1
-require_toolkit
-exec /usr/local/bin/toolkit with-lock --repository portfolio --environment monitoring \
-  --action maintenance -- runuser -u "$DEPLOY_USER" -- \
-  python3 "$SCRIPT_DIR/analytics/retention.py" "$deploy_home/portfolio/versions/monitoring"
+
+here="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+# shellcheck source=../vendor/toolkit/log.sh
+source "$here/../vendor/toolkit/log.sh"
+
+(($# == 0)) || die 2 'usage: retention.sh (no arguments; run through deployment/toolkit job umami-retention)'
+[[ "$EUID" == 0 ]] || die 'run the retention job as root through deployment/toolkit job'
+: "${TOOLKIT_DEPLOY_USER:?run through deployment/toolkit job umami-retention}"
+: "${TOOLKIT_DEPLOY_HOME:?run through deployment/toolkit job umami-retention}"
+
+log_step 'Run analytics retention'
+exec runuser -u "$TOOLKIT_DEPLOY_USER" -- \
+  python3 "$here/retention.py" "$TOOLKIT_DEPLOY_HOME/portfolio/versions/monitoring"

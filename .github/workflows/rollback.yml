@@ -1,5 +1,5 @@
 name: Restore Release
-run-name: Restore ${{ inputs.environment }} (${{ inputs.operation }}, ${{ inputs.release_id }})
+run-name: 'Restore Release · ${{ inputs.environment }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
 
 on:
   workflow_dispatch:
@@ -34,15 +34,17 @@ concurrency:
 
 jobs:
   source:
+    name: Resolve source
     uses: ./.github/workflows/_resolve.yml
     with:
       ref: ${{ inputs.ref }}
   rollback:
+    name: Restore release
     needs: source
     uses: ./.github/workflows/_deploy.yml
     with:
       operation: ${{ inputs.operation }}
-      source_sha: ${{ needs.source.outputs.sha }}
+      source_commit: ${{ needs.source.outputs.sha }}
       environment: ${{ inputs.environment }}
       release_id: ${{ inputs.release_id }}
     secrets: inherit

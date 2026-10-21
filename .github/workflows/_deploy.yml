@@ -6,7 +6,7 @@ on:
       environment:
         required: true
         type: string
-      source_sha:
+      source_commit:
         required: true
         type: string
       operation:
@@ -23,7 +23,8 @@ on:
         default: previous
 
 jobs:
-  release:
+  deploy:
+    name: Apply release
     runs-on: ubuntu-latest
     timeout-minutes: 120
     environment: ${{ inputs.environment }}
@@ -31,19 +32,20 @@ jobs:
       contents: read
       packages: read
     steps:
-      - uses: actions/checkout@v7
-      - name: Checkout release source
+      - name: Check out controller
+        uses: actions/checkout@v7
+      - name: Check out release source
         uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.source_sha }}
+          ref: ${{ inputs.source_commit }}
           path: release-source
-      - name: Validate release request and pin
+      - name: Validate release request
         id: meta
         env:
           TARGET: ${{ inputs.environment }}
           OPERATION: ${{ inputs.operation }}
           RESTORE_ID: ${{ inputs.release_id }}
-          SOURCE_SHA: ${{ inputs.source_sha }}
+          SOURCE_SHA: ${{ inputs.source_commit }}
           HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
         run: |
           set -euo pipefail
@@ -54,10 +56,6 @@ jobs:
             echo 'SSH_HOST_FINGERPRINT must pin the verified server key.' >&2; exit 1;
           }
           [[ "$RESTORE_ID" == current || "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
-          bash release-source/deployment/verify-toolkit-pin.sh
-          version="$(awk -F= '$1 == "TOOLKIT_VERSION" {print $2}' release-source/deployment/toolkit.lock)"
-          [[ "$version" =~ ^0\.[0-9]+\.[0-9]+$ && "$(printf '%s\n' 0.8.1 "$version" | sort -V | head -1)" == 0.8.1 ]] || { echo 'Toolkit snapshot API requires >=0.8.1, <1.0.0.' >&2; exit 1; }
-          echo "toolkit_version=$version" >> "$GITHUB_OUTPUT"
           echo "release_id=$SOURCE_SHA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
           case "$OPERATION" in
             deploy|stage)
@@ -95,20 +93,23 @@ jobs:
           UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
           UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
           TARGET: ${{ inputs.environment }}
-          SOURCE_SHA: ${{ inputs.source_sha }}
+          SOURCE_SHA: ${{ inputs.source_commit }}
           SOURCE_ROOT: ${{ github.workspace }}/release-source
         run: python3 deployment/prepare-release.py "$TARGET" "$GITHUB_WORKSPACE/bundle"
-      - name: Prepare repository toolkit packet
+      - name: Prepare toolkit packet
         run: |
-          mkdir -p bundle
-          version="$(sed -n 's/^TOOLKIT_VERSION=//p' release-source/deployment/toolkit.lock)"
-          cp "release-source/deployment/vendor/toolkit/toolkit-$version.tar.gz" "$PWD/bundle/toolkit.tar.gz"
-          cp "release-source/deployment/toolkit.lock" "$PWD/bundle/toolkit.lock"
-          printf '%s  toolkit.tar.gz\n' "$(sed -n 's/^TOOLKIT_ARCHIVE_SHA256=//p' release-source/deployment/toolkit.lock)" > "$PWD/bundle/toolkit.tar.gz.sha256"
-      - name: Host preflight
+          set -euo pipefail
+          mkdir -p bundle/deployment/vendor
+          cp release-source/deployment/toolkit release-source/deployment/toolkit.conf release-source/deployment/toolkit.lock bundle/deployment/
+          cp -R release-source/deployment/vendor/toolkit bundle/deployment/vendor/toolkit
+      - name: Verify toolkit pin
+        run: |
+          set -euo pipefail
+          bash deployment/toolkit verify
+          bash deployment/toolkit verify "$GITHUB_WORKSPACE/bundle/deployment"
+      - name: Run host preflight
         uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
         env:
-          TOOLKIT_VERSION: ${{ steps.meta.outputs.toolkit_version }}
           RELEASE_ID: ${{ steps.meta.outputs.release_id }}
           OPERATION: ${{ inputs.operation }}
           TARGET: ${{ inputs.environment }}
@@ -118,10 +119,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-          envs: TOOLKIT_VERSION,RELEASE_ID,OPERATION,TARGET
+          envs: RELEASE_ID,OPERATION,TARGET
           script: |
             set -euo pipefail
-            [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Install CI bundle runner first (deployment/install-toolkit.sh --ci-only --deploy-user <account>)' >&2; exit 1; }
+            [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Toolkit runner is not installed; run on the VPS: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
             umask 077
             case "$TARGET" in production|development|monitoring) ;; *) exit 1 ;; esac
             install -d -m 0700 "$HOME/portfolio/versions/$TARGET"
@@ -139,14 +140,13 @@ jobs:
           source: bundle/*
           target: ~/portfolio/incoming/${{ steps.meta.outputs.release_id }}
           strip_components: 1
-      - name: Apply exact release through toolkit
+      - name: Apply release through toolkit
         uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
         env:
           TARGET: ${{ inputs.environment }}
           OPERATION: ${{ inputs.operation }}
           RESTORE_ID: ${{ inputs.release_id }}
           RELEASE_ID: ${{ steps.meta.outputs.release_id }}
-          TOOLKIT_VERSION: ${{ steps.meta.outputs.toolkit_version }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_ACTOR: ${{ github.actor }}
         with:
@@ -155,7 +155,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-          envs: TARGET,OPERATION,RESTORE_ID,RELEASE_ID,TOOLKIT_VERSION,GH_TOKEN,GH_ACTOR
+          envs: TARGET,OPERATION,RESTORE_ID,RELEASE_ID,GH_TOKEN,GH_ACTOR
           command_timeout: 110m
           script: |
             set -euo pipefail
@@ -171,20 +171,19 @@ jobs:
             }
             trap cleanup EXIT
             printf '%s' "$GH_TOKEN" | docker --config "$registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
-            args=(--repository portfolio --environment "$TARGET"
-              --root "$HOME/portfolio/versions/$TARGET" --user "$(id -un)" --registry-config "$registry")
+            toolkit=(bash "$incoming/deployment/toolkit")
             case "$OPERATION" in
               deploy|stage)
                 chmod 600 "$incoming/release.env"
-                sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release "$OPERATION" "${args[@]}" \
+                "${toolkit[@]}" release "$OPERATION" "$TARGET" --registry-config "$registry" \
                   --archive "$incoming/release.tar.gz" --checksum "$incoming/release.tar.gz.sha256" \
                   --manifest "$incoming/manifest.json" --env-file "$incoming/release.env"
                 ;;
               rollback|activate)
-                sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release "$OPERATION" "${args[@]}" --release-id "$RESTORE_ID"
+                "${toolkit[@]}" release "$OPERATION" "$TARGET" --registry-config "$registry" --release-id "$RESTORE_ID"
                 ;;
               reconcile)
-                sudo -n /usr/local/libexec/toolkit-run-bundle --archive "$incoming/toolkit.tar.gz" --checksum "$incoming/toolkit.tar.gz.sha256" --lock "$incoming/toolkit.lock" -- release reconcile "${args[@]}"
+                "${toolkit[@]}" release reconcile "$TARGET" --registry-config "$registry"
                 ;;
               *) exit 1 ;;
             esac

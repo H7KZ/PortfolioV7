@@ -1,6 +1,6 @@
 # ==============================================================================
 # Volumes: Analytics (portfolio-analytics)
-# External so the data survives teardown; deploy.sh creates it.
+# External so the data survives teardown; toolkit creates it.
 # ==============================================================================
 
 volumes:

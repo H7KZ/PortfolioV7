@@ -1,5 +1,5 @@
 name: Deploy App
-run-name: Deploy ${{ inputs.ref || github.ref_name }} to ${{ inputs.environment || 'development' }} (${{ inputs.mode || 'build' }}, ${{ inputs.operation || 'deploy' }})
+run-name: "Deploy App · ${{ inputs.environment || 'development' }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation || 'deploy' }}"
 
 on:
   push:
@@ -51,10 +51,12 @@ concurrency:
 
 jobs:
   source:
+    name: Resolve source
     uses: ./.github/workflows/_resolve.yml
     with:
       ref: ${{ inputs.ref }}
   verify:
+    name: Verify code
     needs: source
     if: github.event_name != 'workflow_dispatch' || inputs.verify
     permissions:
@@ -63,7 +65,7 @@ jobs:
     with:
       ref: ${{ needs.source.outputs.sha }}
   validate:
-    name: Resolve Images
+    name: Resolve images
     needs: [source, verify]
     if: >-
       !cancelled() && needs.source.result == 'success' &&
@@ -123,7 +125,7 @@ jobs:
             fi
           done < <(jq -r '.[]' <<< "$services")
   build-web:
-    name: Build Web
+    name: Build web image
     needs: [source, validate]
     if: >-
       !cancelled() && needs.validate.result == 'success' && needs.validate.outputs.web_digest == ''
@@ -131,11 +133,11 @@ jobs:
     with:
       service: web
       environment: ${{ inputs.environment || 'development' }}
-      source_sha: ${{ needs.source.outputs.sha }}
+      source_commit: ${{ needs.source.outputs.sha }}
       no_cache: ${{ inputs.no_cache || false }}
     secrets: inherit
   build-cms:
-    name: Build CMS
+    name: Build CMS image
     needs: [source, validate]
     if: >-
       !cancelled() && needs.validate.result == 'success' && inputs.environment == 'production' && needs.validate.outputs.cms_digest == ''
@@ -143,11 +145,11 @@ jobs:
     with:
       service: cms
       environment: production
-      source_sha: ${{ needs.source.outputs.sha }}
+      source_commit: ${{ needs.source.outputs.sha }}
       no_cache: ${{ inputs.no_cache || false }}
     secrets: inherit
   deploy:
-    name: Apply Environment Snapshot
+    name: Deploy release
     needs: [source, validate, build-web, build-cms]
     if: >-
       !cancelled() && needs.validate.result == 'success' &&
@@ -156,7 +158,7 @@ jobs:
     uses: ./.github/workflows/_deploy.yml
     with:
       environment: ${{ inputs.environment || 'development' }}
-      source_sha: ${{ needs.source.outputs.sha }}
+      source_commit: ${{ needs.source.outputs.sha }}
       operation: ${{ inputs.operation || 'deploy' }}
       web_digest: ${{ needs.validate.outputs.web_digest || needs.build-web.outputs.image_digest }}
       cms_digest: ${{ needs.validate.outputs.cms_digest || needs.build-cms.outputs.image_digest }}

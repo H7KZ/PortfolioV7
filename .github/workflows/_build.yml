@@ -7,7 +7,7 @@
 #              (ubuntu-latest). GHCR push uses GITHUB_TOKEN, so this needs no
 #              extra secrets.
 #
-# Inputs: service (web | cms), environment, source_sha, no_cache
+# Inputs: service (web | cms), environment, source_commit, no_cache
 # Outputs: full commit tag, image prefix and pushed image digest.
 # ==============================================================================
 
@@ -23,7 +23,7 @@ on:
       environment:
         required: true
         type: string
-      source_sha:
+      source_commit:
         required: true
         type: string
       no_cache:
@@ -42,7 +42,7 @@ on:
 
 jobs:
   build:
-    name: Build and Push ${{ inputs.service }}
+    name: Build ${{ inputs.service }} image
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -56,15 +56,15 @@ jobs:
       image_prefix: ${{ steps.meta.outputs.image_prefix }}
 
     steps:
-      - name: Checkout Code
+      - name: Check out code
         uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.source_sha }}
+          ref: ${{ inputs.source_commit }}
 
-      - name: Extract Metadata
+      - name: Extract metadata
         id: meta
         env:
-          SOURCE_SHA: ${{ inputs.source_sha }}
+          SOURCE_SHA: ${{ inputs.source_commit }}
           TARGET: ${{ inputs.environment }}
         run: |
           set -euo pipefail
@@ -87,7 +87,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push
+      - name: Build and push image
         id: push
         uses: docker/build-push-action@v7
         with:
@@ -97,8 +97,8 @@ jobs:
           tags: |
             ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
           build-args: |
-            APP_VERSION=${{ inputs.source_sha }}
-            GIT_SHA=${{ inputs.source_sha }}
+            APP_VERSION=${{ inputs.source_commit }}
+            GIT_SHA=${{ inputs.source_commit }}
           no-cache: ${{ inputs.no_cache }}
           cache-from: type=gha,scope=${{ inputs.service }}-${{ inputs.environment }}
           cache-to: type=gha,mode=max,scope=${{ inputs.service }}-${{ inputs.environment }}
