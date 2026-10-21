@@ -1,6 +1,6 @@
 # GitHub and VPS deployment
 
-Every push to `main` runs **Deploy App** on GitHub-hosted runners: type-check, lint and format-check, then build and deploy development. Failed verification blocks image builds and deployment. Manual **Deploy App** supports both environments from any workflow branch and any source branch, tag or SHA. Production deploys the complete web, CMS and Postgres project; development deploys web only and reads the global production CMS. Production, monitoring and release restoration remain manual.
+Every push to `main` runs **Deploy** on GitHub-hosted runners: type-check, lint and format-check, then build and deploy development. Failed verification blocks image builds and deployment. Manual **Deploy** supports both environments from any workflow branch and any source branch, tag or SHA. Production deploys the complete web, CMS and Postgres project; development deploys web only and reads the global production CMS. Production, monitoring and release restoration remain manual.
 
 ## Repository and host configuration
 
@@ -35,7 +35,7 @@ A source ref older than the 0.11 migration has no `deployment/toolkit` and canno
 
 ## Immutable releases and rollback
 
-**Deploy App** builds or resolves the selected environment's complete application images. Buildx returns each digest; production records both `portfolio-web` and `portfolio-cms`, development records web. New image tags use `<environment>-<full source commit>` to keep environment builds distinct. Release IDs are `<fullSHA>-<run>-<attempt>`.
+**Deploy** builds or resolves the selected environment's complete application images. Buildx returns each digest; production records both `portfolio-web` and `portfolio-cms`, development records web. New image tags use `<environment>-<full source commit>` to keep environment builds distinct. Release IDs are `<fullSHA>-<run>-<attempt>`.
 
 `prepare-release.py` packages tracked deployment contents at archive root, rejecting symlinks, special files, hidden/generated paths and dotenv. Manifest v1 identifies repository `portfolio`, environment, Compose project, exact images, Compose files and health URLs. This slug matches the existing `portfolio-*` resources. Analytics uses environment `monitoring`, project `portfolio-analytics`, and only `analytics/{networks,volumes,docker-compose.analytics}.yml`. Toolkit resolves and pins third-party images during staging, including both analytics images and application Postgres.
 
@@ -43,7 +43,7 @@ The reusable environment job provisions its release root as the deploy user, sen
 
 The apply SSH command allows 110 minutes inside a 120-minute job, covering separate 30-minute repository and host lock waits plus downloads and health checks. Installed host services allow 90 minutes.
 
-**Restore Release** accepts `current`, `previous` or an existing release ID. Choose `rollback` to restore a snapshot, `activate` for a staged snapshot, or `reconcile` to restart the current snapshot without recreating containers. It restores that complete snapshot's environment, Compose model and pinned images without rendering new secrets or rebuilding. It also handles monitoring. Keep registry digests available for every retained snapshot; package age alone is insufficient evidence for deletion.
+**Rollback** accepts `current`, `previous` or an existing release ID. Choose `rollback` to restore a snapshot, `activate` for a staged snapshot, or `reconcile` to restart the current snapshot without recreating containers. It restores that complete snapshot's environment, Compose model and pinned images without rendering new secrets or rebuilding. It also handles monitoring. Keep registry digests available for every retained snapshot; package age alone is insufficient evidence for deletion.
 
 Production's prepare hook dumps the running CMS database before new containers start. It retains private migration recovery dumps in `~/portfolio/dumps` without automatic pruning. Delete a dump only after checking retained snapshot and recovery references. An existing stopped database or an orphaned database volume blocks migration; first deployment may skip the dump only when neither database container nor volume exists. CMS still applies Payload migrations on startup. Validate schema changes against a local copy of production content. Image rollback does not undo database migrations; restore an appropriate dump separately when required:
 
@@ -97,30 +97,30 @@ Backups stay off until the owner follows [`deployment/backup/README.md`](../../d
 1. Prepare [Cloudflare Access](cloudflare.md) for Umami, CMS and development before their public DNS records.
 2. Ensure public health URLs already route to the VPS when activating. For a cutover that cannot yet satisfy them, stage first and activate only after routing is ready. Container health checks cover the protected CMS and development site; unauthenticated Access pages are excluded from public health URLs.
 3. Dispatch **Deploy Monitoring**. Complete [Umami setup](analytics.md) and set `UMAMI_WEBSITE_ID`.
-4. Dispatch **Deploy App** for production. Create the Payload admin and complete [V6 content import](content-import.md).
-5. Push to `main` or dispatch **Deploy App** for development. Verify it reads production CMS and remains unindexed and untracked. Automatic development releases need the production CMS and shared networks provisioned first.
+4. Dispatch **Deploy** for production. Create the Payload admin and complete [V6 content import](content-import.md).
+5. Push to `main` or dispatch **Deploy** for development. Verify it reads production CMS and remains unindexed and untracked. Automatic development releases need the production CMS and shared networks provisioned first.
 6. Manual deploys run from any workflow branch: select `environment` and `ref` independently. Blank `ref` uses the workflow ref. The workflow resolves one full source SHA for verification, builds and release contents. See the manual controls below.
 7. Follow [Cloudflare cutover](cloudflare.md#apex-cutover-from-v6), checking public pages and the first-party tracker after routing changes.
 
 ## Manual controls
 
-Workflow names are **Deploy App**, **Deploy Monitoring**, **Restore Release**, **Verify Code** and **Cleanup Registry**. The GitHub branch selector chooses the workflow implementation; `ref` chooses the source independently. Manual runs do not impose branch restrictions.
+Workflow names are **Deploy**, **Deploy Monitoring**, **Rollback**, **Verify Code** and **Cleanup Registry**. The GitHub branch selector chooses the workflow implementation; `ref` chooses the source independently. Manual runs do not impose branch restrictions.
 
-| Deploy App input | Meaning                                                                                                                                                                |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `environment`    | `development` (web only) or `production` (web and CMS)                                                                                                                 |
-| `ref`            | Branch, tag or full SHA; blank uses workflow ref                                                                                                                       |
-| `mode`           | `build` always builds; `reuse` resolves images and builds missing ones; `existing` fails if any image is absent                                                        |
-| `image_tag`      | Optional tag for reuse/existing; default `<environment>-<sourceSHA>`. Use an old full-SHA tag for legacy images                                                        |
-| `digests`        | Existing-only complete JSON map: development needs `web`, production needs `web` and `cms`; each value is a full `sha256:` digest. Mutually exclusive with `image_tag` |
-| `verify`         | Run type-check, lint and format checks on the selected source; default true                                                                                            |
-| `no_cache`       | Disable Docker layer reuse for images built by this run                                                                                                                |
-| `operation`      | `deploy` activates now; `stage` prepares a complete immutable snapshot without activation                                                                              |
+| Deploy input  | Meaning                                                                                                                                                                |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `environment` | `development` (web only) or `production` (web and CMS)                                                                                                                 |
+| `ref`         | Branch, tag or full SHA; blank uses workflow ref                                                                                                                       |
+| `mode`        | `build` always builds; `reuse` resolves images and builds missing ones; `existing` fails if any image is absent                                                        |
+| `image_tag`   | Optional tag for reuse/existing; default `<environment>-<sourceSHA>`. Use an old full-SHA tag for legacy images                                                        |
+| `digests`     | Existing-only complete JSON map: development needs `web`, production needs `web` and `cms`; each value is a full `sha256:` digest. Mutually exclusive with `image_tag` |
+| `verify`      | Run type-check, lint and format checks on the selected source; default true                                                                                            |
+| `no_cache`    | Disable Docker layer reuse for images built by this run                                                                                                                |
+| `operation`   | `deploy` activates now; `stage` prepares a complete immutable snapshot without activation                                                                              |
 
 `image_tag` does not rename newly built images. All new builds use the target environment and resolved source SHA. Explicit images may contain different code from the selected source; the operator is responsible for matching image content to source. No secret values are entered in the manual form.
 
-`stage` still runs the prepare hook, including the production CMS dump, but does not switch current/previous or start containers. Activate the reported release ID through **Restore Release**. Staged application releases need their retained image digests available.
+`stage` still runs the prepare hook, including the production CMS dump, but does not switch current/previous or start containers. Activate the reported release ID through **Rollback**. Staged application releases need their retained image digests available.
 
-**Deploy Monitoring** exposes `ref` and `operation`; its target remains `monitoring`. **Restore Release** exposes the toolkit `ref`, target `environment`, `operation` and `release_id`. Reconcile always uses current and ignores `release_id`; restore operations use the retained snapshot's contents and secrets.
+**Deploy Monitoring** exposes `ref` and `operation`; its target remains `monitoring`. **Rollback** exposes the toolkit `ref`, target `environment`, `operation` and `release_id`. Reconcile always uses current and ignores `release_id`; restore operations use the retained snapshot's contents and secrets.
 
 **Verify Code** accepts a source `ref`. **Cleanup Registry** exposes `packages`, `keep_newest` (default 6), `min_age_days` (default 7), `dry_run` (default true) and `protected_digests`. Packages are restricted to this repository's web and CMS images; blank selects both. Scheduled runs always preview. Before deleting, supply every digest required by current, previous, staged and retained rollback snapshots.

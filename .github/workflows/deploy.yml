@@ -1,5 +1,5 @@
-name: Deploy App
-run-name: "Deploy App · ${{ inputs.environment || 'development' }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation || 'deploy' }}"
+name: Deploy
+run-name: "Deploy · ${{ inputs.environment || 'development' }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation || 'deploy' }}"
 
 on:
   push:

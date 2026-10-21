@@ -1,5 +1,5 @@
-name: Restore Release
-run-name: 'Restore Release · ${{ inputs.environment }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
+name: Rollback
+run-name: 'Rollback · ${{ inputs.environment }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
 
 on:
   workflow_dispatch:
