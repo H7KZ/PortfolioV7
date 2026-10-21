@@ -17,8 +17,8 @@ Start with the [documentation index](docs/README.md). The [migration plan](docs/
 apps/web          Nuxt site (port 45173)
 apps/cms          Payload CMS on Next (port 43000), migrations, V6 import script
 packages/content  generated Payload types + contact form schema shared by both
-deployment/       compose stacks, toolkit release adapters, boot reconcile, disabled retention timer
-.github/workflows verify, deploy, rollback, deploy-analytics
+deployment/       compose stacks, pinned toolkit and toolkit.conf, analytics retention job, backup components
+.github/workflows verify, deploy, rollback, deploy-analytics, backup-verify
 ```
 
 ## Local development
@@ -46,6 +46,6 @@ pnpm dev
 
 ## Deploy
 
-Every push to `main` runs verification, builds the web image and deploys development through **Deploy App** on GitHub-hosted runners. Manual **Deploy App** selects any source branch, tag or SHA for development or production, independently of the workflow branch. Production deploys one complete web+CMS snapshot through the selected source's pinned toolkit. **Restore Release** restores or activates immutable snapshots; **Deploy Monitoring** remains manual. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. A CMS deploy takes a pre-migration database dump on the VPS; there are no other backups. Analytics retention uses an initially disabled host timer.
+Every push to `main` runs verification, builds the web image and deploys development through **Deploy App** on GitHub-hosted runners. Manual **Deploy App** selects any source branch, tag or SHA for development or production, independently of the workflow branch. Production deploys one complete web+CMS snapshot through the selected source's pinned toolkit. **Restore Release** restores or activates immutable snapshots; **Deploy Monitoring** remains manual. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. A CMS deploy takes a pre-migration database dump on the VPS. Encrypted off-host backups of the CMS database, Umami database and CMS media are declared in `deployment/backup/` and stay off until the owner enables them; **Backup Verify** checks them from GitHub. Boot reconcile, analytics retention and backups are toolkit units generated from `deployment/toolkit.conf`, installed disabled.
 
 For first deployment and later changes, use the [setup guides](docs/README.md#setup): Cloudflare, GitHub and VPS, analytics, and the one-time V6 content import.

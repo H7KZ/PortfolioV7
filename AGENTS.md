@@ -26,5 +26,5 @@ jankominek.com. Read [README.md](README.md) for setup and [docs/PLAN.md](docs/PL
 - No comments that restate the code; comments explain why.
 - Conventional commits.
 - Pushes to `main` deploy development after verification; manual deploys select any source ref and target environment. Never push or deploy unless asked.
-- Deployment changes: read [docs/setup/deployment.md](docs/setup/deployment.md) for toolkit snapshots, migration hooks, rollback and host unit constraints.
-- Never hand-edit `deployment/toolkit.lock`, `deployment/vendor/toolkit/`, `deployment/verify-toolkit-pin.sh` or `deployment/install-toolkit.sh`; Infrastructure's `npm run toolkit:repin` regenerates them.
+- Deployment changes: read [docs/setup/deployment.md](docs/setup/deployment.md) for toolkit snapshots, migration hooks, rollback and host unit constraints, and [deployment/backup/README.md](deployment/backup/README.md) for backups.
+- The repository runs only its pinned toolkit, through `deployment/toolkit`, configured by `deployment/toolkit.conf`. Never call a toolkit installed on the server. Never hand-edit `deployment/toolkit`, `deployment/toolkit.lock` or `deployment/vendor/toolkit/`; repin from the Toolkit repository (`npm run vendor -- ../PortfolioV7` there). Shell scripts source `deployment/vendor/toolkit/log.sh`. Docs: <https://github.com/H7KZ/Toolkit/tree/main/docs>.

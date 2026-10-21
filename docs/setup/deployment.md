@@ -16,36 +16,22 @@ Every push to `main` runs **Deploy App** on GitHub-hosted runners: type-check, l
 
 Development's preview, revalidation and read keys must match production. Generate secrets with `openssl rand -base64 32`. The renderer rejects dollars, backticks, single quotes, backslashes and line breaks; diagnostics name fields without printing values. Private dotenv travels separately from the source archive and is deleted from incoming storage after use.
 
-## Toolkit installation
+## Toolkit
 
-`deployment/toolkit.lock` and the corresponding archive/checksum pin the repository toolkit. CI sends them
-on every deploy and rollback, then calls the root-installed stable bundle runner. It validates and
-executes those exact bytes independently of the active VPS administrator toolkit.
+This repository runs only the toolkit release it pins, never one installed on the server. `deployment/toolkit` is the entrypoint; `deployment/toolkit.lock` and `deployment/vendor/toolkit/` are the pin. [`deployment/toolkit.conf`](../../deployment/toolkit.conf) declares everything the toolkit does here: repository `portfolio`, release targets `production`, `development` and `monitoring` (roots `~/portfolio/versions/<target>`), backups, and the `umami-retention` job.
 
-From a trusted checkout, install the CI runner and grant the actual deployment account access:
+CI ships the deployed revision's `deployment/toolkit`, `toolkit.conf`, `toolkit.lock` and `vendor/toolkit/` with each release and runs the entrypoint on the VPS as the deploy user, so the bytes that deploy are the bytes the pin names. Before SSH the workflow runs `bash deployment/toolkit verify` on the controller and on the shipped copy.
 
 ```bash
-bash deployment/verify-toolkit-pin.sh
-sudo bash deployment/install-toolkit.sh --ci-only --deploy-user YOUR_DEPLOY_USER
-# Optional: omit --ci-only to install the administrator CLI inactive.
-# Add --activate only when explicitly selecting a new host default.
+bash deployment/toolkit verify                       # anywhere, read-only
+sudo deployment/toolkit install --deploy-user deploy # VPS, from a trusted checkout, once per pin or script change
+deployment/toolkit doctor                            # VPS, read-only health of host and repository
+deployment/toolkit release rollback production       # deploy user on the VPS
 ```
 
-Manual admin, boot recovery and retention use the independently activated host toolkit
-(>=0.8.1, <1.0.0 shared lock/snapshot API). Refresh root-owned boot/retention controls using their
-owner installer to remove old pin equality checks. CI never changes `/opt/toolkit/current`.
-The deploy account is root-equivalent through Docker and the trusted bundle execution sudo rule.
-See [bundle installation](../../deployment/vendor/toolkit/README.md).
+`install` copies the pin and the scripts `toolkit.conf` references to `/opt/toolkit/portfolio/` and writes the units, never enabling them. The deploy account is root-equivalent (Docker group plus the toolkit loader); treat its SSH key that way. Never hand-edit `deployment/toolkit`, `deployment/toolkit.lock` or `deployment/vendor/toolkit/`; repin from the Toolkit repository. Guides: [consumers](https://github.com/H7KZ/Toolkit/tree/main/docs/consumers.md), [host](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md), [commands](https://github.com/H7KZ/Toolkit/tree/main/docs/commands.md).
 
-Toolkit files are managed by Infrastructure: `deployment/toolkit.lock`, `deployment/vendor/toolkit/`,
-`deployment/verify-toolkit-pin.sh` and `deployment/install-toolkit.sh`. Update them only by running
-`npm run toolkit:repin` in an Infrastructure checkout, then commit the result here; `verify-toolkit-pin.sh`
-rejects hand edits. See [consumer integration](https://github.com/H7KZ/Infrastructure/blob/main/docs/toolkit/consumers.md).
-
-Manual `deployment/deploy.sh` and `rollback.sh` wrappers additionally require separately authorized
-passwordless sudo for `/usr/local/bin/toolkit release`. Infrastructure bootstrap supplies this for
-its deployment account; `--ci-only --deploy-user` grants only bundle runner access. Boot recovery
-and installed retention already run as root and do not require deployment-account sudo privileges.
+A source ref older than the 0.11 migration has no `deployment/toolkit` and cannot be deployed or restored through these workflows; restore such snapshots from a checkout of a migrated revision.
 
 ## Immutable releases and rollback
 
@@ -53,7 +39,7 @@ and installed retention already run as root and do not require deployment-accoun
 
 `prepare-release.py` packages tracked deployment contents at archive root, rejecting symlinks, special files, hidden/generated paths and dotenv. Manifest v1 identifies repository `portfolio`, environment, Compose project, exact images, Compose files and health URLs. This slug matches the existing `portfolio-*` resources. Analytics uses environment `monitoring`, project `portfolio-analytics`, and only `analytics/{networks,volumes,docker-compose.analytics}.yml`. Toolkit resolves and pins third-party images during staging, including both analytics images and application Postgres.
 
-The reusable environment job provisions its release root as the deploy user, sends private inputs to a unique incoming directory and calls `sudo -n /usr/local/libexec/toolkit-run-bundle ... -- release deploy` with absolute paths, the deploy user and an isolated temporary registry configuration. Toolkit owns release locks, health checks, immutable snapshot metadata, private runtime, and `current`/`previous` under `~/portfolio/versions/<environment>`. No workflow updates pointers or prunes images or snapshots.
+The reusable environment job provisions its release root as the deploy user, sends private inputs and the toolkit packet to a unique incoming directory and runs `bash incoming/deployment/toolkit release deploy <target>` as the deploy user with absolute paths and an isolated temporary registry configuration. Toolkit owns release locks, health checks, immutable snapshot metadata, private runtime, and `current`/`previous` under `~/portfolio/versions/<environment>`. No workflow updates pointers or prunes images or snapshots.
 
 The apply SSH command allows 110 minutes inside a 120-minute job, covering separate 30-minute repository and host lock waits plus downloads and health checks. Installed host services allow 90 minutes.
 
@@ -69,17 +55,42 @@ These dumps guard migrations on the same host, not host loss. The optional Disco
 
 ## Boot reconciliation and retention
 
+`sudo deployment/toolkit install --deploy-user deploy` writes, from `toolkit.conf`, and enables nothing:
+
+| Unit                                      | Runs                                                        | When                                                            |
+| ----------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------- |
+| `toolkit-portfolio-reconcile.service`     | `reconcile` of production, development and monitoring       | boot (enable it)                                                |
+| `toolkit-portfolio-umami-retention.timer` | `deployment/analytics/retention.sh` (job `umami-retention`) | daily 02:17 UTC                                                 |
+| `toolkit-portfolio-backup@4h.timer`       | `backup run 4h` (CMS database)                              | `00/4:45 UTC`; see [backups](../../deployment/backup/README.md) |
+| `toolkit-portfolio-backup@daily.timer`    | `backup run daily` (Umami database, CMS media)              | 01:45 UTC                                                       |
+
+Reconcile uses each target's current pointer under the deploy user's home. Missing pointers are no-ops; legacy or corrupt snapshots fail visibly and require migration. Toolkit uses the recorded resolved model with `up --no-recreate --pull never --no-build`; no global stopped-container start exists.
+
+The retention job runs as root under the `portfolio` repository lock, the same lock releases take. It reads current monitoring metadata, validates the sealed inventory, and runs that snapshot's SQL against only `portfolio-analytics`, retaining 13 months. There is no GitHub schedule. Enable timers only after a manual run succeeds (`sudo systemctl start toolkit-portfolio-umami-retention.service`), as a separately authorized host operation.
+
+For legacy migration, preserve the old deployment and database data, stage a complete release with `deployment/toolkit release stage` using the same inputs as a deploy, then explicitly activate its ID with `release activate`. Staging runs the CMS dump hook; refresh the dump separately before delayed activation if data changed since staging. Keep the first complete snapshot verified before retiring legacy pointers. After host review, retire the old `docker-boot-recovery.service` and repository runner containers. None of those host changes occur through this repository edit.
+
+## Migrating a VPS to toolkit 0.11
+
+Once, after this revision is pulled in a trusted checkout on the VPS (for example `~/portfolio-checkout`). Earlier revisions installed these legacy files; nothing was ever backed up, so there is no `/etc/toolkit/backup/portfolio.env` to move.
+
 ```bash
-sudo bash deployment/boot-recovery/install.sh "$USER"
+cd ~/portfolio-checkout && git pull
+bash deployment/toolkit verify
+deployment/toolkit doctor                       # lists what is legacy
+sudo systemctl disable --now portfoliov7-reconcile.service portfoliov7-umami-retention.timer
+sudo rm -f /etc/systemd/system/portfoliov7-reconcile.service \
+  /etc/systemd/system/portfoliov7-umami-retention.service \
+  /etc/systemd/system/portfoliov7-umami-retention.timer
+sudo rm -rf /opt/portfoliov7-deployment /etc/portfoliov7-release.conf
+sudo systemctl daemon-reload
+sudo deployment/toolkit install --deploy-user deploy
+sudo systemctl enable toolkit-portfolio-reconcile.service
+sudo systemctl enable --now toolkit-portfolio-umami-retention.timer   # after a manual run succeeds
+deployment/toolkit doctor
 ```
 
-The installer copies root-owned control files to `/opt/portfoliov7-deployment`, writes `/etc/portfoliov7-release.conf` with `DEPLOY_USER`, and installs units without enabling or starting anything.
-
-`portfoliov7-reconcile.service` runs as root and invokes generic toolkit reconcile for production (`portfolio`), development (`portfolio-dev`) and monitoring (`portfolio-analytics`), using that account's actual home/current pointers. Missing pointers are no-ops. Legacy or corrupt snapshots fail visibly and require migration. Toolkit uses the recorded resolved model with `up --no-recreate --pull never --no-build`; no global stopped-container start exists.
-
-`portfoliov7-umami-retention.timer` is disabled on installation. Its service acquires the same `portfolio` repository lock as releases before reading current monitoring metadata, validating the sealed inventory, and running that snapshot's SQL against only `portfolio-analytics`. It retains 13 months. There is no GitHub schedule. Enable or manually run these units only through separately authorized host operations.
-
-For legacy migration, preserve the old deployment and database data, install the pinned toolkit, stage a complete release with `toolkit release stage` using the same arguments as deploy, then explicitly activate its ID with `release activate`. Staging runs the CMS dump hook; refresh the dump separately before delayed activation if data changed since staging. Keep the first complete snapshot verified before retiring legacy pointers. After host review, retire the old `docker-boot-recovery.service` and repository runner containers. None of those host changes occur through this repository edit.
+Backups stay off until the owner follows [`deployment/backup/README.md`](../../deployment/backup/README.md) and creates `/etc/toolkit/portfolio.env`. When every repository on the host is migrated, remove the host-wide leftovers as described in the [Toolkit host guide](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md#migrating-a-host-from-010-or-older). Until then do not remove them: other repositories may still use them.
 
 ## First deployment
 

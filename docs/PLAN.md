@@ -79,11 +79,11 @@ PortfolioV7/
 ├─ scripts/
 │  └─ migrate-v6.ts   one-shot import of all V6 content via Payload Local API (section 5)
 ├─ deployment/
-│  ├─ deploy.sh, rollback.sh      pinned toolkit release adapters
+│  ├─ toolkit, toolkit.conf       pinned toolkit entrypoint and its repository integration
 │  ├─ production/                 web, cms, postgres
 │  ├─ development/                web-dev only (reads the production CMS)
 │  ├─ analytics/                  umami, umami-postgres, umami/retention.sql
-│  ├─ boot-recovery/              root toolkit reconcile; install disabled
+│  ├─ backup/                     backup components, restore steps
 │  └─ scripts/pre-migrate-dump.sh
 ├─ .github/workflows/  hosted verify, build, environment deploy, analytics and rollback
 ├─ docker-compose.local.yml       local Postgres for development
@@ -330,11 +330,12 @@ visual parity with V6 until you decide otherwise.
 | Cookie banner     | removed                                                                                    |
 | Legal             | privacy + website-use terms, Czech prevails                                                |
 | Deploys           | main pushes deploy development after verification; manual dispatch for both environments   |
-| Backups           | **none (accepted risk)**; migration recovery dumps on the VPS, no automatic pruning        |
+| Backups           | encrypted B2 dumps, off until enabled; migration dumps on the VPS (unpruned)               |
 
 ### Accepted risks
 
-- **No backups.** A lost disk or deleted volume loses all content, media and contact submissions
-  with no recovery. The pre-migration dump only covers a bad schema migration.
+- **Backups are off until the owner enables them** (`deployment/backup/README.md`). Until then a lost
+  disk or deleted volume loses all content, media and contact submissions. The pre-migration dump
+  only covers a bad schema migration.
 - **One CMS for both environments.** CMS schema changes cannot be tried on dev; they go from local
   testing straight to production, guarded only by the pre-migration dump.
