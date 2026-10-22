@@ -31,11 +31,11 @@ check_health() {
   while ((elapsed < 120)); do
     status="$(docker inspect -f '{{.State.Health.Status}}' "$container" 2>/dev/null || printf unknown)"
     case "$status" in
-      healthy)
-        log_ok "$service healthy"
-        return 0
-        ;;
-      unhealthy) die "$service is unhealthy" ;;
+    healthy)
+      log_ok "$service healthy"
+      return 0
+      ;;
+    unhealthy) die "$service is unhealthy" ;;
     esac
     sleep 5
     ((elapsed += 5))

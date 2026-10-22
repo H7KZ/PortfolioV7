@@ -10,7 +10,7 @@ on:
         description: Target whose whole snapshot to act on
         required: true
         type: choice
-        options: [production, development, monitoring, ingress]
+        options: [production, development, monitoring]
         default: production
       ref:
         description: Toolkit source branch, tag or SHA; blank = workflow ref

@@ -75,3 +75,6 @@ jobs:
 
       - name: Format check
         run: pnpm format:check
+
+      - name: Check documentation links
+        run: python3 scripts/check-doc-links.py
