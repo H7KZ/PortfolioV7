@@ -56,6 +56,7 @@ jobs:
         with:
           ref: ${{ inputs.source_commit }}
           path: release-source
+          fetch-depth: 0
       - name: Validate release request
         id: meta
         env:
@@ -69,6 +70,15 @@ jobs:
           case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
           case "$OPERATION" in deploy|stage|rollback|activate|reconcile) ;; *) exit 1 ;; esac
           [[ "$SOURCE_SHA" =~ ^[a-f0-9]{40}$ ]] || exit 1
+          [[ "$TARGET" == development || "$GITHUB_REF" == refs/heads/main ]] || {
+            echo 'Production, monitoring and ingress require the workflow to run from main.' >&2; exit 1;
+          }
+          if [[ "$TARGET" != development ]]; then
+            git -C release-source fetch --no-tags origin '+refs/heads/main:refs/remotes/origin/main'
+            git -C release-source merge-base --is-ancestor "$SOURCE_SHA" refs/remotes/origin/main || {
+              echo 'Production, monitoring and ingress require a source commit on main.' >&2; exit 1;
+            }
+          fi
           [[ "$HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || {
             echo 'SSH_HOST_FINGERPRINT must pin the verified server key.' >&2; exit 1;
           }
