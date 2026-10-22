@@ -43,7 +43,7 @@ def main():
     images = {}
     variables = {}
     health_urls = []
-    folder = "analytics" if environment == "monitoring" else environment
+    folder = environment
     if environment == "monitoring":
         for name in ("SITE_DOMAIN", "UMAMI_DOMAIN", "UMAMI_DB_NAME", "UMAMI_DB_USER", "UMAMI_DB_PASSWORD", "UMAMI_APP_SECRET"):
             config[name] = value(name)

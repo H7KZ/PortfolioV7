@@ -22,7 +22,7 @@ BACKUP_DRILL["cms-postgres"]="postgres deployment/production/docker-compose.prod
 BACKUP_CADENCE["umami-postgres"]=daily
 BACKUP_EXT["umami-postgres"]=pgdump
 BACKUP_MIN_BYTES["umami-postgres"]=8000
-BACKUP_DRILL["umami-postgres"]="postgres deployment/analytics/docker-compose.analytics.yml"
+BACKUP_DRILL["umami-postgres"]="postgres deployment/monitoring/docker-compose.monitoring.yml"
 
 # CMS media (/media/<file> on the site). Files are write-once, so nothing is paused.
 # An empty tar is 10240 bytes, so the floor sits above it.

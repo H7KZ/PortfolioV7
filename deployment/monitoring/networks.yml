@@ -1,7 +1,9 @@
 # ==============================================================================
-# Networks: Analytics (portfolio-analytics)
-#   public-network:                        Infrastructure's shared Traefik network.
+# Networks: Monitoring (compose project portfolio-analytics)
+#   public-network:                        shared Traefik network (Infrastructure's Traefik, or
+#                                          this repository's deployment/ingress on a standalone host).
 #   portfolio-analytics-internal-network:  umami <-> its postgres only.
+# Toolkit creates portfolio-* networks; public-network must already exist.
 # ==============================================================================
 
 networks:

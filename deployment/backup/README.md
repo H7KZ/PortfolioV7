@@ -11,7 +11,7 @@ Declared in [`components.sh`](components.sh); schedules and the list path in [`.
 | Component        | What                                                                 | Cadence              | Drill                                              |
 | ---------------- | -------------------------------------------------------------------- | -------------------- | -------------------------------------------------- |
 | `cms-postgres`   | `pg_dump -Fc` of the Payload database (`portfolio-postgres`)         | every 4h (`00/4:45`) | `postgres`, image from the production Compose file |
-| `umami-postgres` | `pg_dump -Fc` of Umami (`portfolio-umami-postgres`)                  | daily (`01:45 UTC`)  | `postgres`, image from the analytics Compose file  |
+| `umami-postgres` | `pg_dump -Fc` of Umami (`portfolio-umami-postgres`)                  | daily (`01:45 UTC`)  | `postgres`, image from the monitoring Compose file |
 | `cms-uploads`    | tar of `/data/media` in `portfolio-cms` (`portfolio-uploads-volume`) | daily (`01:45 UTC`)  | `archive`                                          |
 
 The daily run also captures the 4h component, so database and media are taken together. The size floors (`BACKUP_MIN_BYTES`) are first guesses; tune them after the first real run if `backup check` reports a false alarm. The drill also asserts the Payload (`payload_migrations`) and Umami (`website`) tables exist.

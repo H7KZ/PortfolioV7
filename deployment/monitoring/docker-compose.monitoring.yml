@@ -1,5 +1,5 @@
 # ==============================================================================
-# Docker Compose: Analytics (portfolio-analytics)
+# Docker Compose: Monitoring (compose project portfolio-analytics)
 # Description: Self-hosted Umami. The dashboard is umami.jankominek.com (behind
 #              Cloudflare Access); the tracker and event endpoint are served
 #              first-party at https://jankominek.com/stats/* so no third-party

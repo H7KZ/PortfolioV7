@@ -22,7 +22,9 @@ if release.parent != root or not release.is_dir():
     raise SystemExit("Analytics current points outside its release root")
 metadata = release / ".toolkit-release.json"
 inventory = release / ".toolkit-inventory.json"
-sql = release / "analytics/umami/retention.sql"
+# Snapshots staged before the analytics directory became monitoring still hold the SQL there.
+folder = "monitoring" if (release / "monitoring").is_dir() else "analytics"
+sql = release / folder / "umami/retention.sql"
 if any(not path.is_file() or path.is_symlink() for path in (metadata, inventory)):
     raise SystemExit("Missing snapshot manifest; stage and activate a toolkit analytics release first.")
 manifest = json.loads(metadata.read_text())
@@ -53,7 +55,7 @@ for path in sorted(release.rglob("*")):
             records[name] = {"sha256": hashlib.file_digest(source, "sha256").hexdigest()}
 if records != json.loads(inventory.read_text()):
     raise SystemExit("Analytics snapshot inventory changed")
-if any(path.is_symlink() for path in (release / "analytics", release / "analytics/umami", sql)) or not sql.is_file():
+if any(path.is_symlink() for path in (release / folder, release / folder / "umami", sql)) or not sql.is_file():
     raise SystemExit("Invalid analytics snapshot SQL")
 container = "portfolio-umami-postgres"
 details = json.loads(subprocess.check_output(["docker", "inspect", container]))[0]

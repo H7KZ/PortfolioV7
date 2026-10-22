@@ -1,5 +1,5 @@
 # ==============================================================================
-# Volumes: Analytics (portfolio-analytics)
+# Volumes: Monitoring (compose project portfolio-analytics)
 # External so the data survives teardown; toolkit creates it.
 # ==============================================================================
 
