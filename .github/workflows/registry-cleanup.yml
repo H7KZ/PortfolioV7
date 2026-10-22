@@ -1,19 +1,13 @@
-# ==============================================================================
-# Workflow: GHCR Registry Cleanup
-# Description: Retention-based deletion of old container image versions in GHCR.
-#              Keeps the newest KEEP_NEWEST tagged versions per package, any
-#              version tagged latest/prod/current/*-latest, and any digest listed
-#              in the protected_digests input. Untagged versions (attestations,
-#              child manifests) are never deleted.
+# Retention-based deletion of old container image versions in GHCR. Keeps the newest KEEP_NEWEST
+# tagged versions per package, any version tagged latest/prod/current/*-latest, and any digest
+# listed in the protected_digests input. Untagged versions (attestations, child manifests) are
+# never deleted.
 #
-#              Scheduled runs are ALWAYS dry-run. Deletion needs a manual
-#              dispatch with dry_run=false.
+# Scheduled runs are ALWAYS dry-run. Deletion needs a manual dispatch with dry_run=false.
 #
-#              DEPLOYED DIGESTS ARE NOT READABLE FROM CI: current/previous
-#              releases live on the VPS (~/<project>/releases). Before a live run,
-#              pass every current/previous/retained-rollback digest in
-#              protected_digests.
-# ==============================================================================
+# DEPLOYED DIGESTS ARE NOT READABLE FROM CI: current/previous releases live on the VPS
+# (~/portfolio/versions/<target>). Before a live run, pass every current/previous/retained-rollback
+# digest in protected_digests.
 
 name: Cleanup Registry
 run-name: "Cleanup Registry · ${{ github.event_name == 'schedule' && 'preview' || inputs.dry_run && 'preview' || 'delete' }}"
@@ -23,42 +17,47 @@ on:
     - cron: '17 4 * * 1'
   workflow_dispatch:
     inputs:
-      packages:
-        description: Packages (space/comma separated); blank = portfoliov7/web + portfoliov7/cms
-        type: string
-        default: ''
       keep_newest:
         description: Newest tagged versions to keep per package (minimum 1)
+        required: true
         type: number
         default: 6
       min_age_days:
-        description: Minimum version age before deletion (days)
+        description: Minimum version age before deletion, in days
+        required: true
         type: number
         default: 7
+      packages:
+        description: Packages, space or comma separated; blank = portfoliov7/web and portfoliov7/cms
+        required: false
+        type: string
+        default: ''
       dry_run:
-        description: 'Only log what would be deleted'
+        description: Only log what would be deleted
         required: true
         type: boolean
         default: true
       protected_digests:
-        description: 'Digests to keep (sha256:..., space/comma/newline separated): deployed, previous, rollback'
+        description: 'Digests to keep (sha256:..., space, comma or newline separated): deployed, previous, rollback'
         required: false
         type: string
         default: ''
 
+permissions:
+  contents: read
+
 concurrency:
   group: registry-cleanup
   cancel-in-progress: false
-
-permissions:
-  contents: read
-  packages: write
 
 jobs:
   cleanup:
     name: Cleanup ${{ matrix.package }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:

@@ -1,26 +1,43 @@
+# Applies one toolkit release to the VPS: verify the pin, prepare the bundle and private dotenv,
+# upload it over SSH and run `deployment/toolkit release <operation> <target>` as the deploy user.
+# Called by deploy.yml, deploy-monitoring.yml, deploy-ingress.yml and rollback.yml.
+
 name: Deploy Environment (reusable)
 
 on:
   workflow_call:
     inputs:
       environment:
+        description: Release target (production, development, monitoring or ingress)
         required: true
         type: string
       source_commit:
+        description: Full SHA of the source to release or to take the toolkit from
         required: true
         type: string
       operation:
+        description: deploy, stage, rollback, activate or reconcile
+        required: false
         type: string
         default: deploy
       web_digest:
+        description: Digest of the web image (production and development)
+        required: false
         type: string
         default: ''
       cms_digest:
+        description: Digest of the CMS image (production)
+        required: false
         type: string
         default: ''
       release_id:
+        description: current, previous or an existing release ID, for rollback and activate
+        required: false
         type: string
         default: previous
+
+permissions:
+  contents: read
 
 jobs:
   deploy:
@@ -33,9 +50,9 @@ jobs:
       packages: read
     steps:
       - name: Check out controller
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Check out release source
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.source_commit }}
           path: release-source
@@ -49,7 +66,7 @@ jobs:
           HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
         run: |
           set -euo pipefail
-          case "$TARGET" in production|development|monitoring) ;; *) exit 1 ;; esac
+          case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
           case "$OPERATION" in deploy|stage|rollback|activate|reconcile) ;; *) exit 1 ;; esac
           [[ "$SOURCE_SHA" =~ ^[a-f0-9]{40}$ ]] || exit 1
           [[ "$HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || {
@@ -92,6 +109,12 @@ jobs:
           UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
           UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
           UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
+          TRAEFIK_DOMAIN: ${{ vars.TRAEFIK_DOMAIN }}
+          TRAEFIK_DASHBOARD_ALLOWED_IPS: ${{ vars.TRAEFIK_DASHBOARD_ALLOWED_IPS }}
+          ACME_EMAIL: ${{ vars.ACME_EMAIL }}
+          TRAEFIK_HTPASSWD: ${{ secrets.TRAEFIK_HTPASSWD }}
+          CF_DNS_API_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
+          CROWDSEC_ENROLL_KEY: ${{ secrets.CROWDSEC_ENROLL_KEY }}
           TARGET: ${{ inputs.environment }}
           SOURCE_SHA: ${{ inputs.source_commit }}
           SOURCE_ROOT: ${{ github.workspace }}/release-source
@@ -108,7 +131,7 @@ jobs:
           bash deployment/toolkit verify
           bash deployment/toolkit verify "$GITHUB_WORKSPACE/bundle/deployment"
       - name: Run host preflight
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         env:
           RELEASE_ID: ${{ steps.meta.outputs.release_id }}
           OPERATION: ${{ inputs.operation }}
@@ -124,13 +147,13 @@ jobs:
             set -euo pipefail
             [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Toolkit runner is not installed; run on the VPS: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
             umask 077
-            case "$TARGET" in production|development|monitoring) ;; *) exit 1 ;; esac
+            case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
             install -d -m 0700 "$HOME/portfolio/versions/$TARGET"
             mkdir -p "$HOME/portfolio/incoming"
             chmod 700 "$HOME/portfolio/incoming"
             mkdir -m 700 "$HOME/portfolio/incoming/$RELEASE_ID"
       - name: Upload private release inputs
-        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
@@ -141,7 +164,7 @@ jobs:
           target: ~/portfolio/incoming/${{ steps.meta.outputs.release_id }}
           strip_components: 1
       - name: Apply release through toolkit
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         env:
           TARGET: ${{ inputs.environment }}
           OPERATION: ${{ inputs.operation }}
@@ -159,7 +182,7 @@ jobs:
           command_timeout: 110m
           script: |
             set -euo pipefail
-            case "$TARGET" in production|development|monitoring) ;; *) exit 1 ;; esac
+            case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
             [[ "$RELEASE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
             [[ "$RESTORE_ID" == current || "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
             umask 077
@@ -192,7 +215,7 @@ jobs:
         run: rm -rf -- "$GITHUB_WORKSPACE/bundle"
       - name: Remove remote incoming inputs
         if: always() && steps.meta.outcome == 'success'
-        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         env:
           RELEASE_ID: ${{ steps.meta.outputs.release_id }}
         with:

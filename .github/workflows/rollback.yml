@@ -1,23 +1,28 @@
+# Restores, activates or reconciles an existing toolkit release snapshot. Rebuilds nothing.
+
 name: Rollback
-run-name: 'Rollback · ${{ inputs.environment }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
+run-name: "Rollback · ${{ inputs.environment }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}"
 
 on:
   workflow_dispatch:
     inputs:
+      environment:
+        description: Target whose whole snapshot to act on
+        required: true
+        type: choice
+        options: [production, development, monitoring, ingress]
+        default: production
       ref:
         description: Toolkit source branch, tag or SHA; blank = workflow ref
+        required: false
         type: string
         default: ''
       operation:
         description: Restore a release, activate a staged release, or reconcile current
+        required: true
         type: choice
         options: [rollback, activate, reconcile]
         default: rollback
-      environment:
-        description: Whole snapshot to restore
-        type: choice
-        options: [production, development, monitoring]
-        default: development
       release_id:
         description: current, previous or fullSHA-run-attempt; ignored for reconcile
         required: true
@@ -26,7 +31,6 @@ on:
 
 permissions:
   contents: read
-  packages: read
 
 concurrency:
   group: deploy-${{ inputs.environment }}
@@ -38,13 +42,17 @@ jobs:
     uses: ./.github/workflows/_resolve.yml
     with:
       ref: ${{ inputs.ref }}
+
   rollback:
     name: Restore release
     needs: source
+    permissions:
+      contents: read
+      packages: read
     uses: ./.github/workflows/_deploy.yml
     with:
-      operation: ${{ inputs.operation }}
-      source_commit: ${{ needs.source.outputs.sha }}
       environment: ${{ inputs.environment }}
+      source_commit: ${{ needs.source.outputs.sha }}
+      operation: ${{ inputs.operation }}
       release_id: ${{ inputs.release_id }}
     secrets: inherit

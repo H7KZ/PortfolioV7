@@ -1,3 +1,7 @@
+# Verifies, builds or reuses images, and deploys development or production as an immutable toolkit
+# release. Every push to main deploys development; manual runs pick any environment and source ref.
+# Not supported here (the repo has no qualified-development promotion): modes `promote`, input `run_id`.
+
 name: Deploy
 run-name: "Deploy · ${{ inputs.environment || 'development' }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation || 'deploy' }}"
 
@@ -7,44 +11,52 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Target environment (production includes CMS)
+        description: Target environment (production includes the CMS)
+        required: true
         type: choice
         options: [development, production]
         default: development
       ref:
         description: Source branch, tag or SHA; blank = workflow ref
+        required: false
         type: string
         default: ''
+      operation:
+        description: Deploy now or stage a release for later activation
+        required: true
+        type: choice
+        options: [deploy, stage]
+        default: deploy
       mode:
-        description: Build, reuse with build fallback, or require existing images
+        description: Reuse images and build missing ones, always build, or require existing images
+        required: true
         type: choice
         options: [reuse, build, existing]
         default: reuse
       image_tag:
-        description: Existing image tag; blank = environment-sourceSHA
+        description: Existing image tag for reuse or existing mode; blank = environment-sourceSHA
+        required: false
         type: string
         default: ''
       digests:
-        description: 'Existing only: complete digest JSON {"web":"sha256:...","cms":"sha256:..."}; dev needs web only'
+        description: 'Existing mode only: complete digest JSON {"web":"sha256:...","cms":"sha256:..."}; development needs web only'
+        required: false
         type: string
         default: ''
       verify:
-        description: Verify selected source before deployment
+        description: Verify the selected source before deployment
+        required: true
         type: boolean
         default: true
       no_cache:
-        description: Build without Docker layer cache
+        description: Build without the Docker layer cache
+        required: true
         type: boolean
         default: false
-      operation:
-        description: Deploy now or stage a release for later activation
-        type: choice
-        options: [deploy, stage]
-        default: deploy
 
 permissions:
   contents: read
-  packages: write
+
 concurrency:
   group: deploy-${{ inputs.environment || 'development' }}
   cancel-in-progress: false
@@ -55,6 +67,7 @@ jobs:
     uses: ./.github/workflows/_resolve.yml
     with:
       ref: ${{ inputs.ref }}
+
   verify:
     name: Verify code
     needs: source
@@ -64,7 +77,8 @@ jobs:
     uses: ./.github/workflows/verify.yml
     with:
       ref: ${{ needs.source.outputs.sha }}
-  validate:
+
+  resolve-images:
     name: Resolve images
     needs: [source, verify]
     if: >-
@@ -72,6 +86,9 @@ jobs:
       (needs.verify.result == 'success' || needs.verify.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
     outputs:
       web_digest: ${{ steps.images.outputs.web_digest }}
       cms_digest: ${{ steps.images.outputs.cms_digest }}
@@ -124,11 +141,15 @@ jobs:
               echo "Build missing $service:$tag" >> "$GITHUB_STEP_SUMMARY"
             fi
           done < <(jq -r '.[]' <<< "$services")
+
   build-web:
     name: Build web image
-    needs: [source, validate]
+    needs: [source, resolve-images]
     if: >-
-      !cancelled() && needs.validate.result == 'success' && needs.validate.outputs.web_digest == ''
+      !cancelled() && needs.resolve-images.result == 'success' && needs.resolve-images.outputs.web_digest == ''
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/_build.yml
     with:
       service: web
@@ -136,11 +157,15 @@ jobs:
       source_commit: ${{ needs.source.outputs.sha }}
       no_cache: ${{ inputs.no_cache || false }}
     secrets: inherit
+
   build-cms:
     name: Build CMS image
-    needs: [source, validate]
+    needs: [source, resolve-images]
     if: >-
-      !cancelled() && needs.validate.result == 'success' && inputs.environment == 'production' && needs.validate.outputs.cms_digest == ''
+      !cancelled() && needs.resolve-images.result == 'success' && inputs.environment == 'production' && needs.resolve-images.outputs.cms_digest == ''
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/_build.yml
     with:
       service: cms
@@ -148,18 +173,22 @@ jobs:
       source_commit: ${{ needs.source.outputs.sha }}
       no_cache: ${{ inputs.no_cache || false }}
     secrets: inherit
+
   deploy:
     name: Deploy release
-    needs: [source, validate, build-web, build-cms]
+    needs: [source, resolve-images, build-web, build-cms]
     if: >-
-      !cancelled() && needs.validate.result == 'success' &&
-      (needs.build-web.result == 'success' || needs.validate.outputs.web_digest != '') &&
-      (inputs.environment != 'production' || needs.build-cms.result == 'success' || needs.validate.outputs.cms_digest != '')
+      !cancelled() && needs.resolve-images.result == 'success' &&
+      (needs.build-web.result == 'success' || needs.resolve-images.outputs.web_digest != '') &&
+      (inputs.environment != 'production' || needs.build-cms.result == 'success' || needs.resolve-images.outputs.cms_digest != '')
+    permissions:
+      contents: read
+      packages: read
     uses: ./.github/workflows/_deploy.yml
     with:
       environment: ${{ inputs.environment || 'development' }}
       source_commit: ${{ needs.source.outputs.sha }}
       operation: ${{ inputs.operation || 'deploy' }}
-      web_digest: ${{ needs.validate.outputs.web_digest || needs.build-web.outputs.image_digest }}
-      cms_digest: ${{ needs.validate.outputs.cms_digest || needs.build-cms.outputs.image_digest }}
+      web_digest: ${{ needs.resolve-images.outputs.web_digest || needs.build-web.outputs.image_digest }}
+      cms_digest: ${{ needs.resolve-images.outputs.cms_digest || needs.build-cms.outputs.image_digest }}
     secrets: inherit
