@@ -19,7 +19,7 @@ poll_without_inotify: false
 # --- Source 2: AppSec engine -> in-line request inspection --------------------
 # Traefik forwards each request here BEFORE it reaches your backend, and the
 # OWASP CRS / virtual-patching rules decide in real time. This blocks the first
-# malicious request, not the tenth — the log-based source above can only react
+# malicious request, not the tenth, the log-based source above can only react
 # after the fact.
 source: appsec
 listen_addr: 0.0.0.0:7422

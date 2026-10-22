@@ -6,7 +6,7 @@
 # leave this workflow alone. See docs/runbooks/split-to-own-server.md.
 
 name: Deploy Ingress
-run-name: "Deploy Ingress · ingress · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}"
+run-name: 'Deploy Ingress · ingress · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
 
 on:
   workflow_dispatch:

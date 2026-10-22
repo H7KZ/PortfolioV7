@@ -1,7 +1,7 @@
 # Deploys the monitoring stack (self-hosted Umami) as an immutable toolkit release.
 
 name: Deploy Monitoring
-run-name: "Deploy Monitoring · monitoring · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}"
+run-name: 'Deploy Monitoring · monitoring · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
 
 on:
   workflow_dispatch:

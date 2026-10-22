@@ -19,7 +19,6 @@
 # ==============================================================================
 
 services:
-
   # ============================================================================
   # Docker socket proxy
   #
@@ -110,7 +109,7 @@ services:
       - '--configFile=/etc/traefik/traefik.yml'
 
     environment:
-      # Only the scoped DNS token. Do NOT also set CF_API_KEY / CF_API_EMAIL —
+      # Only the scoped DNS token. Do NOT also set CF_API_KEY / CF_API_EMAIL -
       # lego will prefer the global-key path if it sees them, and a Cloudflare
       # global key can do anything to your account.
       CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN:?CF_DNS_API_TOKEN is required}
@@ -118,7 +117,7 @@ services:
     volumes:
       # Static config, rendered from config/traefik.yml at release staging
       - ./ingress/.rendered/traefik.yml:/etc/traefik/traefik.yml:ro
-      # Dynamic config directory — hot-reloaded
+      # Dynamic config directory, hot-reloaded
       - ./ingress/config/dynamic:/etc/traefik/dynamic:ro
       # ACME account + certificates. Back this up.
       - portfolio-ingress-certificates-volume:/certs
@@ -262,7 +261,7 @@ services:
     volumes:
       - portfolio-ingress-crowdsec-db-volume:/var/lib/crowdsec/data
       - portfolio-ingress-crowdsec-config-volume:/etc/crowdsec
-      # Traefik's access log, read-only — this is CrowdSec's input.
+      # Traefik's access log, read-only, this is CrowdSec's input.
       - portfolio-ingress-logs-volume:/var/log/traefik:ro
       - ./ingress/crowdsec/acquis.yml:/etc/crowdsec/acquis.d/traefik.yml:ro
       - ./ingress/crowdsec/profiles.yaml:/etc/crowdsec/profiles.yaml:ro

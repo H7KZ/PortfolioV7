@@ -1,5 +1,5 @@
 # ==============================================================================
-# Dynamic Configuration — Middlewares
+# Dynamic Configuration, Middlewares
 #
 # Hot-reloaded on save. A syntax error here does NOT crash Traefik; it logs the
 # error and keeps serving the last good configuration.
@@ -10,7 +10,6 @@
 
 http:
   middlewares:
-
     # ==========================================================================
     # Applied globally via the websecure entrypoint
     # ==========================================================================
@@ -85,8 +84,8 @@ http:
 
     # --- CrowdSec WAF ---------------------------------------------------------
     # Two layers in one plugin:
-    #   1. IP reputation — local decisions + the community blocklist.
-    #   2. AppSec — OWASP CRS / virtual patching, inspects the request itself.
+    #   1. IP reputation, local decisions + the community blocklist.
+    #   2. AppSec, OWASP CRS / virtual patching, inspects the request itself.
     #
     # `stream` mode pulls the decision list every 60s and answers from a local
     # cache, so the hot path never makes a network call. `live` queries the LAPI
@@ -106,7 +105,7 @@ http:
           # --- LAPI (IP reputation) ---
           crowdsecLapiScheme: http
           crowdsecLapiHost: crowdsec:8080
-          # Read from a mounted file rather than an env template — no secret in
+          # Read from a mounted file rather than an env template, no secret in
           # the config, and no dependency on file-provider templating.
           crowdsecLapiKeyFile: /run/crowdsec/lapi-key
           crowdsecLapiUnreachableBlock: false
@@ -158,7 +157,7 @@ http:
           httpTimeoutSeconds: 10
 
     # ==========================================================================
-    # Opt-in — reference these per router
+    # Opt-in, reference these per router
     # ==========================================================================
 
     # --- Admin rate limit -----------------------------------------------------
@@ -200,7 +199,7 @@ http:
 
     # --- Cloudflare-only ------------------------------------------------------
     # Rejects anything that did not arrive via the Cloudflare edge. Belt to the
-    # firewall's braces — see cloudflare-firewall.sh, which is the
+    # firewall's braces, see cloudflare-firewall.sh, which is the
     # stronger control because it drops packets before Traefik sees them.
     cloudflare-only:
       ipAllowList:

@@ -36,7 +36,7 @@ decisions:
   - type: ban
     duration: 4h
 # Uncomment once a notification plugin is configured in
-# /etc/crowdsec/notifications/ — see `cscli notifications list`.
+# /etc/crowdsec/notifications/, see `cscli notifications list`.
 # notifications:
 #   - slack_default
 on_success: break

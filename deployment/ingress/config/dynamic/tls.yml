@@ -1,5 +1,5 @@
 # ==============================================================================
-# Dynamic Configuration — TLS
+# Dynamic Configuration, TLS
 #
 # The option named `default` is applied to every router that does not name a
 # different one, so you get hardened TLS without touching a single label.
@@ -7,7 +7,6 @@
 
 tls:
   options:
-
     # --- default: TLS 1.2 + 1.3, forward secrecy and AEAD only ---------------
     # cipherSuites only affects TLS 1.2; Go picks TLS 1.3 suites itself and
     # they are all safe. Every suite here is ECDHE (forward secret) and either
@@ -53,7 +52,7 @@ tls:
     # --- mtls: client-certificate authentication ------------------------------
     # Uncomment, mount your CA, then set
     #   traefik.http.routers.x.tls.options=mtls@file
-    # This is the strongest way to lock down an admin surface — far better than
+    # This is the strongest way to lock down an admin surface, far better than
     # basic auth over an IP allowlist.
     #
     # mtls:

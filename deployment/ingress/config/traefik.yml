@@ -32,7 +32,7 @@ api:
   disableDashboardAd: true
 
 # ------------------------------------------------------------------------------
-# Ping (liveness) — bound to the internal entrypoint only, never published.
+# Ping (liveness), bound to the internal entrypoint only, never published.
 # ------------------------------------------------------------------------------
 ping:
   entryPoint: internal
@@ -40,7 +40,7 @@ ping:
   terminatingStatusCode: 503
 
 # ------------------------------------------------------------------------------
-# Metrics — on their own entrypoint so Prometheus/Alloy can scrape them without
+# Metrics, on their own entrypoint so Prometheus/Alloy can scrape them without
 # the /metrics endpoint sharing a port with anything else. Inert until a
 # monitoring stack is added; harmless in the meantime.
 # ------------------------------------------------------------------------------
@@ -65,8 +65,7 @@ experimental:
 # Entrypoints
 # ------------------------------------------------------------------------------
 entryPoints:
-
-  # --- :80 — redirect everything to HTTPS -------------------------------------
+  # --- :80, redirect everything to HTTPS -------------------------------------
   web:
     address: ':80'
     http:
@@ -81,7 +80,7 @@ entryPoints:
         writeTimeout: 30s
         idleTimeout: 60s
 
-  # --- :443 — the real entrypoint ---------------------------------------------
+  # --- :443, the real entrypoint ---------------------------------------------
   websecure:
     address: ':443'
 
@@ -121,7 +120,7 @@ entryPoints:
     transport:
       respondingTimeouts:
         readTimeout: 60s
-        writeTimeout: 0s      # 0 = no limit; required for SSE / long downloads
+        writeTimeout: 0s # 0 = no limit; required for SSE / long downloads
         idleTimeout: 180s
       lifeCycle:
         requestAcceptGraceTimeout: 5s
@@ -131,7 +130,7 @@ entryPoints:
       tls:
         # Rendered at release staging: 'letsencrypt' or 'letsencrypt-staging'.
         certResolver: ${CERT_RESOLVER}
-      # Global middleware chain — every router on this entrypoint inherits it,
+      # Global middleware chain, every router on this entrypoint inherits it,
       # in this order. WAF first so blocked traffic costs the least work.
       # www-redirect strips www. before anything else does real work.
       middlewares:
@@ -153,7 +152,7 @@ entryPoints:
 # Providers
 # ------------------------------------------------------------------------------
 providers:
-  # Docker is reached through the socket proxy — Traefik never has a handle on
+  # Docker is reached through the socket proxy, Traefik never has a handle on
   # /var/run/docker.sock, so an RCE in Traefik is not an instant host takeover.
   docker:
     endpoint: 'tcp://socket-proxy:2375'
@@ -176,7 +175,7 @@ providers:
     watch: true
 
 # ------------------------------------------------------------------------------
-# ServersTransport — defaults for Traefik -> backend connections
+# ServersTransport, defaults for Traefik -> backend connections
 # ------------------------------------------------------------------------------
 serversTransport:
   maxIdleConnsPerHost: 200
@@ -185,13 +184,12 @@ serversTransport:
     idleConnTimeout: 90s
 
 # ------------------------------------------------------------------------------
-# Certificate resolvers — Let's Encrypt over DNS-01 (Cloudflare)
+# Certificate resolvers, Let's Encrypt over DNS-01 (Cloudflare)
 #
 # DNS-01 keeps working with the Cloudflare orange cloud on, issues wildcards,
 # and never needs :80 reachable from the internet.
 # ------------------------------------------------------------------------------
 certificatesResolvers:
-
   letsencrypt:
     acme:
       email: '${ACME_EMAIL}'
@@ -211,7 +209,7 @@ certificatesResolvers:
           - '8.8.8.8:53'
 
   # For domains NOT delegated to Cloudflare (on DNS we
-  # do not control) — DNS-01 is impossible there since Cloudflare has no
+  # do not control), DNS-01 is impossible there since Cloudflare has no
   # authority over records it doesn't host. HTTP-01 needs no DNS API access
   # at all, only that the domain's A/AAAA record already points here and :80
   # is reachable (both already true for anything actually being served).
@@ -225,7 +223,7 @@ certificatesResolvers:
       httpChallenge:
         entryPoint: web
 
-  # Point a router at this while you are debugging issuance — staging has
+  # Point a router at this while you are debugging issuance, staging has
   # effectively no rate limits, production will lock you out for a week.
   letsencrypt-staging:
     acme:
@@ -246,7 +244,7 @@ certificatesResolvers:
 # ------------------------------------------------------------------------------
 log:
   level: INFO
-  format: json          # structured, so Alloy/Loki can parse it without regex
+  format: json # structured, so Alloy/Loki can parse it without regex
   noColor: true
 
 accessLog:
@@ -266,7 +264,7 @@ accessLog:
       # actually need. Authorization / Cookie / Set-Cookie never get logged.
       defaultMode: drop
       names:
-        User-Agent: keep          # required by several CrowdSec scenarios
+        User-Agent: keep # required by several CrowdSec scenarios
         Referer: keep
         Content-Type: keep
         X-Forwarded-For: keep
@@ -276,7 +274,7 @@ accessLog:
         Cf-Ray: keep
 
 # ------------------------------------------------------------------------------
-# Tracing (optional) — uncomment and point at your collector.
+# Tracing (optional), uncomment and point at your collector.
 # ------------------------------------------------------------------------------
 # tracing:
 #   serviceName: traefik

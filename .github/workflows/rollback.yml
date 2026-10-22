@@ -1,7 +1,7 @@
 # Restores, activates or reconciles an existing toolkit release snapshot. Rebuilds nothing.
 
 name: Rollback
-run-name: "Rollback · ${{ inputs.environment }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}"
+run-name: 'Rollback · ${{ inputs.environment }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
 
 on:
   workflow_dispatch:
