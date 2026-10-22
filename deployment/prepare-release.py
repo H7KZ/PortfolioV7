@@ -15,11 +15,11 @@ def fail(message):
     raise SystemExit(message)
 
 
-def value(name, required=True):
+def value(name, required=True, allow=""):
     result = os.environ.get(name, "")
     if required and not result:
         fail(f"Missing {name}")
-    if any(character in result for character in "\r\n\0$`'\\"):
+    if any(character in result for character in "\r\n\0$`'\\" if character not in allow):
         fail(f"Unsupported dotenv characters in {name}")
     return result
 
@@ -28,7 +28,9 @@ def main():
     if len(sys.argv) != 3:
         fail("usage: prepare-release.py <environment> <output-directory>")
     environment = sys.argv[1]
-    projects = {"production": "portfolio", "development": "portfolio-dev", "monitoring": "portfolio-analytics"}
+    projects = {"production": "portfolio", "development": "portfolio-dev", "monitoring": "portfolio-analytics", "ingress": "global"}
+    # Toolkit 0.11 accepts only fixed lock environments; the ingress target uses `infrastructure`.
+    toolkit_environments = {"ingress": "infrastructure"}
     if environment not in projects:
         fail("Invalid environment")
     commit = os.environ.get("SOURCE_SHA") or value("GITHUB_SHA")
@@ -44,7 +46,19 @@ def main():
     variables = {}
     health_urls = []
     folder = environment
-    if environment == "monitoring":
+    prepare_script = None
+    post_deploy_script = None
+    runtime_directories = []
+    if environment == "ingress":
+        for name in ("TRAEFIK_DOMAIN", "TRAEFIK_DASHBOARD_ALLOWED_IPS", "ACME_EMAIL", "CF_DNS_API_TOKEN"):
+            config[name] = value(name)
+        # A bcrypt hash holds dollars; the dotenv is single-quoted, so they stay literal.
+        config["TRAEFIK_HTPASSWD"] = value("TRAEFIK_HTPASSWD", allow="$")
+        config["CROWDSEC_ENROLL_KEY"] = value("CROWDSEC_ENROLL_KEY", required=False)
+        prepare_script = "ingress/scripts/prepare.sh"
+        post_deploy_script = "ingress/scripts/post-deploy.sh"
+        runtime_directories = ["ingress/.rendered"]
+    elif environment == "monitoring":
         for name in ("SITE_DOMAIN", "UMAMI_DOMAIN", "UMAMI_DB_NAME", "UMAMI_DB_USER", "UMAMI_DB_PASSWORD", "UMAMI_APP_SECRET"):
             config[name] = value(name)
         health_urls = [f"https://{config['SITE_DOMAIN']}/stats/stats.js"]
@@ -73,13 +87,13 @@ def main():
             variables[f"{service.upper()}_IMAGE_REFERENCE"] = reference
             variables[f"{service.upper()}_IMAGE_TAG"] = commit
         config.update(variables)
-    for name in ("DOMAIN", "CMS_DOMAIN", "SITE_DOMAIN", "UMAMI_DOMAIN"):
+    for name in ("DOMAIN", "CMS_DOMAIN", "SITE_DOMAIN", "UMAMI_DOMAIN", "TRAEFIK_DOMAIN"):
         if name in config and not re.fullmatch(r"[a-z0-9]+(?:[a-z0-9.-]*[a-z0-9])?", config[name]):
             fail(f"Invalid hostname in {name}")
     manifest = {
         "schema_version": 1,
         "repository": "portfolio",
-        "environment": environment,
+        "environment": toolkit_environments.get(environment, environment),
         "release_id": release_id,
         "source_commit": commit,
         "project": projects[environment],
@@ -89,7 +103,13 @@ def main():
         "environment_variables": variables,
     }
     if environment == "production":
-        manifest["prepare_script"] = "scripts/pre-migrate-dump.sh"
+        prepare_script = "scripts/pre-migrate-dump.sh"
+    if prepare_script:
+        manifest["prepare_script"] = prepare_script
+    if post_deploy_script:
+        manifest["post_deploy_script"] = post_deploy_script
+    if runtime_directories:
+        manifest["runtime_directories"] = runtime_directories
     output = Path(sys.argv[2]).resolve()
     output.mkdir(mode=0o700, parents=True, exist_ok=False)
     os.umask(0o077)

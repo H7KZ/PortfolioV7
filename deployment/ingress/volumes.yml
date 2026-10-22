@@ -1,0 +1,32 @@
+# ==============================================================================
+# Volumes: Ingress (compose project global)
+#
+# External so that a `docker compose down -v` can never take the certificates or CrowdSec's
+# decision database with it; toolkit creates them (the portfolio- prefix is what allows it).
+# ==============================================================================
+
+volumes:
+  # ACME account key + issued certificates.
+  portfolio-ingress-certificates-volume:
+    name: portfolio-ingress-certificates-volume
+    external: true
+
+  # Access log. Written by Traefik, read by CrowdSec. See logrotate/traefik.
+  portfolio-ingress-logs-volume:
+    name: portfolio-ingress-logs-volume
+    external: true
+
+  # Downloaded plugin sources, so a GitHub outage cannot stop Traefik booting.
+  portfolio-ingress-plugins-volume:
+    name: portfolio-ingress-plugins-volume
+    external: true
+
+  # CrowdSec decisions, alerts and the community blocklist cache.
+  portfolio-ingress-crowdsec-db-volume:
+    name: portfolio-ingress-crowdsec-db-volume
+    external: true
+
+  # CrowdSec hub items and generated config.
+  portfolio-ingress-crowdsec-config-volume:
+    name: portfolio-ingress-crowdsec-config-volume
+    external: true
