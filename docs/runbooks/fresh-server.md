@@ -26,7 +26,7 @@ In shared mode skip steps 2 and 3 where the server already has Docker, the deplo
    | `cms.jankominek.com`   | Payload admin                           | Cloudflare Access |
    | `umami.jankominek.com` | Umami dashboard                         | Cloudflare Access |
 
-   Create Cloudflare Access applications for `dev`, `cms` and `umami` for the people who need them, before their DNS records resolve. The Payload and Umami logins stay enabled as a second control. Set the zone's SSL mode to Full (strict) once the first certificate exists. HTML must never be cached at the edge; only `/_nuxt/*`, `/media/*` and fonts may be. If the apex is still bound to an old Cloudflare Worker, remove that binding (Custom Domain and Route need different steps) in step 8, not before.
+   Create Cloudflare Access applications for `dev`, `cms` and `umami` before their DNS records resolve (Zero Trust, Access, Applications, Add, Self-hosted; one application per hostname; an Allow policy for the e-mail addresses of the people who need it). The Payload and Umami logins stay enabled as a second control. Set the zone's SSL mode to Full (strict) once the first certificate exists. HTML must never be cached at the edge; only `/_nuxt/*`, `/media/*` and fonts may be. If the apex is still bound to an old Cloudflare Worker, remove that binding (Custom Domain and Route need different steps) in step 8, not before.
 
 2. **Cloudflare API token** (standalone only): DNS edit for the zone, nothing else. It becomes `CF_DNS_API_TOKEN`; Traefik uses it for ACME DNS-01.
 3. **Backblaze B2, age key, Healthchecks**: follow the Toolkit [backup setup](https://github.com/H7KZ/Toolkit/tree/main/docs/backups.md#set-up-a-repository-owner-once). Reuse the existing bucket, keys and age key when moving servers.
@@ -118,7 +118,7 @@ On a first-ever install there is nothing to restore; skip to step 7. Otherwise, 
 ## 7. Initialize and enable
 
 1. Create the first Payload admin user at `https://cms.jankominek.com/admin`, or skip it when the database was restored. Import V6 content only on a brand-new empty CMS: [V6 content import](content-import.md).
-2. Umami: sign in with Umami's initial administrator account, change its password, create a website for `jankominek.com`, and store its ID as the `production` environment variable `UMAMI_WEBSITE_ID`. Redeploy production so the web emits the tracker. A restored Umami database already has the website: reuse its ID.
+2. Umami: sign in at `https://umami.jankominek.com` with Umami's default administrator account (user `admin`, password `umami`; Cloudflare Access must already protect the host), change the password immediately, create a website for `jankominek.com`, and store its ID as the `production` environment variable `UMAMI_WEBSITE_ID`. Redeploy production so the web emits the tracker. A restored Umami database already has the website: reuse its ID.
 3. Enable boot reconcile and the retention timer after a manual run succeeds (**VPS as root**):
 
    ```bash
@@ -135,7 +135,7 @@ On a first-ever install there is nothing to restore; skip to step 7. Otherwise, 
 1. Lower the TTL of the records from step 1 a day ahead (proxied records are already short-lived).
 2. Take a final backup on the old server: `sudo deployment/toolkit backup run daily`, and restore it to the new one (step 6) so the data is current.
 3. Point the proxied records at the new server's IP. Check the apex, `/cs`, `/media`, `/stats/stats.js`, a contact-form submission, CMS save then page refresh, and the three protected hostnames through Cloudflare. Direct requests to the VPS may be rejected by the origin firewall; test through the proxy.
-4. Update `SSH_HOST`, `SSH_PORT`, `SSH_HOST_FINGERPRINT` to the new server if not done yet, and run **Deploy Monitoring** with `operation` `reconcile` through [Rollback](rollback-and-recovery.md) to prove the pipeline reaches the new host.
+4. Update `SSH_HOST`, `SSH_PORT`, `SSH_HOST_FINGERPRINT` to the new server if not done yet, and prove the pipeline reaches the new host by running **Rollback** with `environment` `monitoring`, `operation` `reconcile` (see [Rollback and recovery](rollback-and-recovery.md#reconcile)).
 
 ## 9. Decommission the old VPS
 

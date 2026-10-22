@@ -38,7 +38,7 @@ Accepted risk: until the owner enables the timers, a lost disk or deleted volume
 
 ## Restore
 
-From a machine with the age private key and a reader key (not the VPS by default), in a checkout of this repository:
+From a machine with the age private key and a reader key (not the VPS by default), in a checkout of this repository. The machine needs `age`, `rclone` and `zstd` on the PATH (on the VPS `sudo deployment/toolkit backup install-tools` installs pinned ones):
 
 ```bash
 export TOOLKIT_DIRECT=1 BACKUP_BUCKET=<bucket> BACKUP_B2_KEY_ID=<reader id> BACKUP_B2_KEY=<reader key>
