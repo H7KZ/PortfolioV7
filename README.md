@@ -9,7 +9,14 @@ jankominek.com. Nuxt 4 (SSR) site, Payload 3 CMS, self-hosted Umami. Everything 
 | `cms.jankominek.com`   | `apps/cms` Payload admin + API (one, global) | Cloudflare Access |
 | `umami.jankominek.com` | Umami dashboard (tracker at `/stats`)        | Cloudflare Access |
 
-Start with the [documentation index](docs/README.md). The [migration plan](docs/PLAN.md) records the design and decisions.
+Start with the [documentation index](docs/README.md).
+
+```
+Cloudflare (proxied; Access on dev., cms., umami.) -> Traefik (public-network) -> web / cms / umami containers
+web -> cms over portfolio-cms-network (REST, API keys); cms saves call web /_internal/revalidate
+```
+
+The site and CMS are one deployable unit per environment: production runs web, CMS and Postgres, development runs web only and reads the production CMS. Traefik is either Infrastructure's (shared host, today) or this repository's own `deployment/ingress` (dedicated server); see [Split to own server](docs/runbooks/split-to-own-server.md).
 
 ## Layout
 
@@ -17,8 +24,9 @@ Start with the [documentation index](docs/README.md). The [migration plan](docs/
 apps/web          Nuxt site (port 45173)
 apps/cms          Payload CMS on Next (port 43000), migrations, V6 import script
 packages/content  generated Payload types + contact form schema shared by both
-deployment/       compose stacks, toolkit release adapters, boot reconcile, disabled retention timer
-.github/workflows verify, deploy, rollback, deploy-analytics
+deployment/       compose stacks (production, development, monitoring, ingress), pinned toolkit and toolkit.conf, Umami retention job, backup components
+.github/workflows verify, deploy, deploy-monitoring, deploy-ingress, rollback, backup-verify, registry-cleanup
+docs/             runbooks and ADRs
 ```
 
 ## Local development
@@ -46,6 +54,18 @@ pnpm dev
 
 ## Deploy
 
-Every push to `main` runs verification, builds the web image and deploys development through **Deploy** on GitHub-hosted runners. Manual **Deploy** also supports development or production; production is main-only and deploys one complete web+CMS snapshot through the repository's pinned toolkit. **Rollback Deployment** restores an existing immutable snapshot; **Deploy Analytics** remains manual. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. A CMS deploy takes a pre-migration database dump on the VPS; there are no other backups. Analytics retention uses an initially disabled host timer.
+Every push to `main` runs verification, builds the web image and deploys development through **Deploy** on GitHub-hosted runners. Manual **Deploy** selects any source branch, tag or SHA for development or production, independently of the workflow branch. Production deploys one complete web, CMS and Postgres snapshot through the selected source's pinned toolkit. **Rollback** restores or activates immutable snapshots; **Deploy Monitoring** (Umami) and **Deploy Ingress** (standalone servers only) are manual. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. A CMS deploy takes a pre-migration database dump on the VPS. Encrypted off-host backups of the CMS database, Umami database and CMS media are declared in `deployment/backup/` and stay off until the owner enables them; **Backup Verify** checks them from GitHub. Boot reconcile, Umami retention and backups are toolkit units generated from `deployment/toolkit.conf`, installed disabled.
 
-For first deployment and later changes, use the [setup guides](docs/README.md#setup): Cloudflare, GitHub and VPS, analytics, and the one-time V6 content import.
+## Runbooks
+
+| Task                                   | Runbook                                                         |
+| -------------------------------------- | --------------------------------------------------------------- |
+| New or replacement VPS, moving servers | [Fresh server](docs/runbooks/fresh-server.md)                   |
+| Workflows, inputs, stage and activate  | [Deploy and release](docs/runbooks/deploy-and-release.md)       |
+| Roll back, reconcile, restore          | [Rollback and recovery](docs/runbooks/rollback-and-recovery.md) |
+| Backups and restore                    | [Backups](docs/runbooks/backups.md)                             |
+| Add a service or target                | [Add a service](docs/runbooks/add-a-service.md)                 |
+| Secrets and variables                  | [Secrets and config](docs/runbooks/secrets-and-config.md)       |
+| Ingress modes, dedicated server        | [Split to own server](docs/runbooks/split-to-own-server.md)     |
+| Dependabot, dependency bumps           | [Dependency updates](docs/runbooks/dependency-updates.md)       |
+| Failures                               | [Troubleshooting](docs/runbooks/troubleshooting.md)             |

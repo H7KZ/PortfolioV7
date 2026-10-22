@@ -1,0 +1,231 @@
+# Applies one toolkit release to the VPS: verify the pin, prepare the bundle and private dotenv,
+# upload it over SSH and run `deployment/toolkit release <operation> <target>` as the deploy user.
+# Called by deploy.yml, deploy-monitoring.yml, deploy-ingress.yml and rollback.yml.
+
+name: Deploy Environment (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: Release target (production, development, monitoring or ingress)
+        required: true
+        type: string
+      source_commit:
+        description: Full SHA of the source to release or to take the toolkit from
+        required: true
+        type: string
+      operation:
+        description: deploy, stage, rollback, activate or reconcile
+        required: false
+        type: string
+        default: deploy
+      web_digest:
+        description: Digest of the web image (production and development)
+        required: false
+        type: string
+        default: ''
+      cms_digest:
+        description: Digest of the CMS image (production)
+        required: false
+        type: string
+        default: ''
+      release_id:
+        description: current, previous or an existing release ID, for rollback and activate
+        required: false
+        type: string
+        default: previous
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Apply release
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Check out controller
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.source_commit }}
+          path: release-source
+      - name: Validate release request
+        id: meta
+        env:
+          TARGET: ${{ inputs.environment }}
+          OPERATION: ${{ inputs.operation }}
+          RESTORE_ID: ${{ inputs.release_id }}
+          SOURCE_SHA: ${{ inputs.source_commit }}
+          HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
+        run: |
+          set -euo pipefail
+          case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
+          case "$OPERATION" in deploy|stage|rollback|activate|reconcile) ;; *) exit 1 ;; esac
+          [[ "$SOURCE_SHA" =~ ^[a-f0-9]{40}$ ]] || exit 1
+          [[ "$HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || {
+            echo 'SSH_HOST_FINGERPRINT must pin the verified server key.' >&2; exit 1;
+          }
+          [[ "$RESTORE_ID" == current || "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
+          echo "release_id=$SOURCE_SHA-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
+          case "$OPERATION" in
+            deploy|stage)
+              echo "${OPERATION}: ${TARGET}, source ${SOURCE_SHA}, release ${SOURCE_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            reconcile)
+              echo "Reconcile: ${TARGET}, snapshot current, toolkit source ${SOURCE_SHA}" >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            rollback|activate)
+              echo "${OPERATION}: ${TARGET}, snapshot ${RESTORE_ID}, toolkit source ${SOURCE_SHA}" >> "$GITHUB_STEP_SUMMARY"
+              ;;
+          esac
+      - name: Prepare archive, manifest and private environment
+        if: inputs.operation == 'deploy' || inputs.operation == 'stage'
+        env:
+          WEB_DIGEST: ${{ inputs.web_digest }}
+          CMS_DIGEST: ${{ inputs.cms_digest }}
+          PROJECT: ${{ vars.PROJECT }}
+          DOMAIN: ${{ vars.DOMAIN }}
+          CMS_DOMAIN: ${{ vars.CMS_DOMAIN }}
+          UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+          PREVIEW_SECRET: ${{ secrets.PREVIEW_SECRET }}
+          REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+          CMS_READ_API_KEY: ${{ secrets.CMS_READ_API_KEY }}
+          CMS_CONTACT_API_KEY: ${{ secrets.CMS_CONTACT_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
+          UMAMI_DOMAIN: ${{ vars.UMAMI_DOMAIN }}
+          UMAMI_DB_NAME: ${{ secrets.UMAMI_DB_NAME }}
+          UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
+          UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
+          UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
+          TRAEFIK_DOMAIN: ${{ vars.TRAEFIK_DOMAIN }}
+          TRAEFIK_DASHBOARD_ALLOWED_IPS: ${{ vars.TRAEFIK_DASHBOARD_ALLOWED_IPS }}
+          ACME_EMAIL: ${{ vars.ACME_EMAIL }}
+          TRAEFIK_HTPASSWD: ${{ secrets.TRAEFIK_HTPASSWD }}
+          CF_DNS_API_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
+          CROWDSEC_ENROLL_KEY: ${{ secrets.CROWDSEC_ENROLL_KEY }}
+          TARGET: ${{ inputs.environment }}
+          SOURCE_SHA: ${{ inputs.source_commit }}
+          SOURCE_ROOT: ${{ github.workspace }}/release-source
+        run: python3 deployment/prepare-release.py "$TARGET" "$GITHUB_WORKSPACE/bundle"
+      - name: Prepare toolkit packet
+        run: |
+          set -euo pipefail
+          mkdir -p bundle/deployment/vendor
+          cp release-source/deployment/toolkit release-source/deployment/toolkit.conf release-source/deployment/toolkit.lock bundle/deployment/
+          cp -R release-source/deployment/vendor/toolkit bundle/deployment/vendor/toolkit
+      - name: Verify toolkit pin
+        run: |
+          set -euo pipefail
+          bash deployment/toolkit verify
+          bash deployment/toolkit verify "$GITHUB_WORKSPACE/bundle/deployment"
+      - name: Run host preflight
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        env:
+          RELEASE_ID: ${{ steps.meta.outputs.release_id }}
+          OPERATION: ${{ inputs.operation }}
+          TARGET: ${{ inputs.environment }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: RELEASE_ID,OPERATION,TARGET
+          script: |
+            set -euo pipefail
+            [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Toolkit runner is not installed; run on the VPS: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
+            umask 077
+            case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
+            install -d -m 0700 "$HOME/portfolio/versions/$TARGET"
+            mkdir -p "$HOME/portfolio/incoming"
+            chmod 700 "$HOME/portfolio/incoming"
+            mkdir -m 700 "$HOME/portfolio/incoming/$RELEASE_ID"
+      - name: Upload private release inputs
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          source: bundle/*
+          target: ~/portfolio/incoming/${{ steps.meta.outputs.release_id }}
+          strip_components: 1
+      - name: Apply release through toolkit
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        env:
+          TARGET: ${{ inputs.environment }}
+          OPERATION: ${{ inputs.operation }}
+          RESTORE_ID: ${{ inputs.release_id }}
+          RELEASE_ID: ${{ steps.meta.outputs.release_id }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_ACTOR: ${{ github.actor }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: TARGET,OPERATION,RESTORE_ID,RELEASE_ID,GH_TOKEN,GH_ACTOR
+          command_timeout: 110m
+          script: |
+            set -euo pipefail
+            case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
+            [[ "$RELEASE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
+            [[ "$RESTORE_ID" == current || "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
+            umask 077
+            incoming="$HOME/portfolio/incoming/$RELEASE_ID"
+            registry="$(mktemp -d "$HOME/portfolio/.registry.XXXXXXXX")"
+            cleanup() {
+              rm -rf -- "$registry"
+              rm -rf -- "$incoming"
+            }
+            trap cleanup EXIT
+            printf '%s' "$GH_TOKEN" | docker --config "$registry" login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
+            toolkit=(bash "$incoming/deployment/toolkit")
+            case "$OPERATION" in
+              deploy|stage)
+                chmod 600 "$incoming/release.env"
+                "${toolkit[@]}" release "$OPERATION" "$TARGET" --registry-config "$registry" \
+                  --archive "$incoming/release.tar.gz" --checksum "$incoming/release.tar.gz.sha256" \
+                  --manifest "$incoming/manifest.json" --env-file "$incoming/release.env"
+                ;;
+              rollback|activate)
+                "${toolkit[@]}" release "$OPERATION" "$TARGET" --registry-config "$registry" --release-id "$RESTORE_ID"
+                ;;
+              reconcile)
+                "${toolkit[@]}" release reconcile "$TARGET" --registry-config "$registry"
+                ;;
+              *) exit 1 ;;
+            esac
+      - name: Remove private inputs
+        if: always()
+        run: rm -rf -- "$GITHUB_WORKSPACE/bundle"
+      - name: Remove remote incoming inputs
+        if: always() && steps.meta.outcome == 'success'
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        env:
+          RELEASE_ID: ${{ steps.meta.outputs.release_id }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          envs: RELEASE_ID
+          script: |
+            set -euo pipefail
+            [[ "$RELEASE_ID" =~ ^[a-f0-9]{40}-[0-9]+-[0-9]+$ ]] || exit 1
+            rm -rf -- "$HOME/portfolio/incoming/$RELEASE_ID"

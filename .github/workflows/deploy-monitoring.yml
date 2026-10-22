@@ -1,0 +1,46 @@
+# Deploys the monitoring stack (self-hosted Umami) as an immutable toolkit release.
+
+name: Deploy Monitoring
+run-name: 'Deploy Monitoring · monitoring · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Source branch, tag or SHA; blank = workflow ref
+        required: false
+        type: string
+        default: ''
+      operation:
+        description: Deploy now or stage a release for later activation
+        required: true
+        type: choice
+        options: [deploy, stage]
+        default: deploy
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-monitoring
+  cancel-in-progress: false
+
+jobs:
+  source:
+    name: Resolve source
+    uses: ./.github/workflows/_resolve.yml
+    with:
+      ref: ${{ inputs.ref }}
+
+  deploy:
+    name: Deploy release
+    needs: source
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      environment: monitoring
+      source_commit: ${{ needs.source.outputs.sha }}
+      operation: ${{ inputs.operation }}
+    secrets: inherit

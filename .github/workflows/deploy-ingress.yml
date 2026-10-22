@@ -1,0 +1,52 @@
+# Deploys this repository's own ingress (Traefik + socket-proxy + CrowdSec, compose project
+# `global`, network `public-network`) as an immutable toolkit release.
+#
+# WARNING: standalone servers only. Never deploy ingress to a host where Infrastructure's Traefik
+# already runs: both bind ports 80/443 and both own the network `public-network`. On a shared host
+# leave this workflow alone. See docs/runbooks/split-to-own-server.md.
+
+name: Deploy Ingress
+run-name: 'Deploy Ingress · ingress · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Source branch, tag or SHA; blank = workflow ref. Standalone server only, never where Infrastructure's Traefik runs
+        required: false
+        type: string
+        default: ''
+      operation:
+        description: Deploy now, stage a release for later activation, or roll back to the previous release
+        required: true
+        type: choice
+        options: [deploy, stage, rollback]
+        default: deploy
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-ingress
+  cancel-in-progress: false
+
+jobs:
+  source:
+    name: Resolve source
+    uses: ./.github/workflows/_resolve.yml
+    with:
+      ref: ${{ inputs.ref }}
+
+  deploy:
+    name: Deploy release
+    needs: source
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      environment: ingress
+      source_commit: ${{ needs.source.outputs.sha }}
+      operation: ${{ inputs.operation }}
+      release_id: previous
+    secrets: inherit

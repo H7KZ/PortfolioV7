@@ -1,6 +1,6 @@
 # AGENTS.md
 
-jankominek.com. Read [README.md](README.md) for setup and [docs/PLAN.md](docs/PLAN.md) for the decisions behind it.
+jankominek.com. Read [README.md](README.md) for setup and [docs/README.md](docs/README.md) for the runbooks and decisions.
 
 ## Stack
 
@@ -25,5 +25,6 @@ jankominek.com. Read [README.md](README.md) for setup and [docs/PLAN.md](docs/PL
 - No tests unless asked. Run `pnpm verify` and `pnpm format:check` before committing.
 - No comments that restate the code; comments explain why.
 - Conventional commits.
-- Pushes to `main` deploy development after verification; production and analytics use manual dispatch. Never push or deploy unless asked.
-- Deployment changes: read [docs/setup/deployment.md](docs/setup/deployment.md) for toolkit snapshots, migration hooks, rollback and host unit constraints.
+- Pushes to `main` deploy development after verification; manual deploys select any source ref and target environment. Never push or deploy unless asked.
+- Deployment changes: read [deployment/AGENTS.md](deployment/AGENTS.md) and the [runbooks](docs/runbooks/). The repository must deploy to a clean server from its own checkout; ingress (`deployment/ingress`) is only for a dedicated server and never runs where Infrastructure's Traefik does ([ADR 0001](docs/adr/0001-repository-standard.md)).
+- The repository runs only its pinned toolkit, through `deployment/toolkit`, configured by `deployment/toolkit.conf`. Never call a toolkit installed on the server. Never hand-edit `deployment/toolkit`, `deployment/toolkit.lock` or `deployment/vendor/toolkit/`; repin from the Toolkit repository (`npm run vendor -- ../PortfolioV7` there). Shell scripts source `deployment/vendor/toolkit/log.sh`. Docs: <https://github.com/H7KZ/Toolkit/tree/main/docs>.

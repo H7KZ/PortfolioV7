@@ -1,4 +1,9 @@
+# Verifies, builds or reuses images, and deploys development or production as an immutable toolkit
+# release. Every push to main deploys development; manual runs pick any environment and source ref.
+# Not supported here (the repo has no qualified-development promotion): modes `promote`, input `run_id`.
+
 name: Deploy
+run-name: "Deploy · ${{ inputs.environment || 'development' }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation || 'deploy' }}"
 
 on:
   push:
@@ -6,98 +11,184 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Whole environment to deploy (production includes web and CMS)
+        description: Target environment (production includes the CMS)
+        required: true
         type: choice
-        options: [production, development]
+        options: [development, production]
         default: development
-      reuse_images:
-        description: 'Development only: skip rebuilding the web image if it already exists in ghcr for this commit.'
+      ref:
+        description: Source branch, tag or SHA; blank = workflow ref
+        required: false
+        type: string
+        default: ''
+      operation:
+        description: Deploy now or stage a release for later activation
+        required: true
+        type: choice
+        options: [deploy, stage]
+        default: deploy
+      mode:
+        description: Reuse images and build missing ones, always build, or require existing images
+        required: true
+        type: choice
+        options: [reuse, build, existing]
+        default: reuse
+      image_tag:
+        description: Existing image tag for reuse or existing mode; blank = environment-sourceSHA
+        required: false
+        type: string
+        default: ''
+      digests:
+        description: 'Existing mode only: complete digest JSON {"web":"sha256:...","cms":"sha256:..."}; development needs web only'
+        required: false
+        type: string
+        default: ''
+      verify:
+        description: Verify the selected source before deployment
+        required: true
+        type: boolean
+        default: true
+      no_cache:
+        description: Build without the Docker layer cache
+        required: true
         type: boolean
         default: false
 
 permissions:
   contents: read
-  packages: write
 
 concurrency:
   group: deploy-${{ inputs.environment || 'development' }}
   cancel-in-progress: false
 
 jobs:
+  source:
+    name: Resolve source
+    uses: ./.github/workflows/_resolve.yml
+    with:
+      ref: ${{ inputs.ref }}
+
   verify:
-    name: Verify Code
+    name: Verify code
+    needs: source
+    if: github.event_name != 'workflow_dispatch' || inputs.verify
     permissions:
       contents: read
     uses: ./.github/workflows/verify.yml
-  validate:
-    name: Validate Inputs
-    needs: verify
+    with:
+      ref: ${{ needs.source.outputs.sha }}
+
+  resolve-images:
+    name: Resolve images
+    needs: [source, verify]
+    if: >-
+      !cancelled() && needs.source.result == 'success' &&
+      (needs.verify.result == 'success' || needs.verify.result == 'skipped')
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
     outputs:
-      environment: ${{ steps.target.outputs.environment }}
-      web_digest: ${{ steps.reuse.outputs.web_digest }}
+      web_digest: ${{ steps.images.outputs.web_digest }}
+      cms_digest: ${{ steps.images.outputs.cms_digest }}
     steps:
-      - uses: actions/checkout@v7
-      - name: Validate branch and toolkit pin
-        id: target
+      - name: Resolve complete image set
+        id: images
         env:
           TARGET: ${{ inputs.environment || 'development' }}
-        run: |
-          set -euo pipefail
-          case "$TARGET" in production|development) ;; *) exit 1 ;; esac
-          [[ "$TARGET" == development || "$GITHUB_REF" == refs/heads/main ]] || {
-            echo 'Production releases require main.' >&2; exit 1;
-          }
-          bash deployment/verify-toolkit-pin.sh
-          echo "environment=$TARGET" >> "$GITHUB_OUTPUT"
-      - name: Resolve reusable web image digest from ghcr
-        id: reuse
-        if: inputs.reuse_images
-        env:
-          TARGET: ${{ inputs.environment || 'development' }}
+          MODE: ${{ inputs.mode || 'build' }}
+          OPERATION: ${{ inputs.operation || 'deploy' }}
+          SOURCE_SHA: ${{ needs.source.outputs.sha }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          NO_CACHE: ${{ inputs.no_cache || false }}
+          DIGESTS: ${{ inputs.digests }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_ACTOR: ${{ github.actor }}
         run: |
           set -euo pipefail
-          [[ "$TARGET" == development ]] || { echo 'Production builds cannot reuse images.' >&2; exit 1; }
+          case "$TARGET" in production|development) ;; *) exit 1 ;; esac
+          case "$MODE" in build|reuse|existing) ;; *) exit 1 ;; esac
+          case "$OPERATION" in deploy|stage) ;; *) exit 1 ;; esac
+          services='["web"]'
+          [[ "$TARGET" != production ]] || services='["web","cms"]'
+          [[ -z "$DIGESTS" || "$MODE" == existing ]] || { echo 'digests requires existing mode' >&2; exit 1; }
+          [[ -z "$DIGESTS" || -z "$IMAGE_TAG" ]] || { echo 'Choose digests or image_tag' >&2; exit 1; }
+          [[ -z "$IMAGE_TAG" || "$MODE" != build ]] || { echo 'image_tag requires reuse or existing mode' >&2; exit 1; }
+          [[ "$NO_CACHE" != true || "$MODE" != existing ]] || { echo 'no_cache requires build or reuse mode' >&2; exit 1; }
+          if [[ -n "$DIGESTS" ]]; then
+            jq -e --argjson services "$services" 'type == "object" and (keys | sort) == ($services | sort) and all(.[]; type == "string" and test("^sha256:[a-f0-9]{64}$"))' <<< "$DIGESTS" >/dev/null
+          fi
+          tag="${IMAGE_TAG:-$TARGET-$SOURCE_SHA}"
+          [[ "$tag" =~ ^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$ ]] || { echo 'Invalid image_tag' >&2; exit 1; }
+          [[ "$MODE" != build ]] || exit 0
           prefix="$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')"
           printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GH_ACTOR" --password-stdin >/dev/null
-          digest="$(docker buildx imagetools inspect "ghcr.io/$prefix/web:$GITHUB_SHA" --format '{{json .Manifest}}' 2>/dev/null | jq -r '.digest // empty' || true)"
-          if [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]]; then
-            echo "web: reusing ghcr.io/$prefix/web:$GITHUB_SHA ($digest)"
-            echo "web_digest=$digest" >> "$GITHUB_OUTPUT"
-          else
-            echo "web: no image tagged $GITHUB_SHA; it will be built"
-          fi
+          trap 'docker logout ghcr.io >/dev/null' EXIT
+          while IFS= read -r service; do
+            if [[ -n "$DIGESTS" ]]; then
+              digest="$(jq -r --arg service "$service" '.[$service]' <<< "$DIGESTS")"
+              docker buildx imagetools inspect "ghcr.io/$prefix/$service@$digest" >/dev/null
+            else
+              digest="$(docker buildx imagetools inspect "ghcr.io/$prefix/$service:$tag" --format '{{json .Manifest}}' 2>/dev/null | jq -r '.digest // empty' || true)"
+            fi
+            if [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]]; then
+              echo "${service}_digest=$digest" >> "$GITHUB_OUTPUT"
+              echo "Reuse $service@$digest" >> "$GITHUB_STEP_SUMMARY"
+            elif [[ "$MODE" == existing ]]; then
+              echo "Missing existing image: $service:$tag" >&2; exit 1
+            else
+              echo "Build missing $service:$tag" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done < <(jq -r '.[]' <<< "$services")
+
   build-web:
-    name: Build Web
-    needs: validate
-    if: needs.validate.outputs.web_digest == ''
-    uses: ./.github/workflows/_build-service.yml
+    name: Build web image
+    needs: [source, resolve-images]
+    if: >-
+      !cancelled() && needs.resolve-images.result == 'success' && needs.resolve-images.outputs.web_digest == ''
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/_build.yml
     with:
       service: web
-      cache_scope: web-${{ needs.validate.outputs.environment }}
+      environment: ${{ inputs.environment || 'development' }}
+      source_commit: ${{ needs.source.outputs.sha }}
+      no_cache: ${{ inputs.no_cache || false }}
     secrets: inherit
+
   build-cms:
-    name: Build CMS
-    needs: validate
-    if: needs.validate.outputs.environment == 'production'
-    uses: ./.github/workflows/_build-service.yml
+    name: Build CMS image
+    needs: [source, resolve-images]
+    if: >-
+      !cancelled() && needs.resolve-images.result == 'success' && inputs.environment == 'production' && needs.resolve-images.outputs.cms_digest == ''
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/_build.yml
     with:
       service: cms
-      cache_scope: cms-production
+      environment: production
+      source_commit: ${{ needs.source.outputs.sha }}
+      no_cache: ${{ inputs.no_cache || false }}
     secrets: inherit
+
   deploy:
-    name: Deploy complete environment snapshot
-    needs: [validate, build-web, build-cms]
+    name: Deploy release
+    needs: [source, resolve-images, build-web, build-cms]
     if: >-
-      !cancelled() && needs.validate.result == 'success' && (needs.build-web.result == 'success' || needs.validate.outputs.web_digest != '') &&
-      (needs.build-cms.result == 'success' ||
-      (needs.validate.outputs.environment == 'development' && needs.build-cms.result == 'skipped'))
-    uses: ./.github/workflows/_deploy-service.yml
+      !cancelled() && needs.resolve-images.result == 'success' &&
+      (needs.build-web.result == 'success' || needs.resolve-images.outputs.web_digest != '') &&
+      (inputs.environment != 'production' || needs.build-cms.result == 'success' || needs.resolve-images.outputs.cms_digest != '')
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/_deploy.yml
     with:
-      environment: ${{ needs.validate.outputs.environment }}
-      web_digest: ${{ needs.validate.outputs.web_digest || needs.build-web.outputs.image_digest }}
-      cms_digest: ${{ needs.build-cms.outputs.image_digest }}
+      environment: ${{ inputs.environment || 'development' }}
+      source_commit: ${{ needs.source.outputs.sha }}
+      operation: ${{ inputs.operation || 'deploy' }}
+      web_digest: ${{ needs.resolve-images.outputs.web_digest || needs.build-web.outputs.image_digest }}
+      cms_digest: ${{ needs.resolve-images.outputs.cms_digest || needs.build-cms.outputs.image_digest }}
     secrets: inherit

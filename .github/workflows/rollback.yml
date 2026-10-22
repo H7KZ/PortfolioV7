@@ -1,32 +1,58 @@
-name: Rollback Deployment
+# Restores, activates or reconciles an existing toolkit release snapshot. Rebuilds nothing.
+
+name: Rollback
+run-name: 'Rollback · ${{ inputs.environment }} · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Whole snapshot to restore
+        description: Target whose whole snapshot to act on
+        required: true
         type: choice
         options: [production, development, monitoring]
-        default: development
+        default: production
+      ref:
+        description: Toolkit source branch, tag or SHA; blank = workflow ref
+        required: false
+        type: string
+        default: ''
+      operation:
+        description: Restore a release, activate a staged release, or reconcile current
+        required: true
+        type: choice
+        options: [rollback, activate, reconcile]
+        default: rollback
       release_id:
-        description: previous or an existing fullSHA-run-attempt snapshot ID
+        description: current, previous or fullSHA-run-attempt; ignored for reconcile
         required: true
         type: string
         default: previous
 
 permissions:
   contents: read
-  packages: read
 
 concurrency:
   group: deploy-${{ inputs.environment }}
   cancel-in-progress: false
 
 jobs:
-  rollback:
-    uses: ./.github/workflows/_deploy-service.yml
+  source:
+    name: Resolve source
+    uses: ./.github/workflows/_resolve.yml
     with:
-      operation: rollback
+      ref: ${{ inputs.ref }}
+
+  rollback:
+    name: Restore release
+    needs: source
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/_deploy.yml
+    with:
       environment: ${{ inputs.environment }}
+      source_commit: ${{ needs.source.outputs.sha }}
+      operation: ${{ inputs.operation }}
       release_id: ${{ inputs.release_id }}
     secrets: inherit

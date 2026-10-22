@@ -1,0 +1,40 @@
+# Resolves a branch, tag or SHA to one full commit SHA, so every job of a run uses the same source.
+
+name: Resolve Source (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Source branch, tag or SHA; blank = workflow ref
+        required: false
+        type: string
+        default: ''
+    outputs:
+      sha:
+        description: Full commit SHA of the resolved source
+        value: ${{ jobs.source.outputs.sha }}
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    name: Resolve source
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      sha: ${{ steps.source.outputs.sha }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Resolve source commit
+        id: source
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          [[ "$sha" =~ ^[a-f0-9]{40}$ ]]
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "Source: $sha" >> "$GITHUB_STEP_SUMMARY"

@@ -1,6 +1,7 @@
 # ==============================================================================
 # Networks: Development (portfolio-dev)
-#   public-network:              Infrastructure's shared Traefik network.
+#   public-network:              shared Traefik network (Infrastructure's Traefik, or this
+#                                repository's deployment/ingress on a standalone host).
 #   portfolio-cms-network:       web (both environments) <-> cms. Shared by both
 #                                stacks, so it is external to both.
 # Toolkit creates portfolio-* networks; Infrastructure must provision public-network.

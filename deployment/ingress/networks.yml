@@ -1,0 +1,27 @@
+# ==============================================================================
+# Networks: Ingress (compose project global)
+#
+#   public-network:  where app containers publish themselves for Traefik to discover.
+#                    Created by Compose when this stack deploys (name fixed, not external), so a
+#                    standalone server needs no manual step. Deploy ingress before the app targets.
+#                    On a shared host Infrastructure's Traefik owns it instead and this stack is
+#                    never deployed; apps declare it `external: true` in both modes.
+#   The two private networks are external so that toolkit creates them as internal (no route to the
+#   internet); their portfolio- prefix is what lets the portfolio repository create them.
+# ==============================================================================
+
+networks:
+  public-network:
+    name: public-network
+
+  # Traefik <-> socket-proxy only. Internal.
+  portfolio-ingress-socket-proxy-network:
+    name: portfolio-ingress-socket-proxy-network
+    external: true
+    x-toolkit-internal: true
+
+  # Traefik <-> CrowdSec LAPI + AppSec only. Internal.
+  portfolio-ingress-crowdsec-network:
+    name: portfolio-ingress-crowdsec-network
+    external: true
+    x-toolkit-internal: true

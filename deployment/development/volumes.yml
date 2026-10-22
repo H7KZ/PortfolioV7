@@ -1,6 +1,6 @@
 # ==============================================================================
 # Volumes: Development (portfolio-dev)
-# The development web is stateless; this file exists because deploy.sh merges it.
+# The development web is stateless; this file exists because toolkit merges it.
 # ==============================================================================
 
 volumes: {}
