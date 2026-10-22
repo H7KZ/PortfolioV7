@@ -69,6 +69,12 @@ updates:
       # @types/node follows the Node major in the Dockerfiles and engines; Node LTS moves by hand, together.
       - dependency-name: '@types/node'
         update-types: ['version-update:semver-major']
+      # typescript 7 breaks vue-tsc (it resolves typescript/lib/tsc, which TS 7 does not export); graphql 17 is
+      # outside the peer range of payload. Lift each once its tooling supports it.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'graphql'
+        update-types: ['version-update:semver-major']
 
   # Dockerfile base images (one directory per app).
   - package-ecosystem: docker
