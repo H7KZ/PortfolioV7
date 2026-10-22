@@ -2,8 +2,8 @@
 # manifests say `catalog:`.
 catalog:
   typescript: '~6.0.3'
-  '@types/node': '^26.5.1'
-  zod: '^4.6.5'
+  '@types/node': '^26.6.5'
+  zod: '^4.6.7'
 
 overrides:
   typescript: '~6.0.3'
