@@ -17,6 +17,10 @@ Run **Rollback**:
 
 The whole target's snapshot is restored, including the web and CMS together in production. Keep the registry digests of every retained snapshot: pass them in `protected_digests` when running Cleanup Registry for real.
 
+### Roll back ingress (standalone server only)
+
+Run **Deploy Ingress** with `operation` `rollback`: it restores the `previous` ingress release. For another release ID use the VPS commands below.
+
 ### Activate a staged release
 
 A **Deploy** or **Deploy Monitoring** with `operation` `stage` printed a release ID. Run Rollback with `operation` `activate` and that ID.
@@ -38,7 +42,7 @@ deployment/toolkit reconcile production
 deployment/toolkit doctor
 ```
 
-Replace `production` with `development`, `monitoring` or `ingress`; the Rollback workflow does not list `ingress` (a standalone-only target, and toolkit 0.11 has no `ingress` lock environment), so roll ingress back here. The toolkit takes its locks itself; never wrap these commands in another lock.
+Replace `production` with `development`, `monitoring` or `ingress`; the Rollback workflow does not list `ingress` (a standalone-only target); use Deploy Ingress `rollback` for `previous`, or these commands for a specific `--release-id`. The toolkit takes its locks itself; never wrap these commands in another lock.
 
 ## Restore a CMS migration dump
 

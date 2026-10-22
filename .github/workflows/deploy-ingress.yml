@@ -17,10 +17,10 @@ on:
         type: string
         default: ''
       operation:
-        description: Deploy now or stage a release for later activation
+        description: Deploy now, stage a release for later activation, or roll back to the previous release
         required: true
         type: choice
-        options: [deploy, stage]
+        options: [deploy, stage, rollback]
         default: deploy
 
 permissions:
@@ -48,4 +48,5 @@ jobs:
       environment: ingress
       source_commit: ${{ needs.source.outputs.sha }}
       operation: ${{ inputs.operation }}
+      release_id: previous
     secrets: inherit
