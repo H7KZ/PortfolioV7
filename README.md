@@ -67,4 +67,5 @@ Every push to `main` runs verification, builds the web image and deploys develop
 | Add a service or target                | [Add a service](docs/runbooks/add-a-service.md)                 |
 | Secrets and variables                  | [Secrets and config](docs/runbooks/secrets-and-config.md)       |
 | Ingress modes, dedicated server        | [Split to own server](docs/runbooks/split-to-own-server.md)     |
+| Dependabot, dependency bumps           | [Dependency updates](docs/runbooks/dependency-updates.md)       |
 | Failures                               | [Troubleshooting](docs/runbooks/troubleshooting.md)             |

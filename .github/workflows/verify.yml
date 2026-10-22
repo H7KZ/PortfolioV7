@@ -6,7 +6,7 @@ run-name: 'Verify Code · ${{ inputs.ref || github.ref_name }}'
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   workflow_dispatch:
     inputs:
       ref:

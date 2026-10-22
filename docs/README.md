@@ -4,17 +4,18 @@ Start at the root [README](../README.md) for what the project is and how to run 
 
 ## Runbooks
 
-| I need to                                            | Read                                                       |
-| ---------------------------------------------------- | ---------------------------------------------------------- |
-| bring a clean VPS to a running site, or move servers | [Fresh server](runbooks/fresh-server.md)                   |
-| ship code: workflows, inputs, stage and activate     | [Deploy and release](runbooks/deploy-and-release.md)       |
-| undo a release, reconcile, restore after an incident | [Rollback and recovery](runbooks/rollback-and-recovery.md) |
-| set up, check or restore backups                     | [Backups](runbooks/backups.md)                             |
-| add a container or a deploy target                   | [Add a service](runbooks/add-a-service.md)                 |
-| create or rotate a secret or variable                | [Secrets and config](runbooks/secrets-and-config.md)       |
-| choose or change where ingress runs                  | [Split to own server](runbooks/split-to-own-server.md)     |
-| diagnose a failure                                   | [Troubleshooting](runbooks/troubleshooting.md)             |
-| import V6 content into a new, empty CMS (one time)   | [V6 content import](runbooks/content-import.md)            |
+| I need to                                                    | Read                                                       |
+| ------------------------------------------------------------ | ---------------------------------------------------------- |
+| bring a clean VPS to a running site, or move servers         | [Fresh server](runbooks/fresh-server.md)                   |
+| ship code: workflows, inputs, stage and activate             | [Deploy and release](runbooks/deploy-and-release.md)       |
+| undo a release, reconcile, restore after an incident         | [Rollback and recovery](runbooks/rollback-and-recovery.md) |
+| set up, check or restore backups                             | [Backups](runbooks/backups.md)                             |
+| add a container or a deploy target                           | [Add a service](runbooks/add-a-service.md)                 |
+| create or rotate a secret or variable                        | [Secrets and config](runbooks/secrets-and-config.md)       |
+| choose or change where ingress runs                          | [Split to own server](runbooks/split-to-own-server.md)     |
+| review a Dependabot PR, handle a major, move the toolkit pin | [Dependency updates](runbooks/dependency-updates.md)       |
+| diagnose a failure                                           | [Troubleshooting](runbooks/troubleshooting.md)             |
+| import V6 content into a new, empty CMS (one time)           | [V6 content import](runbooks/content-import.md)            |
 
 ## Architecture decisions
 
