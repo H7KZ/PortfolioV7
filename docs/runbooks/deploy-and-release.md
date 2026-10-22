@@ -20,7 +20,7 @@ Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. The `ingress` target exists f
 | Verify Code       | `verify.yml`                                | pull request, manual, called | toolkit pin, type-check, lint, format check                                              |
 | Deploy            | `deploy.yml`                                | push to `main`, manual       | verify, build or reuse images, deploy development or production                          |
 | Deploy Monitoring | `deploy-monitoring.yml`                     | manual                       | deploy or stage the Umami stack                                                          |
-| Deploy Ingress    | `deploy-ingress.yml`                        | manual                       | deploy, stage or roll back this repository's own Traefik (standalone servers only)      |
+| Deploy Ingress    | `deploy-ingress.yml`                        | manual                       | deploy, stage or roll back this repository's own Traefik (standalone servers only)       |
 | Rollback          | `rollback.yml`                              | manual                       | restore, activate or reconcile an existing release ([runbook](rollback-and-recovery.md)) |
 | Backup Verify     | `backup-verify.yml`                         | daily and weekly, manual     | freshness check and restore drill ([runbook](backups.md))                                |
 | Cleanup Registry  | `registry-cleanup.yml`                      | weekly preview, manual       | prune old GHCR image versions                                                            |
