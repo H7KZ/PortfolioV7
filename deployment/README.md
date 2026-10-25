@@ -14,6 +14,7 @@ Everything that ships this repository to a server: Compose stacks per target, th
 | `backup/`                                    | `components.sh`: what to back up and how to drill it ([runbook](../docs/runbooks/backups.md))         |
 | `scripts/pre-migrate-dump.sh`                | production prepare hook: dumps the CMS database before a migration                                    |
 | `prepare-release.py`                         | renders the private dotenv, manifest and archive for a target (called by `_deploy.yml`)               |
+| `release-notes.py`                           | GitHub Release notes from Conventional Commits (called by `deploy.yml` job `release`)                 |
 
 Each target directory holds `networks.yml`, `volumes.yml` and `docker-compose.<target>.yml`; toolkit merges them.
 
