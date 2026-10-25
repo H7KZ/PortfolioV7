@@ -72,7 +72,7 @@ jobs:
           umask 077
           TOOLKIT_DIRECT=1 bash deployment/toolkit pack "$PWD/packet"
           for key in BACKUP_BUCKET BACKUP_B2_KEY_ID BACKUP_B2_KEY BACKUP_AGE_RECIPIENT; do
-            [[ -n "${!key}" ]] || { echo "::error::$key is not set; set it with the Toolkit's secrets setup script (Toolkit docs/backups.md)"; exit 1; }
+            [[ -n "${!key}" ]] || { echo "::error::$key is not set; set it with the Toolkit's secrets setup script (the Toolkit's backups guide)"; exit 1; }
           done
           for key in BACKUP_BUCKET BACKUP_B2_KEY_ID BACKUP_B2_KEY BACKUP_AGE_RECIPIENT HC_PING_KEY ALERT_DISCORD_WEBHOOK_URL; do
             [[ "${!key}" != *$'\n'* ]] || { echo "::error::$key must be one line"; exit 1; }
