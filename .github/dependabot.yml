@@ -111,7 +111,6 @@ updates:
       - '/'
       - '/deployment/development'
       - '/deployment/ingress'
-      - '/deployment/monitoring'
       - '/deployment/production'
     target-branch: develop
     schedule:
@@ -128,9 +127,6 @@ updates:
     commit-message:
       prefix: 'chore(deps)'
     groups:
-      monitoring-stack:
-        patterns: ['grafana/*', 'prom/*']
-        update-types: ['minor', 'patch']
       images-minor-patch:
         patterns: ['*']
         exclude-patterns: ['mysql', 'mariadb', 'postgres', 'redis', 'traefik', 'crowdsecurity/*', 'tecnativa/*']

@@ -7,26 +7,19 @@
 # time. https://github.com/H7KZ/Toolkit/tree/main/docs/backups.md
 # shellcheck disable=SC2034 # arrays are read by the toolkit
 
-declare -gA BACKUP_CADENCE BACKUP_EXT BACKUP_PAUSE BACKUP_MIN_BYTES BACKUP_DRILL
+declare -gA BACKUP_EXT BACKUP_PAUSE BACKUP_MIN_BYTES BACKUP_DRILL
 
 # Capture order: databases first, files last.
-BACKUP_COMPONENTS=(cms-postgres umami-postgres cms-uploads)
+# Umami analytics live in Infrastructure's shared monitoring stack and are backed up there.
+BACKUP_COMPONENTS=(cms-postgres cms-uploads)
 
 # CMS content. Custom-format dump, so the drill and a restore use pg_restore.
-BACKUP_CADENCE["cms-postgres"]=4h
 BACKUP_EXT["cms-postgres"]=pgdump
 BACKUP_MIN_BYTES["cms-postgres"]=10000
 BACKUP_DRILL["cms-postgres"]="postgres deployment/production/docker-compose.production.yml"
 
-# Umami analytics (13-month retention). Daily is enough for aggregate traffic.
-BACKUP_CADENCE["umami-postgres"]=daily
-BACKUP_EXT["umami-postgres"]=pgdump
-BACKUP_MIN_BYTES["umami-postgres"]=8000
-BACKUP_DRILL["umami-postgres"]="postgres deployment/monitoring/docker-compose.monitoring.yml"
-
 # CMS media (/media/<file> on the site). Files are write-once, so nothing is paused.
 # An empty tar is 10240 bytes, so the floor sits above it.
-BACKUP_CADENCE["cms-uploads"]=daily
 BACKUP_EXT["cms-uploads"]=tar
 BACKUP_MIN_BYTES["cms-uploads"]=12000
 BACKUP_DRILL["cms-uploads"]="archive"
@@ -55,11 +48,6 @@ produce_cms_postgres() {
   docker exec portfolio-postgres sh -ceu 'exec pg_dump -Fc --compress=0 --no-owner --no-privileges -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
 }
 
-produce_umami_postgres() {
-  _running_container portfolio-umami-postgres portfolio-analytics || return 1
-  docker exec portfolio-umami-postgres sh -ceu 'exec pg_dump -Fc --compress=0 --no-owner --no-privileges -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
-}
-
 produce_cms_uploads() {
   _running_container portfolio-cms portfolio || return 1
   docker exec portfolio-cms tar -C /data/media -cf - .
@@ -77,4 +65,3 @@ _drill_has_table() {
 }
 
 drill_check_cms_postgres() { _drill_has_table "$1" payload_migrations; }
-drill_check_umami_postgres() { _drill_has_table "$1" website; }

@@ -1,6 +1,6 @@
 # Verifies, builds or reuses images, and deploys development or production as an immutable toolkit
 # release. Every push to main deploys development; manual development runs pick any source ref, while
-# production, monitoring and ingress run only from main and only for a commit on main.
+# production and ingress run only from main and only for a commit on main.
 # Not supported here (the repo has no qualified-development promotion): modes `promote`, input `run_id`.
 
 name: Deploy
@@ -156,6 +156,7 @@ jobs:
       service: web
       environment: ${{ inputs.environment || 'development' }}
       source_commit: ${{ needs.source.outputs.sha }}
+      version: ${{ needs.source.outputs.version }}
       no_cache: ${{ inputs.no_cache || false }}
     secrets: inherit
 
@@ -172,12 +173,23 @@ jobs:
       service: cms
       environment: production
       source_commit: ${{ needs.source.outputs.sha }}
+      version: ${{ needs.source.outputs.version }}
       no_cache: ${{ inputs.no_cache || false }}
+    secrets: inherit
+
+  host-sync:
+    name: Sync host
+    needs: source
+    permissions:
+      contents: read
+    uses: ./.github/workflows/host-sync.yml
+    with:
+      ref: ${{ needs.source.outputs.sha }}
     secrets: inherit
 
   deploy:
     name: Deploy release
-    needs: [source, resolve-images, build-web, build-cms]
+    needs: [source, host-sync, resolve-images, build-web, build-cms]
     if: >-
       !cancelled() && needs.resolve-images.result == 'success' &&
       (needs.build-web.result == 'success' || needs.resolve-images.outputs.web_digest != '') &&
@@ -189,6 +201,7 @@ jobs:
     with:
       environment: ${{ inputs.environment || 'development' }}
       source_commit: ${{ needs.source.outputs.sha }}
+      version: ${{ needs.source.outputs.version }}
       operation: ${{ inputs.operation || 'deploy' }}
       web_digest: ${{ needs.resolve-images.outputs.web_digest || needs.build-web.outputs.image_digest }}
       cms_digest: ${{ needs.resolve-images.outputs.cms_digest || needs.build-cms.outputs.image_digest }}

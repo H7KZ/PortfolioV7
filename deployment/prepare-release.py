@@ -28,7 +28,8 @@ def main():
     if len(sys.argv) != 3:
         fail("usage: prepare-release.py <environment> <output-directory>")
     environment = sys.argv[1]
-    projects = {"production": "portfolio", "development": "portfolio-dev", "monitoring": "portfolio-analytics", "ingress": "global"}
+    # Monitoring and Umami are shared per host and deployed by Infrastructure.
+    projects = {"production": "portfolio", "development": "portfolio-dev", "ingress": "global"}
     # Toolkit 0.11 accepts only fixed lock environments; the ingress target uses `infrastructure`.
     toolkit_environments = {"ingress": "infrastructure"}
     if environment not in projects:
@@ -36,11 +37,11 @@ def main():
     commit = os.environ.get("SOURCE_SHA") or value("GITHUB_SHA")
     if not re.fullmatch(r"[a-f0-9]{40}", commit):
         fail("Invalid source commit")
-    run = value("GITHUB_RUN_ID")
-    attempt = value("GITHUB_RUN_ATTEMPT")
-    if not re.fullmatch(r"[0-9]+", run) or not re.fullmatch(r"[0-9]+", attempt):
-        fail("Invalid run identity")
-    release_id = f"{commit}-{run}-{attempt}"
+    # CalVer (YYYY.MM.DD-<run number>): image tag shown by `docker ps`, APP_VERSION and release ID.
+    version = value("RELEASE_VERSION")
+    release_id = value("RELEASE_ID")
+    if not re.fullmatch(r"\d{4}\.\d{2}\.\d{2}-[1-9][0-9]*", version) or not re.fullmatch(re.escape(version) + r"(\.[1-9][0-9]*)?", release_id):
+        fail("Invalid release version or ID")
     config = {}
     images = {}
     variables = {}
@@ -58,10 +59,6 @@ def main():
         prepare_script = "ingress/scripts/prepare.sh"
         post_deploy_script = "ingress/scripts/post-deploy.sh"
         runtime_directories = ["ingress/.rendered"]
-    elif environment == "monitoring":
-        for name in ("SITE_DOMAIN", "UMAMI_DOMAIN", "UMAMI_DB_NAME", "UMAMI_DB_USER", "UMAMI_DB_PASSWORD", "UMAMI_APP_SECRET"):
-            config[name] = value(name)
-        health_urls = [f"https://{config['SITE_DOMAIN']}/stats/stats.js"]
     else:
         for name in ("PROJECT", "DOMAIN", "PREVIEW_SECRET", "REVALIDATE_SECRET", "CMS_READ_API_KEY"):
             config[name] = value(name)
@@ -82,12 +79,13 @@ def main():
             digest = value(f"{service.upper()}_DIGEST")
             if not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
                 fail(f"Invalid {service} image digest")
-            reference = f"ghcr.io/{prefix}/{service}@{digest}"
+            # The tag is for people (`docker ps`); Docker resolves the digest.
+            reference = f"ghcr.io/{prefix}/{service}:{version}@{digest}"
             images[f"portfolio-{service}"] = reference
             variables[f"{service.upper()}_IMAGE_REFERENCE"] = reference
-            variables[f"{service.upper()}_IMAGE_TAG"] = commit
+            variables[f"{service.upper()}_IMAGE_TAG"] = version
         config.update(variables)
-    for name in ("DOMAIN", "CMS_DOMAIN", "SITE_DOMAIN", "UMAMI_DOMAIN", "TRAEFIK_DOMAIN"):
+    for name in ("DOMAIN", "CMS_DOMAIN", "TRAEFIK_DOMAIN"):
         if name in config and not re.fullmatch(r"[a-z0-9]+(?:[a-z0-9.-]*[a-z0-9])?", config[name]):
             fail(f"Invalid hostname in {name}")
     manifest = {
