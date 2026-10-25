@@ -62,9 +62,9 @@ Harden SSH (key-only, no root login) and keep a second session open while you te
 ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub -E sha256
 ```
 
-Optional host tuning (swap, bounded Docker logs) is described in the [Toolkit host guide](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md#host-configuration-swap-docker-logs).
+Host tuning (swap, Docker `live-restore` and bounded logs, held Docker packages) is declared by the host's owner (Infrastructure on a shared host): [Toolkit host guide](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md).
 
-## 3. Install the toolkit (VPS)
+## 3. Bootstrap the toolkit (VPS, once per server)
 
 The server never needs a global toolkit. A checkout of this repository supplies the pinned release that installs the loader, the control copy and the systemd units.
 
@@ -82,11 +82,11 @@ cd /home/deploy/portfolio-checkout
 deployment/toolkit install --deploy-user deploy
 ```
 
-This installs `/usr/local/libexec/toolkit-run-bundle`, the deploy user's single sudo rule, `/opt/toolkit/portfolio/` and the units from `deployment/toolkit.conf`. It enables nothing. The deploy key is root-equivalent; protect it accordingly. Rerun `install` after every toolkit repin or change to a script that `toolkit.conf` references. Mechanics: [Toolkit host guide](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md).
+This installs `/usr/local/libexec/toolkit-run-bundle` and the deploy user's single sudo rule, which every workflow needs. From then on **Host Sync** owns the host side ([Deploy and release](deploy-and-release.md#host-sync)): `/opt/toolkit/portfolio/`, `/etc/toolkit/portfolio.env` rendered from GitHub secrets, and the units from `deployment/toolkit.conf`, enabled (the backup timer after one successful backup). The deploy key is root-equivalent; protect it accordingly. Mechanics: [Toolkit host guide](https://github.com/H7KZ/Toolkit/tree/main/docs/host.md).
 
 ## 4. GitHub secrets, variables, environments (GitHub)
 
-Create the repository secrets and variables, then the environments `production`, `development`, `monitoring` and, for standalone, `ingress`, with the values listed in [Secrets and config](secrets-and-config.md). Allow all deployment branches so any target can be deployed from any workflow ref.
+Create the repository secrets and variables (the backup and alert ones come from the Toolkit's `scripts/setup-secrets.py --apply`), then the environments `production`, `development` and, for standalone, `ingress`, with the values listed in [Secrets and config](secrets-and-config.md). Allow all deployment branches so any target can be deployed from any workflow ref.
 
 When moving servers, change only `SSH_HOST`, `SSH_PORT` and `SSH_HOST_FINGERPRINT` (last, at the cutover in step 8). Every application secret stays the same: the restored databases and the API keys indexed by `PAYLOAD_SECRET` expect the original values.
 
@@ -103,7 +103,9 @@ Run each workflow from the Actions tab and wait for it to finish before the next
 
    Optional hardening: enable the Cloudflare-only origin firewall and the weekly range refresh by following [Split to own server](split-to-own-server.md#enable-the-host-singletons).
 
-2. **Deploy Monitoring** (Umami). Initialize it as in step 7.
+   Shared host: Infrastructure deploys Traefik and the shared monitoring stack (including Umami) first.
+
+2. **Host Sync** (`host-sync.yml`). Deploy runs it too; alone first, it surfaces missing secrets early.
 3. **Deploy** with `environment` `production`. Builds web and CMS images, dumps any existing CMS database, starts Postgres, CMS and web. First deployment may skip the dump only when neither a database container nor volume exists.
 4. **Deploy** with `environment` `development`. Web only; it reads the production CMS over `portfolio-cms-network`, so production must exist first.
 
@@ -113,29 +115,20 @@ All `portfolio-*` networks and volumes are created by these deploys from the res
 
 ## 6. Restore data (a moved server or a rebuilt one)
 
-On a first-ever install there is nothing to restore; skip to step 7. Otherwise, after step 5 has produced running, empty containers, restore the CMS database, Umami database and media from the encrypted backups: follow [Backups: restore](backups.md#restore). Use the same secrets as before.
+On a first-ever install there is nothing to restore; skip to step 7. Otherwise, after step 5 has produced running, empty containers, restore the CMS database and media from the encrypted backups (Umami is restored by Infrastructure): follow [Backups: restore](backups.md#restore). Use the same secrets as before.
 
 ## 7. Initialize and enable
 
 1. Create the first Payload admin user at `https://cms.jankominek.com/admin`, or skip it when the database was restored. Import V6 content only on a brand-new empty CMS: [V6 content import](content-import.md).
-2. Umami: sign in at `https://umami.jankominek.com` with Umami's default administrator account (user `admin`, password `umami`; Cloudflare Access must already protect the host), change the password immediately, create a website for `jankominek.com`, and store its ID as the `production` environment variable `UMAMI_WEBSITE_ID`. Redeploy production so the web emits the tracker. A restored Umami database already has the website: reuse its ID.
-3. Enable boot reconcile and the retention timer after a manual run succeeds (**VPS as root**):
-
-   ```bash
-   systemctl start toolkit-portfolio-reconcile.service
-   systemctl enable toolkit-portfolio-reconcile.service
-   systemctl start toolkit-portfolio-umami-retention.service
-   systemctl enable --now toolkit-portfolio-umami-retention.timer
-   ```
-
-4. Backups: create `/etc/toolkit/portfolio.env`, run a capture by hand and enable the timers as described in [Backups: owner setup](backups.md#owner-setup-once). Do not enable the timers before a restore has been rehearsed.
+2. Umami is Infrastructure's shared instance at `https://umami.jankominek.com`: the `jankominek.com` website lives there; store its ID as the `production` environment variable `UMAMI_WEBSITE_ID` (unchanged when the Umami data was migrated) and redeploy production so the web emits the tracker.
+3. Host Sync already enabled boot reconcile and, after one successful backup, the backup timer ([Backups](backups.md#owner-setup-once-for-all-repositories)). Confirm with `deployment/toolkit doctor` (**VPS as deploy user**), then dispatch Backup Verify with `check` `both`.
 
 ## 8. Cut over DNS (moves only)
 
 1. Lower the TTL of the records from step 1 a day ahead (proxied records are already short-lived).
-2. Take a final backup on the old server: `sudo deployment/toolkit backup run daily`, and restore it to the new one (step 6) so the data is current.
+2. Stop writers on the old server, capture a final copy there (`sudo deployment/toolkit backup run --pinned`) and restore it to the new one (step 6, `--tier pinned`) so the data is current. Moving every repository of a shared host follows Infrastructure's [migrate-host runbook](https://github.com/H7KZ/Infrastructure/tree/main/docs/runbooks/migrate-host.md).
 3. Point the proxied records at the new server's IP. Check the apex, `/cs`, `/media`, `/stats/stats.js`, a contact-form submission, CMS save then page refresh, and the three protected hostnames through Cloudflare. Direct requests to the VPS may be rejected by the origin firewall; test through the proxy.
-4. Update `SSH_HOST`, `SSH_PORT`, `SSH_HOST_FINGERPRINT` to the new server if not done yet, and prove the pipeline reaches the new host by running **Rollback** with `environment` `monitoring`, `operation` `reconcile` (see [Rollback and recovery](rollback-and-recovery.md#reconcile)).
+4. Update `SSH_HOST`, `SSH_PORT`, `SSH_HOST_FINGERPRINT` to the new server if not done yet, and prove the pipeline reaches the new host by running **Rollback** with `environment` `production`, `operation` `reconcile` (see [Rollback and recovery](rollback-and-recovery.md#reconcile)).
 
 ## 9. Decommission the old VPS
 
@@ -143,7 +136,7 @@ Wait until the new server has served traffic and one scheduled backup plus the w
 
 ```bash
 systemctl list-timers 'toolkit-portfolio-*'
-systemctl disable --now toolkit-portfolio-backup@4h.timer toolkit-portfolio-backup@daily.timer toolkit-portfolio-umami-retention.timer
+systemctl disable --now toolkit-portfolio-backup.timer
 systemctl disable toolkit-portfolio-reconcile.service
 docker ps --format '{{.Names}}' | grep '^portfolio-' | xargs -r docker stop
 ```
@@ -154,8 +147,8 @@ docker ps --format '{{.Names}}' | grep '^portfolio-' | xargs -r docker stop
 
 ## Verify
 
-- Actions: Deploy Ingress (standalone), Deploy Monitoring, Deploy production and development all green.
-- **VPS as deploy user:** `deployment/toolkit doctor` reports no `fail`; `docker ps` shows `portfolio-web-prod`, `portfolio-cms`, `portfolio-postgres`, `portfolio-web-dev`, `portfolio-umami`, `portfolio-umami-postgres` healthy, plus `traefik`, `crowdsec`, `socket-proxy` when standalone.
+- Actions: Deploy Ingress (standalone), Host Sync, Deploy production and development all green.
+- **VPS as deploy user:** `deployment/toolkit doctor` reports no `fail`; `docker ps` shows `portfolio-web-prod`, `portfolio-cms`, `portfolio-postgres`, `portfolio-web-dev` healthy, plus `traefik`, `crowdsec`, `socket-proxy` when standalone.
 - `https://jankominek.com/` loads, `/stats/stats.js` is served, a CMS edit appears on the site after a refresh.
 - Backup Verify (freshness, then drill) is green in Actions.
 - Reboot rehearsal: `sudo reboot`, then `systemctl status toolkit-portfolio-reconcile.service` is `active (exited)` and all containers are back.
