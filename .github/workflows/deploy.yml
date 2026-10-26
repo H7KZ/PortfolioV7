@@ -1,6 +1,6 @@
 # Verifies, builds or reuses images, and deploys development or production as an immutable toolkit
 # release. Every push to main deploys development; manual development runs pick any source ref, while
-# production and ingress run only from main and only for a commit on main.
+# production, monitoring and ingress run only from main and only for a commit on main.
 # Not supported here (the repo has no qualified-development promotion): modes `promote`, input `run_id`.
 
 name: Deploy
