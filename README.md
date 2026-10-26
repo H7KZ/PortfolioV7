@@ -25,7 +25,7 @@ apps/web          Nuxt site (port 45173)
 apps/cms          Payload CMS on Next (port 43000), migrations, V6 import script
 packages/content  generated Payload types + contact form schema shared by both
 deployment/       compose stacks (production, development, monitoring, ingress), pinned toolkit and toolkit.conf, Umami retention job, backup components
-.github/workflows verify, deploy, deploy-monitoring, deploy-ingress, rollback, backup-verify, registry-cleanup
+.github/workflows verify, deploy, host-sync, deploy-ingress, rollback, backup-verify, registry-cleanup
 docs/             runbooks and ADRs
 ```
 
@@ -54,7 +54,7 @@ pnpm dev
 
 ## Deploy
 
-Every push to `main` runs verification, builds the web image and deploys development through **Deploy** on GitHub-hosted runners. Manual **Deploy** selects any source branch, tag or SHA for development or production, independently of the workflow branch. Production deploys one complete web, CMS and Postgres snapshot through the selected source's pinned toolkit. **Rollback** restores or activates immutable snapshots; **Deploy Monitoring** (Umami) and **Deploy Ingress** (standalone servers only) are manual. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. A CMS deploy takes a pre-migration database dump on the VPS. Encrypted off-host backups of the CMS database, Umami database and CMS media are declared in `deployment/backup/` and stay off until the owner enables them; **Backup Verify** checks them from GitHub. Boot reconcile, Umami retention and backups are toolkit units generated from `deployment/toolkit.conf`, installed disabled.
+Every push to `main` runs verification, builds the web image and deploys development through **Deploy** on GitHub-hosted runners. Manual **Deploy** selects any source branch, tag or SHA for development or production, independently of the workflow branch. Production deploys one complete web, CMS and Postgres snapshot through the selected source's pinned toolkit. **Rollback** restores or activates immutable snapshots; **Deploy Ingress** (standalone servers only) is manual. **Host Sync** installs the pinned toolkit's units on the VPS before every deploy. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`, tagged with the CalVer release version. A CMS deploy takes a pre-migration database dump on the VPS. Encrypted off-host backups of the CMS database and media run every 4 h (declared in `deployment/backup/`); **Backup Verify** checks them from GitHub. Analytics (Umami) is this repository's own `monitoring` stack (**Deploy Monitoring**), independent of the other repositories on the host.
 
 ## Runbooks
 

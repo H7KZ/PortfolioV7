@@ -1,4 +1,6 @@
-# Deploys the monitoring stack (self-hosted Umami) as an immutable toolkit release.
+# Deploys this repository's own analytics stack (self-hosted Umami and its Postgres, deployment/monitoring)
+# as an immutable toolkit release. Host Sync runs first. Monitoring is not shared with the other
+# repositories on the host. Runs only from main, like production.
 
 name: Deploy Monitoring
 run-name: 'Deploy Monitoring · monitoring · ${{ inputs.ref || github.ref_name }} · ${{ inputs.operation }}'
@@ -32,9 +34,19 @@ jobs:
     with:
       ref: ${{ inputs.ref }}
 
+  host-sync:
+    name: Sync host
+    needs: source
+    permissions:
+      contents: read
+    uses: ./.github/workflows/host-sync.yml
+    with:
+      ref: ${{ needs.source.outputs.sha }}
+    secrets: inherit
+
   deploy:
     name: Deploy release
-    needs: source
+    needs: [source, host-sync]
     permissions:
       contents: read
       packages: read
@@ -42,5 +54,6 @@ jobs:
     with:
       environment: monitoring
       source_commit: ${{ needs.source.outputs.sha }}
+      version: ${{ needs.source.outputs.version }}
       operation: ${{ inputs.operation }}
     secrets: inherit

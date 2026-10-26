@@ -24,7 +24,7 @@ on:
         options: [rollback, activate, reconcile]
         default: rollback
       release_id:
-        description: current, previous or fullSHA-run-attempt; ignored for reconcile
+        description: current, previous or a release version such as 2026.10.25-142; ignored for reconcile
         required: true
         type: string
         default: previous

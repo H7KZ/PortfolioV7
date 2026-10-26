@@ -1,8 +1,8 @@
 # ==============================================================================
-# Networks: Monitoring (compose project portfolio-analytics)
+# Networks: Monitoring (compose project portfolio-monitoring)
 #   public-network:                        shared Traefik network (Infrastructure's Traefik, or
 #                                          this repository's deployment/ingress on a standalone host).
-#   portfolio-analytics-internal-network:  umami <-> its postgres only.
+#   portfolio-monitoring-internal-network:  umami <-> its postgres only.
 # Toolkit creates portfolio-* networks; public-network must already exist.
 # ==============================================================================
 
@@ -11,6 +11,6 @@ networks:
     name: public-network
     external: true
 
-  portfolio-analytics-internal-network:
-    name: portfolio-analytics-internal-network
+  portfolio-monitoring-internal-network:
+    name: portfolio-monitoring-internal-network
     external: true

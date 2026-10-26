@@ -23,21 +23,19 @@ Standalone servers are the one place this repository owns host-wide behaviour. I
 
 - `MAINTENANCE_AT=...` schedules weekly package updates (`toolkit-maintenance.timer`).
 - `RECONCILE_BEFORE=deployment/ingress/cloudflare-firewall.sh` applies the Cloudflare-only origin firewall at every boot before containers are reconciled.
-- the `cloudflare-firewall` job lines refresh the Cloudflare ranges weekly; also change `JOBS=umami-retention` to `JOBS=umami-retention cloudflare-firewall`.
+- the `cloudflare-firewall` job lines refresh the Cloudflare ranges weekly; also add `JOBS=cloudflare-firewall`.
 
-Commit the change, then **VPS as deploy user** `git pull`, and **VPS as root**:
+Commit and merge the change: **Host Sync** installs and enables the firewall and maintenance timers. Then **VPS as deploy user** `git pull`, and **VPS as root**:
 
 ```bash
 cd /home/deploy/portfolio-checkout
 bash deployment/toolkit verify
 bash deployment/ingress/cloudflare-firewall.sh --dry-run          # review the ruleset
-deployment/toolkit install --deploy-user deploy
 deployment/toolkit job cloudflare-firewall                        # apply once, by hand
 install -m 0644 -o root -g root /home/deploy/portfolio/versions/ingress/current/ingress/logrotate/traefik /etc/logrotate.d/traefik
-systemctl enable --now toolkit-portfolio-cloudflare-firewall.timer toolkit-maintenance.timer
 ```
 
-The firewall touches only ports 80 and 443 (TCP and UDP), so SSH is unaffected. To let an uptime monitor or your own IP reach the origin directly, set the defaults of `EXTRA_ALLOWED_V4` and `EXTRA_ALLOWED_V6` in the script (jobs and the boot step run without extra environment), commit, and rerun `install`. Declare each singleton in exactly one repository per host: never enable these lines on a host where Infrastructure declares them.
+The firewall touches only ports 80 and 443 (TCP and UDP), so SSH is unaffected. To let an uptime monitor or your own IP reach the origin directly, set the defaults of `EXTRA_ALLOWED_V4` and `EXTRA_ALLOWED_V6` in the script (jobs and the boot step run without extra environment), commit, and let Host Sync reinstall. Declare each singleton in exactly one repository per host: never enable these lines on a host where Infrastructure declares them.
 
 ## Shared host to standalone on the same machine
 

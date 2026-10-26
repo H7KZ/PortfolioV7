@@ -1,6 +1,6 @@
 # Rollback and recovery
 
-Use this when a release misbehaves, a staged release must go live, containers did not come back after a reboot, or data must be restored. For a lost server use [Fresh server](fresh-server.md) and [Backups](backups.md).
+Use this when a release misbehaves, a staged release must go live, containers did not come back after a reboot, or data must be restored. A deploy whose health gate fails needs none of it: the toolkit already re-applied `current` and the run failed and alerted Discord. For a lost server use [Fresh server](fresh-server.md) and [Backups](backups.md).
 
 A release is an immutable snapshot under `~/portfolio/versions/<target>/<release-id>/` on the VPS, with `current` and `previous` pointers. Rollback switches pointers and containers to a stored snapshot; it never rebuilds, never renders new secrets and never touches data. It restores that snapshot's Compose model, pinned image digests and private environment exactly as they were.
 
@@ -8,14 +8,14 @@ A release is an immutable snapshot under `~/portfolio/versions/<target>/<release
 
 Run **Rollback**:
 
-| Input         | Value                                                                             |
-| ------------- | --------------------------------------------------------------------------------- |
-| `environment` | `production` (default), `development` or `monitoring`                             |
-| `ref`         | a revision with the 0.11 toolkit; blank = workflow ref                            |
-| `operation`   | `rollback`                                                                        |
-| `release_id`  | `previous` (default), `current`, or an ID from `ls ~/portfolio/versions/<target>` |
+| Input         | Value                                                                         |
+| ------------- | ----------------------------------------------------------------------------- |
+| `environment` | `production` (default), `development` or `monitoring`                         |
+| `ref`         | a revision whose pinned toolkit runs it; blank = workflow ref                 |
+| `operation`   | `rollback`                                                                    |
+| `release_id`  | `previous` (default), `current`, or a release version such as `2026.10.25-31` |
 
-The whole target's snapshot is restored, including the web and CMS together in production. Keep the registry digests of every retained snapshot: pass them in `protected_digests` when running Cleanup Registry for real.
+The whole target's snapshot is restored, including the web and CMS together in production. Images of the newest three snapshots plus `current` and `previous` stay on the host, so a rollback pulls nothing; Cleanup Registry protects every digest a retained snapshot references. Rollback needs no Host Sync and alerts Discord when it fails.
 
 ### Roll back ingress (standalone server only)
 
@@ -27,7 +27,7 @@ A **Deploy** or **Deploy Monitoring** with `operation` `stage` printed a release
 
 ### Reconcile
 
-`operation` `reconcile` restarts the containers of the current snapshot without recreating existing ones and ignores `release_id`. Use it after a host reboot problem or a manually stopped container.
+`operation` `reconcile` brings back the current snapshot: it starts its containers and recreates application containers whose image or configuration drifted (Postgres is never recreated), then waits for health; it ignores `release_id`. Use it after a host reboot problem or a manually stopped container.
 
 ## The same from the VPS (VPS as deploy user)
 
@@ -59,7 +59,7 @@ These dumps protect against a bad migration on the same host, not against host l
 
 ## Containers missing after a reboot
 
-`toolkit-portfolio-reconcile.service` starts the declared containers of each current snapshot at boot. If it was never enabled or failed:
+`toolkit-portfolio-reconcile.service` (enabled by Host Sync) reconciles each current snapshot at boot and alerts Discord when it fails. If it is disabled or failed:
 
 ```bash
 systemctl status toolkit-portfolio-reconcile.service           # VPS as root
@@ -78,3 +78,8 @@ Database or media loss, a wrong delete, or a rebuilt server: [Backups: restore](
 - `ls -l ~/portfolio/versions/<target>/current` points to the intended release ID.
 - `docker ps` shows the target's containers healthy; the public URL and a CMS save-and-refresh work.
 - `deployment/toolkit doctor` has no `fail`.
+
+## Drills
+
+- **Rollback drill** (quarterly, and after toolkit changes): on development, Rollback with `release_id` `previous`, then `operation` `activate` back to the newer release; both green.
+- **Reboot drill** (after host changes): reboot the host; every container of `current` comes back and `doctor` is clean.

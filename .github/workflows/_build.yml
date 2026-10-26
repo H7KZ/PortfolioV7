@@ -7,7 +7,7 @@
 #              (ubuntu-latest). GHCR push uses GITHUB_TOKEN, so this needs no
 #              extra secrets.
 #
-# Inputs: service (web | cms), environment, source_commit, no_cache
+# Inputs: service (web | cms), environment, source_commit, version, no_cache
 # Outputs: full commit tag, image prefix and pushed image digest.
 # ==============================================================================
 
@@ -26,6 +26,10 @@ on:
         type: string
       source_commit:
         description: Full SHA of the source to build
+        required: true
+        type: string
+      version:
+        description: Release version YYYY.MM.DD-<run number> (extra image tag, APP_VERSION, OCI label)
         required: true
         type: string
       no_cache:
@@ -103,9 +107,14 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ steps.meta.outputs.image_tag }}
+            ghcr.io/${{ steps.meta.outputs.image_prefix }}/${{ inputs.service }}:${{ inputs.version }}
           build-args: |
-            APP_VERSION=${{ inputs.source_commit }}
+            APP_VERSION=${{ inputs.version }}
             GIT_SHA=${{ inputs.source_commit }}
+          labels: |
+            org.opencontainers.image.revision=${{ inputs.source_commit }}
+            org.opencontainers.image.version=${{ inputs.version }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           no-cache: ${{ inputs.no_cache }}
           cache-from: type=gha,scope=${{ inputs.service }}-${{ inputs.environment }}
           cache-to: type=gha,mode=max,scope=${{ inputs.service }}-${{ inputs.environment }}

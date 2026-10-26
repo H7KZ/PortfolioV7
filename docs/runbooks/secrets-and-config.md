@@ -13,10 +13,15 @@ Repository-level secrets and variables are visible to every environment. Environ
 | `SSH_PRIVATE_KEY`                                 | secret   | key of the deploy user (root-equivalent: treat accordingly)                                |
 | `SSH_HOST_FINGERPRINT`                            | secret   | `SHA256:` server key fingerprint from a trusted channel; SSH and SCP refuse any other host |
 | `SSH_USER`                                        | variable | the deploy user name                                                                       |
-| `BACKUP_BUCKET`                                   | variable | B2 bucket for Backup Verify                                                                |
+| `BACKUP_BUCKET`                                   | variable | the host's B2 bucket, shared by every repository (objects under `portfolio/`)              |
+| `BACKUP_B2_KEY_ID`, `BACKUP_B2_KEY`               | secret   | writer B2 key, rendered onto the VPS by Host Sync only                                     |
 | `BACKUP_B2_READER_KEY_ID`, `BACKUP_B2_READER_KEY` | secret   | read-only B2 key for Backup Verify                                                         |
-| `BACKUP_AGE_IDENTITY`                             | secret   | age private key (contents) for the restore drill                                           |
-| `BACKUP_HC_FRESHNESS_URL`, `BACKUP_HC_DRILL_URL`  | secret   | Healthchecks ping URLs                                                                     |
+| `BACKUP_AGE_RECIPIENT`                            | secret   | age public key (`age1...`); the VPS encrypts with it                                       |
+| `BACKUP_AGE_IDENTITY`                             | secret   | age private key (contents) for the restore drill; never on the VPS                         |
+| `HC_PING_KEY`                                     | secret   | Healthchecks ping key: `portfolio-backup`, `-backup-freshness`, `-backup-drill`            |
+| `ALERT_DISCORD_WEBHOOK_URL`                       | secret   | failed deploys, rollbacks, Host Sync and failed toolkit units on the VPS                   |
+
+The `BACKUP_*`, `HC_PING_KEY` and `ALERT_DISCORD_WEBHOOK_URL` values are set for every repository at once by the Toolkit's `python3 scripts/setup-secrets.py --apply`; never by hand.
 
 `GITHUB_TOKEN` is automatic: it pushes images to GHCR and logs the VPS into the registry for one deploy.
 
@@ -35,18 +40,18 @@ The mapping from names to the private release dotenv is in [`deployment/prepare-
 
 ## Server (VPS)
 
-| Path                         | Contents                                                                                                                                                       | Written by                       |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| `/etc/toolkit/portfolio.env` | backup settings: `BACKUP_BUCKET`, `BACKUP_B2_KEY_ID`, `BACKUP_B2_KEY` (writer), `BACKUP_AGE_RECIPIENT`, `BACKUP_HC_4H_URL`, `BACKUP_HC_DAILY_URL` (root, 0600) | the owner, [Backups](backups.md) |
-| `/opt/toolkit/portfolio/`    | root-owned control copy of the pinned toolkit and referenced scripts                                                                                           | `deployment/toolkit install`     |
-| `/home/<deploy>/portfolio/`  | `versions/<target>/` snapshots, `incoming/` (deleted after use), `dumps/`                                                                                      | deploys                          |
-| `/etc/toolkit/host.conf`     | optional swap and Docker log tuning                                                                                                                            | the owner, Toolkit host guide    |
+| Path                         | Contents                                                                                                                                                                  | Written by                                         |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `/etc/toolkit/portfolio.env` | backup and alert settings: `BACKUP_BUCKET`, `BACKUP_B2_KEY_ID`, `BACKUP_B2_KEY` (writer), `BACKUP_AGE_RECIPIENT`, `HC_PING_KEY`, `ALERT_DISCORD_WEBHOOK_URL` (root, 0600) | Host Sync, from the repository secrets             |
+| `/opt/toolkit/portfolio/`    | root-owned control copy of the pinned toolkit and referenced scripts                                                                                                      | Host Sync (`deployment/toolkit install`)           |
+| `/home/<deploy>/portfolio/`  | `versions/<target>/` snapshots, `incoming/` (deleted after use), `dumps/`                                                                                                 | deploys                                            |
+| `/etc/toolkit/host.conf`     | swap, Docker daemon settings                                                                                                                                              | the host's owner (Infrastructure on a shared host) |
 
 Application runtime secrets live only in the GitHub Environments and in the private, root-owned runtime directory of each snapshot. The apps' local development settings are in `apps/web/.env.example` and `apps/cms/.env.example`.
 
 ## Rotate a secret
 
-1. Change it in GitHub. 2. Run **Deploy** (or Deploy Monitoring / Deploy Ingress) for the target, `mode` `reuse`, so a new snapshot with the new dotenv goes live. 3. Rolling back restores the old snapshot with its old secrets until you deploy again.
+1. Change it in GitHub (backup and alert values: rerun the Toolkit's `setup-secrets.py --apply`, then Host Sync). 2. Run **Deploy** (or Deploy Ingress) for the target, `mode` `reuse`, so a new snapshot with the new dotenv goes live. 3. Rolling back restores the old snapshot with its old secrets until you deploy again.
 
 Database passwords (`POSTGRES_*`, `UMAMI_DB_*`) are used at first database creation; changing them later also needs `ALTER USER` inside the database, otherwise the app cannot connect.
 

@@ -10,28 +10,29 @@ Everything that ships this repository to a server: Compose stacks per target, th
 | `toolkit.conf`                               | this repository's integration: slug `portfolio`, release targets, backups, jobs, host singletons      |
 | `production/`                                | web, CMS, Postgres (project `portfolio`)                                                              |
 | `development/`                               | web only, reads the production CMS (project `portfolio-dev`)                                          |
-| `monitoring/`                                | self-hosted Umami and its Postgres (project `portfolio-analytics`), `retention.sh` and its SQL        |
+| `monitoring/`                                | self-hosted Umami and its Postgres (project `portfolio-monitoring`), `umami/retain.sh` and its SQL    |
 | `ingress/`                                   | Traefik, socket-proxy, CrowdSec (project `global`) for standalone servers; Cloudflare origin firewall |
 | `backup/`                                    | `components.sh`: what to back up and how to drill it ([runbook](../docs/runbooks/backups.md))         |
 | `scripts/pre-migrate-dump.sh`                | production prepare hook: dumps the CMS database before a migration                                    |
 | `prepare-release.py`                         | renders the private dotenv, manifest and archive for a target (called by `_deploy.yml`)               |
+| `release-notes.py`                           | GitHub Release notes from Conventional Commits (called by `deploy.yml` job `release`)                 |
 
 Each target directory holds `networks.yml`, `volumes.yml` and `docker-compose.<target>.yml`; toolkit merges them.
 
 ## Targets
 
-| Target        | Toolkit environment | Compose project       | Root on the VPS                    | Workflow          |
-| ------------- | ------------------- | --------------------- | ---------------------------------- | ----------------- |
-| `production`  | `production`        | `portfolio`           | `~/portfolio/versions/production`  | Deploy            |
-| `development` | `development`       | `portfolio-dev`       | `~/portfolio/versions/development` | Deploy            |
-| `monitoring`  | `monitoring`        | `portfolio-analytics` | `~/portfolio/versions/monitoring`  | Deploy Monitoring |
-| `ingress`     | `infrastructure`    | `global`              | `~/portfolio/versions/ingress`     | Deploy Ingress    |
+| Target        | Toolkit environment | Compose project        | Root on the VPS                    | Workflow          |
+| ------------- | ------------------- | ---------------------- | ---------------------------------- | ----------------- |
+| `production`  | `production`        | `portfolio`            | `~/portfolio/versions/production`  | Deploy            |
+| `development` | `development`       | `portfolio-dev`        | `~/portfolio/versions/development` | Deploy            |
+| `monitoring`  | `monitoring`        | `portfolio-monitoring` | `~/portfolio/versions/monitoring`  | Deploy Monitoring |
+| `ingress`     | `infrastructure`    | `global`               | `~/portfolio/versions/ingress`     | Deploy Ingress    |
 
 The `ingress` target is for a dedicated server only; never deploy it where Infrastructure's Traefik runs. It uses the `infrastructure` lock environment because toolkit 0.11 has no `ingress` one ([ADR 0001](../docs/adr/0001-repository-standard.md)).
 
 ## Networks and volumes
 
-All networks and volumes are external with fixed names and are created by the toolkit during the deploy that first needs them. Toolkit creates only names starting with the slug `portfolio-`: `portfolio-cms-network`, `portfolio-internal-network`, `portfolio-analytics-internal-network`, `portfolio-ingress-*`, `portfolio-postgres-volume`, `portfolio-uploads-volume`, `portfolio-umami-postgres-volume`. `public-network` is the one shared name: Infrastructure's Traefik creates it in shared mode, `ingress/` in standalone mode. Renaming a populated volume orphans its data.
+All networks and volumes are external with fixed names and are created by the toolkit during the deploy that first needs them. Toolkit creates only names starting with the slug `portfolio-`: `portfolio-cms-network`, `portfolio-internal-network`, `portfolio-monitoring-internal-network`, `portfolio-ingress-*`, `portfolio-postgres-volume`, `portfolio-uploads-volume`, `portfolio-umami-postgres-volume`. `public-network` is the one shared name: Infrastructure's Traefik creates it in shared mode, `ingress/` in standalone mode. Renaming a populated volume orphans its data.
 
 ## Host singletons
 

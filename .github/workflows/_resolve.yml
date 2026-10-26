@@ -14,6 +14,9 @@ on:
       sha:
         description: Full commit SHA of the resolved source
         value: ${{ jobs.source.outputs.sha }}
+      version:
+        description: Release version YYYY.MM.DD-<run number> (image tag, APP_VERSION, release ID)
+        value: ${{ jobs.source.outputs.version }}
 
 permissions:
   contents: read
@@ -25,6 +28,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       sha: ${{ steps.source.outputs.sha }}
+      version: ${{ steps.source.outputs.version }}
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -36,5 +40,7 @@ jobs:
           set -euo pipefail
           sha="$(git rev-parse HEAD)"
           [[ "$sha" =~ ^[a-f0-9]{40}$ ]]
+          version="$(date -u +%Y.%m.%d)-$GITHUB_RUN_NUMBER"
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "Source: $sha" >> "$GITHUB_STEP_SUMMARY"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Source: $sha, version $version" >> "$GITHUB_STEP_SUMMARY"

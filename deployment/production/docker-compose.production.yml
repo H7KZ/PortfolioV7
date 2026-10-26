@@ -46,6 +46,9 @@ services:
       - traefik.http.routers.portfolio-web-${PROJECT}.tls.certresolver=letsencrypt
       - traefik.http.routers.portfolio-web-${PROJECT}.service=portfolio-web-${PROJECT}
       - traefik.http.services.portfolio-web-${PROJECT}.loadbalancer.server.port=3000
+    # One replica on purpose: the CMS revalidates the page cache through this container's name, and a
+    # second replica would keep serving stale pages. The toolkit's automatic rollback covers bad deploys.
+    stop_grace_period: 20s
     healthcheck:
       # 127.0.0.1, not localhost: localhost resolves to ::1 first in Alpine.
       test: ['CMD', 'wget', '-qO', '/dev/null', 'http://127.0.0.1:3000/robots.txt']

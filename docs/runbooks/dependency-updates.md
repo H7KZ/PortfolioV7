@@ -17,12 +17,12 @@ version-update PR opens (npm majors 14). The cooldown is supply-chain protection
 Minor and patch updates are grouped per ecosystem. **A major update is never grouped**: it is one PR, reviewed on its own.
 Commit prefixes follow the repository's Conventional Commits.
 
-| Ecosystem            | Directories                                                    | Groups                                                                                                                         | Ignored              | Commit prefix                     |
-| -------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------- | --------------------------------- |
-| github-actions       | `/`                                                            | all minor+patch in one PR                                                                                                      | none                 | `ci(deps)`                        |
-| npm (pnpm workspace) | `/` (covers `apps/`, `packages/`)                              | `production-minor-patch`, `development-minor-patch`                                                                            | `@types/node`: major | `build(deps)` / `build(deps-dev)` |
-| docker (Dockerfiles) | `/apps/*`                                                      | `images-minor-patch`                                                                                                           | `node`: major        | `build(deps)`                     |
-| docker-compose       | `/`, `/deployment/{development,ingress,monitoring,production}` | `monitoring-stack` (grafana/_, prom/_), then `images-minor-patch` (not Traefik, CrowdSec, socket proxy or the stateful images) | postgres: major      | `chore(deps)`                     |
+| Ecosystem            | Directories                                                    | Groups                                                                            | Ignored              | Commit prefix                     |
+| -------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------- | -------------------- | --------------------------------- |
+| github-actions       | `/`                                                            | all minor+patch in one PR                                                         | none                 | `ci(deps)`                        |
+| npm (pnpm workspace) | `/` (covers `apps/`, `packages/`)                              | `production-minor-patch`, `development-minor-patch`                               | `@types/node`: major | `build(deps)` / `build(deps-dev)` |
+| docker (Dockerfiles) | `/apps/*`                                                      | `images-minor-patch`                                                              | `node`: major        | `build(deps)`                     |
+| docker-compose       | `/`, `/deployment/{development,ingress,monitoring,production}` | `images-minor-patch` (not Traefik, CrowdSec, socket proxy or the stateful images) | postgres: major      | `chore(deps)`                     |
 
 ### Target branch
 
