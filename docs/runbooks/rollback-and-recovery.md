@@ -10,7 +10,7 @@ Run **Rollback**:
 
 | Input         | Value                                                                         |
 | ------------- | ----------------------------------------------------------------------------- |
-| `environment` | `production` (default) or `development`                                       |
+| `environment` | `production` (default), `development` or `monitoring`                         |
 | `ref`         | a revision whose pinned toolkit runs it; blank = workflow ref                 |
 | `operation`   | `rollback`                                                                    |
 | `release_id`  | `previous` (default), `current`, or a release version such as `2026.10.25-31` |
@@ -23,7 +23,7 @@ Run **Deploy Ingress** with `operation` `rollback`: it restores the `previous` i
 
 ### Activate a staged release
 
-A **Deploy** with `operation` `stage` printed a release ID. Run Rollback with `operation` `activate` and that ID.
+A **Deploy** or **Deploy Monitoring** with `operation` `stage` printed a release ID. Run Rollback with `operation` `activate` and that ID.
 
 ### Reconcile
 
@@ -42,7 +42,7 @@ deployment/toolkit reconcile production
 deployment/toolkit doctor
 ```
 
-Replace `production` with `development` or `ingress`; the Rollback workflow does not list `ingress` (a standalone-only target); use Deploy Ingress `rollback` for `previous`, or these commands for a specific `--release-id`. The toolkit takes its locks itself; never wrap these commands in another lock.
+Replace `production` with `development`, `monitoring` or `ingress`; the Rollback workflow does not list `ingress` (a standalone-only target); use Deploy Ingress `rollback` for `previous`, or these commands for a specific `--release-id`. The toolkit takes its locks itself; never wrap these commands in another lock.
 
 ## Restore a CMS migration dump
 
@@ -64,7 +64,7 @@ These dumps protect against a bad migration on the same host, not against host l
 ```bash
 systemctl status toolkit-portfolio-reconcile.service           # VPS as root
 journalctl -u toolkit-portfolio-reconcile.service -n 100 --no-pager
-deployment/toolkit reconcile production development             # VPS as deploy user, from the checkout
+deployment/toolkit reconcile production development monitoring  # VPS as deploy user, from the checkout
 ```
 
 A missing `current` pointer is skipped; a corrupt or legacy pointer fails visibly and needs a fresh `deploy` or `stage` + `activate`. On a standalone server the same service also runs the Cloudflare firewall first when `RECONCILE_BEFORE` is enabled.

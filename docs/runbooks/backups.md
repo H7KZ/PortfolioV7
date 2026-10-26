@@ -13,7 +13,7 @@ Declared in [`deployment/backup/components.sh`](../../deployment/backup/componen
 | `cms-postgres` | `pg_dump -Fc` of the Payload database (`portfolio-postgres`)         | `postgres`, image from the production Compose file |
 | `cms-uploads`  | tar of `/data/media` in `portfolio-cms` (`portfolio-uploads-volume`) | `archive`                                          |
 
-Every run captures both components (every 4 h at :45 UTC, `00/4:45`) into `daily/`, so database and media are taken together; the first run of each UTC Sunday also writes `weekly/`. Size floors (`BACKUP_MIN_BYTES`) are first guesses; tune them after the first real run if `backup check` reports a false alarm. The drill also asserts that the Payload `payload_migrations` table exists. Backups are staggered at :45 (Infrastructure :55, Ohlidame :15, Kreditozrouti :35). Umami (site analytics) is Infrastructure's shared instance and is backed up there.
+Every run captures both components (every 4 h at :45 UTC, `00/4:45`) into `daily/`, so database and media are taken together; the first run of each UTC Sunday also writes `weekly/`. Size floors (`BACKUP_MIN_BYTES`) are first guesses; tune them after the first real run if `backup check` reports a false alarm. The drill also asserts that the Payload `payload_migrations` and Umami `website` tables exist. Backups are staggered at :45 (Infrastructure :55, Ohlidame :15, Kreditozrouti :35). Umami (site analytics) is this repository's own `monitoring` stack and is backed up here as `umami-postgres`.
 
 Not backed up: Traefik certificates (re-issued by ACME on a standalone server), container images (in GHCR), and the pre-migration dumps in `~/portfolio/dumps` (a separate, unpruned safety net for bad migrations).
 

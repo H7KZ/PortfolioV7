@@ -28,7 +28,7 @@ Toolkit 0.11 accepts the lock environments `development`, `production`, `infrast
 2. `deployment/toolkit.conf`: add `<environment>:portfolio/versions/<name>` to `RELEASE_TARGETS`. The target name is the last path segment.
 3. `prepare-release.py`: add the project name to `projects` and its settings branch.
 4. `_deploy.yml`: add the name to the three `case "$TARGET"` lists and the preflight list; `rollback.yml`: add it to `environment` options.
-5. A deploy workflow (`deploy-<name>.yml`, name `Deploy <Name>`) copied from `deploy-ingress.yml`, and a GitHub Environment with its secrets.
+5. A deploy workflow (`deploy-<name>.yml`, name `Deploy <Name>`) copied from `deploy-monitoring.yml`, and a GitHub Environment with its secrets.
 6. Update [Deploy and release](deploy-and-release.md), [Secrets and config](secrets-and-config.md) and this repository's `deployment/README.md`.
 
 ## Scheduled work

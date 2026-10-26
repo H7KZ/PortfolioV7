@@ -86,7 +86,7 @@ This installs `/usr/local/libexec/toolkit-run-bundle` and the deploy user's sing
 
 ## 4. GitHub secrets, variables, environments (GitHub)
 
-Create the repository secrets and variables (the backup and alert ones come from the Toolkit's `scripts/setup-secrets.py --apply`), then the environments `production`, `development` and, for standalone, `ingress`, with the values listed in [Secrets and config](secrets-and-config.md). Allow all deployment branches so any target can be deployed from any workflow ref.
+Create the repository secrets and variables (the backup and alert ones come from the Toolkit's `scripts/setup-secrets.py --apply`), then the environments `production`, `development`, `monitoring` and, for standalone, `ingress`, with the values listed in [Secrets and config](secrets-and-config.md). Allow all deployment branches so any target can be deployed from any workflow ref.
 
 When moving servers, change only `SSH_HOST`, `SSH_PORT` and `SSH_HOST_FINGERPRINT` (last, at the cutover in step 8). Every application secret stays the same: the restored databases and the API keys indexed by `PAYLOAD_SECRET` expect the original values.
 
@@ -103,11 +103,12 @@ Run each workflow from the Actions tab and wait for it to finish before the next
 
    Optional hardening: enable the Cloudflare-only origin firewall and the weekly range refresh by following [Split to own server](split-to-own-server.md#enable-the-host-singletons).
 
-   Shared host: Infrastructure deploys Traefik and the shared monitoring stack (including Umami) first.
+   Shared host: Infrastructure's Traefik is already running.
 
 2. **Host Sync** (`host-sync.yml`). Deploy runs it too; alone first, it surfaces missing secrets early.
-3. **Deploy** with `environment` `production`. Builds web and CMS images, dumps any existing CMS database, starts Postgres, CMS and web. First deployment may skip the dump only when neither a database container nor volume exists.
-4. **Deploy** with `environment` `development`. Web only; it reads the production CMS over `portfolio-cms-network`, so production must exist first.
+3. **Deploy Monitoring** (Umami; runs from `main`). Initialize it as in step 7.
+4. **Deploy** with `environment` `production`. Builds web and CMS images, dumps any existing CMS database, starts Postgres, CMS and web. First deployment may skip the dump only when neither a database container nor volume exists.
+5. **Deploy** with `environment` `development`. Web only; it reads the production CMS over `portfolio-cms-network`, so production must exist first.
 
 Public health URLs (`https://jankominek.com/` and `/robots.txt`) must answer when production activates. If DNS cannot route yet, run `operation` `stage` instead and activate through [Rollback](rollback-and-recovery.md#activate-a-staged-release) after step 8.
 
@@ -115,12 +116,12 @@ All `portfolio-*` networks and volumes are created by these deploys from the res
 
 ## 6. Restore data (a moved server or a rebuilt one)
 
-On a first-ever install there is nothing to restore; skip to step 7. Otherwise, after step 5 has produced running, empty containers, restore the CMS database and media from the encrypted backups (Umami is restored by Infrastructure): follow [Backups: restore](backups.md#restore). Use the same secrets as before.
+On a first-ever install there is nothing to restore; skip to step 7. Otherwise, after step 5 has produced running, empty containers, restore the CMS database, Umami database and media from the encrypted backups: follow [Backups: restore](backups.md#restore). Use the same secrets as before.
 
 ## 7. Initialize and enable
 
 1. Create the first Payload admin user at `https://cms.jankominek.com/admin`, or skip it when the database was restored. Import V6 content only on a brand-new empty CMS: [V6 content import](content-import.md).
-2. Umami is Infrastructure's shared instance at `https://umami.jankominek.com`: the `jankominek.com` website lives there; store its ID as the `production` environment variable `UMAMI_WEBSITE_ID` (unchanged when the Umami data was migrated) and redeploy production so the web emits the tracker.
+2. Umami: sign in at `https://umami.jankominek.com` with Umami's default administrator account (user `admin`, password `umami`; Cloudflare Access must already protect the host), change the password immediately, create a website for `jankominek.com`, and store its ID as the `production` environment variable `UMAMI_WEBSITE_ID`. Redeploy production so the web emits the tracker. A restored Umami database already has the website: reuse its ID.
 3. Host Sync already enabled boot reconcile and, after one successful backup, the backup timer ([Backups](backups.md#owner-setup-once-for-all-repositories)). Confirm with `deployment/toolkit doctor` (**VPS as deploy user**), then dispatch Backup Verify with `check` `both`.
 
 ## 8. Cut over DNS (moves only)

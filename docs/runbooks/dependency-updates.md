@@ -17,12 +17,12 @@ version-update PR opens (npm majors 14). The cooldown is supply-chain protection
 Minor and patch updates are grouped per ecosystem. **A major update is never grouped**: it is one PR, reviewed on its own.
 Commit prefixes follow the repository's Conventional Commits.
 
-| Ecosystem            | Directories                                                    | Groups                                                                                                                         | Ignored              | Commit prefix                     |
-| -------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------- | --------------------------------- |
-| github-actions       | `/`                                                            | all minor+patch in one PR                                                                                                      | none                 | `ci(deps)`                        |
-| npm (pnpm workspace) | `/` (covers `apps/`, `packages/`)                              | `production-minor-patch`, `development-minor-patch`                                                                            | `@types/node`: major | `build(deps)` / `build(deps-dev)` |
-| docker (Dockerfiles) | `/apps/*`                                                      | `images-minor-patch`                                                                                                           | `node`: major        | `build(deps)`                     |
-| docker-compose       | `/`, `/deployment/{development,ingress,monitoring,production}` | `monitoring-stack` (grafana/_, prom/_), then `images-minor-patch` (not Traefik, CrowdSec, socket proxy or the stateful images) | postgres: major      | `chore(deps)`                     |
+| Ecosystem            | Directories                                                    | Groups                                                                            | Ignored              | Commit prefix                     |
+| -------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------- | -------------------- | --------------------------------- |
+| github-actions       | `/`                                                            | all minor+patch in one PR                                                         | none                 | `ci(deps)`                        |
+| npm (pnpm workspace) | `/` (covers `apps/`, `packages/`)                              | `production-minor-patch`, `development-minor-patch`                               | `@types/node`: major | `build(deps)` / `build(deps-dev)` |
+| docker (Dockerfiles) | `/apps/*`                                                      | `images-minor-patch`                                                              | `node`: major        | `build(deps)`                     |
+| docker-compose       | `/`, `/deployment/{development,ingress,monitoring,production}` | `images-minor-patch` (not Traefik, CrowdSec, socket proxy or the stateful images) | postgres: major      | `chore(deps)`                     |
 
 ### Target branch
 
@@ -48,8 +48,8 @@ An `ignore` entry blocks only the listed update type; minor and patch updates of
 2. Check CI. `Verify Code` runs type-check, lint, the format check, the docs link check and the toolkit pin check (there are no tests yet).
    It does **not** build the Docker images, start the Compose stack or exercise a database against a new engine version.
 3. A merged bump changes nothing on a server until a deploy runs it: merging to `main` triggers the workflows described in
-   [Deploy and release](deploy-and-release.md); infrastructure images in `deployment/ingress` move only through
-   **Deploy Ingress**, run by hand. Monitoring and Umami images are Infrastructure's.
+   [Deploy and release](deploy-and-release.md); infrastructure images in `deployment/ingress` and `deployment/monitoring` move only through
+   **Deploy Ingress** and **Deploy Monitoring**, run by hand.
 4. For an image PR read the upstream release notes for a changed default, a removed environment variable or a migration. For a patch or
    minor bump of a database engine, check that a recent backup exists ([Backups](backups.md)).
 5. Merge minor/patch PRs once green. A PR that fails CI: `@dependabot rebase` once, then fix by hand on its branch or close it with

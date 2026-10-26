@@ -2,7 +2,7 @@
 
 Use this to create, rotate or audit anything the workflows and the server need. Names only; values never go in Git, in chat or in a workflow log. Generate random values with `openssl rand -base64 32` (**local**). The release renderer rejects dollars, backticks, single quotes, backslashes and line breaks in every value except `TRAEFIK_HTPASSWD`, where bcrypt dollars are expected.
 
-Repository-level secrets and variables are visible to every environment. Environment-level ones exist only for the selected target; create the GitHub Environments `production`, `development` and `ingress` and allow all deployment branches, so any target can be deployed from any workflow ref.
+Repository-level secrets and variables are visible to every environment. Environment-level ones exist only for the selected target; create the GitHub Environments `production`, `development`, `monitoring` and `ingress` and allow all deployment branches, so any target can be deployed from any workflow ref.
 
 ## Repository (GitHub, Settings, Secrets and variables)
 
@@ -29,8 +29,9 @@ The `BACKUP_*`, `HC_PING_KEY` and `ALERT_DISCORD_WEBHOOK_URL` values are set for
 
 | Environment                 | Variables                                                                                                                                  | Secrets                                                                                                                                                                                 |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `production`                | `PROJECT=prod`, `DOMAIN=jankominek.com`, `CMS_DOMAIN=cms.jankominek.com`, `UMAMI_WEBSITE_ID` (from Infrastructure's Umami)                 | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `PAYLOAD_SECRET`, `PREVIEW_SECRET`, `REVALIDATE_SECRET`, `CMS_READ_API_KEY`, `CMS_CONTACT_API_KEY`, optional `DISCORD_WEBHOOK_URL` |
+| `production`                | `PROJECT=prod`, `DOMAIN=jankominek.com`, `CMS_DOMAIN=cms.jankominek.com`, `UMAMI_WEBSITE_ID` (after Umami is set up)                       | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `PAYLOAD_SECRET`, `PREVIEW_SECRET`, `REVALIDATE_SECRET`, `CMS_READ_API_KEY`, `CMS_CONTACT_API_KEY`, optional `DISCORD_WEBHOOK_URL` |
 | `development`               | `PROJECT=dev`, `DOMAIN=dev.jankominek.com`                                                                                                 | `PREVIEW_SECRET`, `REVALIDATE_SECRET`, `CMS_READ_API_KEY`                                                                                                                               |
+| `monitoring`                | `SITE_DOMAIN=jankominek.com`, `UMAMI_DOMAIN=umami.jankominek.com`                                                                          | `UMAMI_DB_NAME`, `UMAMI_DB_USER`, `UMAMI_DB_PASSWORD`, `UMAMI_APP_SECRET`                                                                                                               |
 | `ingress` (standalone only) | `TRAEFIK_DOMAIN` (dashboard host), `ACME_EMAIL`, `TRAEFIK_DASHBOARD_ALLOWED_IPS` (your client IP or VPN CIDR; the default denies everyone) | `TRAEFIK_HTPASSWD` (`htpasswd -nbB admin '<password>'`), `CF_DNS_API_TOKEN` (zone DNS edit only), optional `CROWDSEC_ENROLL_KEY`                                                        |
 
 Development's `PREVIEW_SECRET`, `REVALIDATE_SECRET` and `CMS_READ_API_KEY` must equal production's, because both sites talk to the one production CMS. When restoring or moving a server keep every value identical: Payload indexes API keys with `PAYLOAD_SECRET`, and the restored databases use the original passwords.
@@ -52,7 +53,7 @@ Application runtime secrets live only in the GitHub Environments and in the priv
 
 1. Change it in GitHub (backup and alert values: rerun the Toolkit's `setup-secrets.py --apply`, then Host Sync). 2. Run **Deploy** (or Deploy Ingress) for the target, `mode` `reuse`, so a new snapshot with the new dotenv goes live. 3. Rolling back restores the old snapshot with its old secrets until you deploy again.
 
-Database passwords (`POSTGRES_*`) are used at first database creation; changing them later also needs `ALTER USER` inside the database, otherwise the app cannot connect.
+Database passwords (`POSTGRES_*`, `UMAMI_DB_*`) are used at first database creation; changing them later also needs `ALTER USER` inside the database, otherwise the app cannot connect.
 
 ## Verify
 

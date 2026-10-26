@@ -43,7 +43,7 @@ Avoid it. `public-network` is owned by Infrastructure's Traefik; replacing it me
 
 ## Standalone back to shared
 
-Point DNS at a host that runs Infrastructure, deploy production and development there ([Fresh server](fresh-server.md) skipping the ingress steps; Infrastructure brings the shared monitoring and Umami), and never deploy ingress. Nothing in the apps changes.
+Point DNS at a host that runs Infrastructure, deploy production, development and monitoring there ([Fresh server](fresh-server.md) skipping the ingress steps), and never deploy ingress. Nothing in the apps changes.
 
 ## Toolkit lock environment
 
