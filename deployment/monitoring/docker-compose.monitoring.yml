@@ -43,7 +43,7 @@ services:
           memory: 192M
 
   portfolio-umami:
-    image: ghcr.io/umami-software/umami:3.4.0
+    image: ghcr.io/umami-software/umami:3.4.1
     container_name: portfolio-umami
     restart: unless-stopped
     oom_score_adj: 500
