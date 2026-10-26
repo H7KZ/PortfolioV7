@@ -1,6 +1,6 @@
 # Applies one toolkit release to the VPS: verify the pin, prepare the bundle and private dotenv,
 # upload it over SSH and run `deployment/toolkit release <operation> <target>` as the deploy user.
-# Called by deploy.yml, deploy-ingress.yml and rollback.yml.
+# Called by deploy.yml, deploy-monitoring.yml, deploy-ingress.yml and rollback.yml.
 
 name: Deploy Environment (reusable)
 
@@ -8,7 +8,7 @@ on:
   workflow_call:
     inputs:
       environment:
-        description: Release target (production, development or ingress)
+        description: Release target (production, development, monitoring or ingress)
         required: true
         type: string
       source_commit:
@@ -73,16 +73,16 @@ jobs:
           HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
         run: |
           set -euo pipefail
-          case "$TARGET" in production|development|ingress) ;; *) exit 1 ;; esac
+          case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
           case "$OPERATION" in deploy|stage|rollback|activate|reconcile) ;; *) exit 1 ;; esac
           [[ "$SOURCE_SHA" =~ ^[a-f0-9]{40}$ ]] || exit 1
           [[ "$TARGET" == development || "$GITHUB_REF" == refs/heads/main ]] || {
-            echo 'Production and ingress require the workflow to run from main.' >&2; exit 1;
+            echo 'Production, monitoring and ingress require the workflow to run from main.' >&2; exit 1;
           }
           if [[ "$TARGET" != development ]]; then
             git -C release-source fetch --no-tags origin '+refs/heads/main:refs/remotes/origin/main'
             git -C release-source merge-base --is-ancestor "$SOURCE_SHA" refs/remotes/origin/main || {
-              echo 'Production and ingress require a source commit on main.' >&2; exit 1;
+              echo 'Production, monitoring and ingress require a source commit on main.' >&2; exit 1;
             }
           fi
           [[ "$HOST_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]+={0,2}$ ]] || {
@@ -124,6 +124,12 @@ jobs:
           CMS_READ_API_KEY: ${{ secrets.CMS_READ_API_KEY }}
           CMS_CONTACT_API_KEY: ${{ secrets.CMS_CONTACT_API_KEY }}
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
+          UMAMI_DOMAIN: ${{ vars.UMAMI_DOMAIN }}
+          UMAMI_DB_NAME: ${{ secrets.UMAMI_DB_NAME }}
+          UMAMI_DB_USER: ${{ secrets.UMAMI_DB_USER }}
+          UMAMI_DB_PASSWORD: ${{ secrets.UMAMI_DB_PASSWORD }}
+          UMAMI_APP_SECRET: ${{ secrets.UMAMI_APP_SECRET }}
           TRAEFIK_DOMAIN: ${{ vars.TRAEFIK_DOMAIN }}
           TRAEFIK_DASHBOARD_ALLOWED_IPS: ${{ vars.TRAEFIK_DASHBOARD_ALLOWED_IPS }}
           ACME_EMAIL: ${{ vars.ACME_EMAIL }}
@@ -164,7 +170,7 @@ jobs:
             set -euo pipefail
             [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Toolkit runner is not installed; run on the VPS: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
             umask 077
-            case "$TARGET" in production|development|ingress) ;; *) exit 1 ;; esac
+            case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
             install -d -m 0700 "$HOME/portfolio/versions/$TARGET"
             mkdir -p "$HOME/portfolio/incoming"
             chmod 700 "$HOME/portfolio/incoming"
@@ -199,7 +205,7 @@ jobs:
           command_timeout: 110m
           script: |
             set -euo pipefail
-            case "$TARGET" in production|development|ingress) ;; *) exit 1 ;; esac
+            case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
             [[ "$RELEASE_ID" =~ ^[0-9]{4}[.][0-9]{2}[.][0-9]{2}-[1-9][0-9]*([.][1-9][0-9]*)?$ ]] || exit 1
             [[ "$RESTORE_ID" == current || "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[0-9]{4}[.][0-9]{2}[.][0-9]{2}-[1-9][0-9]*([.][1-9][0-9]*)?$ ]] || exit 1
             umask 077

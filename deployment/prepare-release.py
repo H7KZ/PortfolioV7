@@ -28,8 +28,7 @@ def main():
     if len(sys.argv) != 3:
         fail("usage: prepare-release.py <environment> <output-directory>")
     environment = sys.argv[1]
-    # Monitoring and Umami are shared per host and deployed by Infrastructure.
-    projects = {"production": "portfolio", "development": "portfolio-dev", "ingress": "global"}
+    projects = {"production": "portfolio", "development": "portfolio-dev", "monitoring": "portfolio-monitoring", "ingress": "global"}
     # Toolkit 0.11 accepts only fixed lock environments; the ingress target uses `infrastructure`.
     toolkit_environments = {"ingress": "infrastructure"}
     if environment not in projects:
@@ -59,6 +58,10 @@ def main():
         prepare_script = "ingress/scripts/prepare.sh"
         post_deploy_script = "ingress/scripts/post-deploy.sh"
         runtime_directories = ["ingress/.rendered"]
+    elif environment == "monitoring":
+        for name in ("SITE_DOMAIN", "UMAMI_DOMAIN", "UMAMI_DB_NAME", "UMAMI_DB_USER", "UMAMI_DB_PASSWORD", "UMAMI_APP_SECRET"):
+            config[name] = value(name)
+        health_urls = [f"https://{config['SITE_DOMAIN']}/stats/stats.js"]
     else:
         for name in ("PROJECT", "DOMAIN", "PREVIEW_SECRET", "REVALIDATE_SECRET", "CMS_READ_API_KEY"):
             config[name] = value(name)
@@ -85,7 +88,7 @@ def main():
             variables[f"{service.upper()}_IMAGE_REFERENCE"] = reference
             variables[f"{service.upper()}_IMAGE_TAG"] = version
         config.update(variables)
-    for name in ("DOMAIN", "CMS_DOMAIN", "TRAEFIK_DOMAIN"):
+    for name in ("DOMAIN", "CMS_DOMAIN", "SITE_DOMAIN", "UMAMI_DOMAIN", "TRAEFIK_DOMAIN"):
         if name in config and not re.fullmatch(r"[a-z0-9]+(?:[a-z0-9.-]*[a-z0-9])?", config[name]):
             fail(f"Invalid hostname in {name}")
     manifest = {
