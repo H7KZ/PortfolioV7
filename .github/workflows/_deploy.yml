@@ -65,7 +65,7 @@ jobs:
       - name: Validate release request
         id: meta
         env:
-          TARGET: ${{ inputs.environment }}
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
           OPERATION: ${{ inputs.operation }}
           RESTORE_ID: ${{ inputs.release_id }}
           SOURCE_SHA: ${{ inputs.source_commit }}
@@ -73,13 +73,13 @@ jobs:
           HOST_FINGERPRINT: ${{ secrets.SSH_HOST_FINGERPRINT }}
         run: |
           set -euo pipefail
-          case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
+          case "$TARGET_ENVIRONMENT" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
           case "$OPERATION" in deploy|stage|rollback|activate|reconcile) ;; *) exit 1 ;; esac
           [[ "$SOURCE_SHA" =~ ^[a-f0-9]{40}$ ]] || exit 1
-          [[ "$TARGET" == development || "$GITHUB_REF" == refs/heads/main ]] || {
+          [[ "$TARGET_ENVIRONMENT" == development || "$GITHUB_REF" == refs/heads/main ]] || {
             echo 'Production, monitoring and ingress require the workflow to run from main.' >&2; exit 1;
           }
-          if [[ "$TARGET" != development ]]; then
+          if [[ "$TARGET_ENVIRONMENT" != development ]]; then
             git -C release-source fetch --no-tags origin '+refs/heads/main:refs/remotes/origin/main'
             git -C release-source merge-base --is-ancestor "$SOURCE_SHA" refs/remotes/origin/main || {
               echo 'Production, monitoring and ingress require a source commit on main.' >&2; exit 1;
@@ -97,13 +97,13 @@ jobs:
           echo "release_id=$release_id" >> "$GITHUB_OUTPUT"
           case "$OPERATION" in
             deploy|stage)
-              echo "${OPERATION}: ${TARGET}, source ${SOURCE_SHA}, release ${release_id}" >> "$GITHUB_STEP_SUMMARY"
+              echo "${OPERATION}: ${TARGET_ENVIRONMENT}, source ${SOURCE_SHA}, release ${release_id}" >> "$GITHUB_STEP_SUMMARY"
               ;;
             reconcile)
-              echo "Reconcile: ${TARGET}, snapshot current, toolkit source ${SOURCE_SHA}" >> "$GITHUB_STEP_SUMMARY"
+              echo "Reconcile: ${TARGET_ENVIRONMENT}, snapshot current, toolkit source ${SOURCE_SHA}" >> "$GITHUB_STEP_SUMMARY"
               ;;
             rollback|activate)
-              echo "${OPERATION}: ${TARGET}, snapshot ${RESTORE_ID}, toolkit source ${SOURCE_SHA}" >> "$GITHUB_STEP_SUMMARY"
+              echo "${OPERATION}: ${TARGET_ENVIRONMENT}, snapshot ${RESTORE_ID}, toolkit source ${SOURCE_SHA}" >> "$GITHUB_STEP_SUMMARY"
               ;;
           esac
       - name: Prepare archive, manifest and private environment
@@ -136,12 +136,12 @@ jobs:
           TRAEFIK_HTPASSWD: ${{ secrets.TRAEFIK_HTPASSWD }}
           CF_DNS_API_TOKEN: ${{ secrets.CF_DNS_API_TOKEN }}
           CROWDSEC_ENROLL_KEY: ${{ secrets.CROWDSEC_ENROLL_KEY }}
-          TARGET: ${{ inputs.environment }}
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
           SOURCE_SHA: ${{ inputs.source_commit }}
           RELEASE_VERSION: ${{ steps.meta.outputs.version }}
           RELEASE_ID: ${{ steps.meta.outputs.release_id }}
           SOURCE_ROOT: ${{ github.workspace }}/release-source
-        run: python3 deployment/prepare-release.py "$TARGET" "$GITHUB_WORKSPACE/bundle"
+        run: python3 deployment/prepare-release.py "$TARGET_ENVIRONMENT" "$GITHUB_WORKSPACE/bundle"
       - name: Prepare toolkit packet
         run: |
           set -euo pipefail
@@ -158,20 +158,20 @@ jobs:
         env:
           RELEASE_ID: ${{ steps.meta.outputs.release_id }}
           OPERATION: ${{ inputs.operation }}
-          TARGET: ${{ inputs.environment }}
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-          envs: RELEASE_ID,OPERATION,TARGET
+          envs: RELEASE_ID,OPERATION,TARGET_ENVIRONMENT
           script: |
             set -euo pipefail
             [[ -x /usr/local/libexec/toolkit-run-bundle ]] || { echo 'Toolkit runner is not installed; run on the VPS: sudo deployment/toolkit install --deploy-user <account>' >&2; exit 1; }
             umask 077
-            case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
-            install -d -m 0700 "$HOME/portfolio/versions/$TARGET"
+            case "$TARGET_ENVIRONMENT" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
+            install -d -m 0700 "$HOME/portfolio/versions/$TARGET_ENVIRONMENT"
             mkdir -p "$HOME/portfolio/incoming"
             chmod 700 "$HOME/portfolio/incoming"
             mkdir -m 700 "$HOME/portfolio/incoming/$RELEASE_ID"
@@ -189,7 +189,7 @@ jobs:
       - name: Apply release through toolkit
         uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         env:
-          TARGET: ${{ inputs.environment }}
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
           OPERATION: ${{ inputs.operation }}
           RESTORE_ID: ${{ inputs.release_id }}
           RELEASE_ID: ${{ steps.meta.outputs.release_id }}
@@ -201,11 +201,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
-          envs: TARGET,OPERATION,RESTORE_ID,RELEASE_ID,GH_TOKEN,GH_ACTOR
+          envs: TARGET_ENVIRONMENT,OPERATION,RESTORE_ID,RELEASE_ID,GH_TOKEN,GH_ACTOR
           command_timeout: 110m
           script: |
             set -euo pipefail
-            case "$TARGET" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
+            case "$TARGET_ENVIRONMENT" in production|development|monitoring|ingress) ;; *) exit 1 ;; esac
             [[ "$RELEASE_ID" =~ ^[0-9]{4}[.][0-9]{2}[.][0-9]{2}-[1-9][0-9]*([.][1-9][0-9]*)?$ ]] || exit 1
             [[ "$RESTORE_ID" == current || "$RESTORE_ID" == previous || "$RESTORE_ID" =~ ^[0-9]{4}[.][0-9]{2}[.][0-9]{2}-[1-9][0-9]*([.][1-9][0-9]*)?$ ]] || exit 1
             umask 077
@@ -221,15 +221,15 @@ jobs:
             case "$OPERATION" in
               deploy|stage)
                 chmod 600 "$incoming/release.env"
-                "${toolkit[@]}" release "$OPERATION" "$TARGET" --registry-config "$registry" \
+                "${toolkit[@]}" release "$OPERATION" "$TARGET_ENVIRONMENT" --registry-config "$registry" \
                   --archive "$incoming/release.tar.gz" --checksum "$incoming/release.tar.gz.sha256" \
                   --manifest "$incoming/manifest.json" --env-file "$incoming/release.env"
                 ;;
               rollback|activate)
-                "${toolkit[@]}" release "$OPERATION" "$TARGET" --registry-config "$registry" --release-id "$RESTORE_ID"
+                "${toolkit[@]}" release "$OPERATION" "$TARGET_ENVIRONMENT" --registry-config "$registry" --release-id "$RESTORE_ID"
                 ;;
               reconcile)
-                "${toolkit[@]}" release reconcile "$TARGET" --registry-config "$registry"
+                "${toolkit[@]}" release reconcile "$TARGET_ENVIRONMENT" --registry-config "$registry"
                 ;;
               *) exit 1 ;;
             esac
