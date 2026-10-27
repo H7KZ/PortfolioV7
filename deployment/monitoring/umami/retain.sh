@@ -42,5 +42,5 @@ for name in ['.toolkit-release.json','monitoring/umami/retention.sql']:
 PY
 
 log_info "purging Umami data older than retention from snapshot ${release##*/}"
-docker exec -i portfolio-umami-postgres sh -c 'exec psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' <"$release/monitoring/umami/retention.sql"
+docker exec -i portfolio-monitoring-umami-db-1 sh -c 'exec psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"' <"$release/monitoring/umami/retention.sql"
 log_ok 'Umami retention applied'

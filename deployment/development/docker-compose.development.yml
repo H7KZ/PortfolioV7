@@ -12,9 +12,8 @@
 # ==============================================================================
 
 services:
-  portfolio-web:
+  web:
     image: ${WEB_IMAGE_REFERENCE:?A web digest reference is required}
-    container_name: portfolio-web-dev
     restart: unless-stopped
     environment:
       - NUXT_CMS_INTERNAL_URL=http://portfolio-cms:3000
@@ -26,8 +25,10 @@ services:
       # Search engines stay away; Umami is not loaded (no website id).
       - NUXT_PUBLIC_NOINDEX=true
     networks:
-      - public-network
-      - portfolio-cms-network
+      public-network:
+      # The CMS revalidates this site through the alias.
+      portfolio-cms-network:
+        aliases: [portfolio-dev-web]
     labels:
       - traefik.enable=true
       - traefik.docker.network=public-network

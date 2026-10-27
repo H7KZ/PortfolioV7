@@ -149,7 +149,7 @@ docker ps --format '{{.Names}}' | grep '^portfolio-' | xargs -r docker stop
 ## Verify
 
 - Actions: Deploy Ingress (standalone), Host Sync, Deploy production and development all green.
-- **VPS as deploy user:** `deployment/toolkit doctor` reports no `fail`; `docker ps` shows `portfolio-web-prod`, `portfolio-cms`, `portfolio-postgres`, `portfolio-web-dev` healthy, plus `traefik`, `crowdsec`, `socket-proxy` when standalone.
+- **VPS as deploy user:** `deployment/toolkit doctor` reports no `fail`; `docker ps` shows `portfolio-web-1`, `portfolio-cms-1`, `portfolio-postgres-1`, `portfolio-dev-web-1` healthy, plus `traefik`, `crowdsec`, `socket-proxy` when standalone.
 - `https://jankominek.com/` loads, `/stats/stats.js` is served, a CMS edit appears on the site after a refresh.
 - Backup Verify (freshness, then drill) is green in Actions.
 - Reboot rehearsal: `sudo reboot`, then `systemctl status toolkit-portfolio-reconcile.service` is `active (exited)` and all containers are back.

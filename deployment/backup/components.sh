@@ -23,43 +23,42 @@ BACKUP_MIN_BYTES["umami-postgres"]=8000
 BACKUP_DRILL["umami-postgres"]="postgres deployment/monitoring/docker-compose.monitoring.yml"
 
 # CMS media (/media/<file> on the site). Files are write-once, so nothing is paused.
-# An empty tar is 10240 bytes, so the floor sits above it.
+# The floor applies to the compressed, encrypted object: an empty tar comes out near 300 bytes, a
+# real media set far above, so an emptied volume fails the run.
 BACKUP_EXT["cms-uploads"]=tar
-BACKUP_MIN_BYTES["cms-uploads"]=12000
+BACKUP_MIN_BYTES["cms-uploads"]=1024
 BACKUP_DRILL["cms-uploads"]="archive"
 
-# Exactly one running container with this name that belongs to the expected Compose project.
-_running_container() {
-  local name="$1" project="$2" running label
-  running="$(docker inspect -f '{{.State.Running}}' "$name" 2>/dev/null)" || {
-    echo "container $name does not exist" >&2
+# Exactly one running container for a Compose project/service, found by label (names are not fixed).
+_container() {
+  local ids
+  ids="$(docker ps --filter "label=com.docker.compose.project=$1" --filter "label=com.docker.compose.service=$2" --format '{{.ID}}')"
+  [[ -n "$ids" && "$ids" != *$'
+'* ]] || {
+    echo "expected exactly one running container for $1/$2" >&2
     return 1
   }
-  [[ "$running" == true ]] || {
-    echo "container $name is not running" >&2
-    return 1
-  }
-  label="$(docker inspect -f '{{index .Config.Labels "com.docker.compose.project"}}' "$name")"
-  [[ "$label" == "$project" ]] || {
-    echo "container $name belongs to Compose project '$label', expected '$project'" >&2
-    return 1
-  }
+  printf '%s
+' "$ids"
 }
 
 # Credentials stay inside the container environment.
 produce_cms_postgres() {
-  _running_container portfolio-postgres portfolio || return 1
-  docker exec portfolio-postgres sh -ceu 'exec pg_dump -Fc --compress=0 --no-owner --no-privileges -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+  local id
+  id="$(_container portfolio postgres)" || return 1
+  docker exec "$id" sh -ceu 'exec pg_dump -Fc --compress=0 --no-owner --no-privileges -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
 }
 
 produce_umami_postgres() {
-  _running_container portfolio-umami-postgres portfolio-monitoring || return 1
-  docker exec portfolio-umami-postgres sh -ceu 'exec pg_dump -Fc --compress=0 --no-owner --no-privileges -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+  local id
+  id="$(_container portfolio-monitoring umami-db)" || return 1
+  docker exec "$id" sh -ceu 'exec pg_dump -Fc --compress=0 --no-owner --no-privileges -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
 }
 
 produce_cms_uploads() {
-  _running_container portfolio-cms portfolio || return 1
-  docker exec portfolio-cms tar -C /data/media -cf - .
+  local id
+  id="$(_container portfolio cms)" || return 1
+  docker exec "$id" tar -C /data/media -cf - .
 }
 
 # Extra drill checks: the restored database holds the application's own bookkeeping table.

@@ -8,10 +8,10 @@ Toolkit mechanics: <https://github.com/H7KZ/Toolkit/tree/main/docs/backups.md>.
 
 Declared in [`deployment/backup/components.sh`](../../deployment/backup/components.sh); the schedule (`BACKUP_AT`) and the list path in [`deployment/toolkit.conf`](../../deployment/toolkit.conf).
 
-| Component      | What                                                                 | Drill                                              |
-| -------------- | -------------------------------------------------------------------- | -------------------------------------------------- |
-| `cms-postgres` | `pg_dump -Fc` of the Payload database (`portfolio-postgres`)         | `postgres`, image from the production Compose file |
-| `cms-uploads`  | tar of `/data/media` in `portfolio-cms` (`portfolio-uploads-volume`) | `archive`                                          |
+| Component      | What                                                                   | Drill                                              |
+| -------------- | ---------------------------------------------------------------------- | -------------------------------------------------- |
+| `cms-postgres` | `pg_dump -Fc` of the Payload database (`portfolio-postgres-1`)         | `postgres`, image from the production Compose file |
+| `cms-uploads`  | tar of `/data/media` in `portfolio-cms-1` (`portfolio-uploads-volume`) | `archive`                                          |
 
 Every run captures both components (every 4 h at :45 UTC, `00/4:45`) into `daily/`, so database and media are taken together; the first run of each UTC Sunday also writes `weekly/`. Size floors (`BACKUP_MIN_BYTES`) are first guesses; tune them after the first real run if `backup check` reports a false alarm. The drill also asserts that the Payload `payload_migrations` and Umami `website` tables exist. Backups are staggered at :45 (Infrastructure :55, Ohlidame :15, Kreditozrouti :35). Umami (site analytics) is this repository's own `monitoring` stack and is backed up here as `umami-postgres`.
 
@@ -43,14 +43,14 @@ Copy the plaintext to the VPS, then restore. Stop the dependent application firs
 - **`cms-postgres`**:
 
   ```bash
-  docker stop portfolio-cms
-  docker exec -i portfolio-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists --no-owner' < cms.pgdump
-  docker start portfolio-cms
+  docker stop portfolio-cms-1
+  docker exec -i portfolio-postgres-1 sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists --no-owner' < cms.pgdump
+  docker start portfolio-cms-1
   ```
 
   The CMS applies pending Payload migrations on start.
 
-- **`cms-uploads`**: `docker exec -i portfolio-cms tar -C /data/media -xf - < cms-uploads.tar`. Files are written alongside existing ones; no restart needed.
+- **`cms-uploads`**: `docker exec -i portfolio-cms-1 tar -C /data/media -xf - < cms-uploads.tar`. Files are written alongside existing ones; no restart needed.
 
 Rehearse with `deployment/toolkit backup drill` (needs Docker and `BACKUP_AGE_IDENTITY` as a file path) before you need it.
 

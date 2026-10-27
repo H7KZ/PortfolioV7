@@ -84,7 +84,7 @@ def main():
                 fail(f"Invalid {service} image digest")
             # The tag is for people (`docker ps`); Docker resolves the digest.
             reference = f"ghcr.io/{prefix}/{service}:{version}@{digest}"
-            images[f"portfolio-{service}"] = reference
+            images[service] = reference
             variables[f"{service.upper()}_IMAGE_REFERENCE"] = reference
             variables[f"{service.upper()}_IMAGE_TAG"] = version
         config.update(variables)

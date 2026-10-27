@@ -10,7 +10,7 @@ Use this once, on a brand-new empty CMS, to bring the V6 site content over. Neve
 4. Confirm the CMS database is reachable only through the intended SSH tunnel. Run the tunnel from a separate terminal before starting the import.
 
 ```bash
-ssh -N -L 45433:$(ssh <vps> "docker inspect -f '{{(index .NetworkSettings.Networks \"portfolio-internal-network\").IPAddress}}' portfolio-postgres"):5432 <vps>
+ssh -N -L 45433:$(ssh <vps> "docker inspect -f '{{(index .NetworkSettings.Networks \"portfolio-internal-network\").IPAddress}}' portfolio-postgres-1"):5432 <vps>
 ```
 
 ## Import and verify (local, with the tunnel open)
@@ -25,7 +25,7 @@ Transfer the generated media to the CMS volume, then restart the production web 
 
 ```bash
 scp -r .scratch/media <vps>:~/portfolio/seed-media
-ssh <vps> 'docker cp ~/portfolio/seed-media/. portfolio-cms:/data/media && docker exec -u root portfolio-cms chown -R cms:cms /data/media && docker restart portfolio-web-prod'
+ssh <vps> 'docker cp ~/portfolio/seed-media/. portfolio-cms-1:/data/media && docker exec -u root portfolio-cms-1 chown -R cms:cms /data/media && docker restart portfolio-web-1'
 ```
 
 Confirm that the records and media appear in Payload. After deploying development, check representative English and Czech pages, projects, posts, media, old URL redirects, and the CV there. Save an edit in the CMS and confirm the development web refreshes its cache. Repeat the public checks after the apex cutover, following the [fresh-server sequence](fresh-server.md#5-deploy-in-this-order-github).

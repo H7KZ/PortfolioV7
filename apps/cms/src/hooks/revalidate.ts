@@ -1,11 +1,31 @@
+import { lookup } from 'node:dns/promises'
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook, GlobalAfterChangeHook } from 'payload'
 import { config } from '../config'
+
+/**
+ * Every address behind a revalidate URL. A web with two replicas shares one network alias, and each
+ * replica keeps its own page cache, so each one is told. A name that does not resolve keeps the URL as is.
+ */
+async function targets(url: string): Promise<string[]> {
+	const parsed = new URL(url)
+	try {
+		const addresses = await lookup(parsed.hostname, { all: true })
+		return addresses.map(({ address, family }) => {
+			const target = new URL(url)
+			target.hostname = family === 6 ? `[${address}]` : address
+			return target.href
+		})
+	} catch {
+		return [url]
+	}
+}
 
 async function notifySites(source: string): Promise<void> {
 	if (!config.revalidateSecret || config.revalidateUrls.length === 0) return
 
+	const urls = (await Promise.all(config.revalidateUrls.map(targets))).flat()
 	await Promise.allSettled(
-		config.revalidateUrls.map(async url => {
+		urls.map(async url => {
 			try {
 				const response = await fetch(url, {
 					method: 'POST',
