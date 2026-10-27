@@ -50,9 +50,9 @@ Every production deploy dumps the CMS database first. An image rollback does not
 
 ```bash
 ls -1t ~/portfolio/dumps | head
-docker stop portfolio-cms
-docker exec -i portfolio-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists --no-owner' < ~/portfolio/dumps/<file>.dump
-docker start portfolio-cms
+docker stop portfolio-cms-1
+docker exec -i portfolio-postgres-1 sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists --no-owner' < ~/portfolio/dumps/<file>.dump
+docker start portfolio-cms-1
 ```
 
 These dumps protect against a bad migration on the same host, not against host loss; use [Backups](backups.md) for that. Delete a dump only after checking that no retained snapshot or recovery plan needs it.

@@ -10,6 +10,10 @@
 # Router names carry the ${PROJECT} suffix so production and development never
 # collide on the one shared Infrastructure Traefik.
 #
+# Containers take Compose's names (portfolio-web-1, portfolio-cms-1, portfolio-postgres-1), like
+# the other repositories. Other containers reach them by network alias: portfolio-web,
+# portfolio-cms and portfolio-postgres.
+#
 # Required Environment Variables (from the deploy-time .env):
 #   WEB_IMAGE_REFERENCE, CMS_IMAGE_REFERENCE (full digest references)
 #   PROJECT, DOMAIN, CMS_DOMAIN, UMAMI_WEBSITE_ID (optional)
@@ -19,9 +23,8 @@
 # ==============================================================================
 
 services:
-  portfolio-web:
+  web:
     image: ${WEB_IMAGE_REFERENCE:?A web digest reference is required}
-    container_name: portfolio-web-prod
     restart: unless-stopped
     environment:
       - NUXT_CMS_INTERNAL_URL=http://portfolio-cms:3000
@@ -33,8 +36,9 @@ services:
       - NUXT_PUBLIC_I18N_BASE_URL=https://${DOMAIN}
       - NUXT_PUBLIC_UMAMI_WEBSITE_ID=${UMAMI_WEBSITE_ID:-}
     networks:
-      - public-network
-      - portfolio-cms-network
+      public-network:
+      portfolio-cms-network:
+        aliases: [portfolio-web]
     labels:
       - traefik.enable=true
       - traefik.docker.network=public-network
@@ -46,8 +50,8 @@ services:
       - traefik.http.routers.portfolio-web-${PROJECT}.tls.certresolver=letsencrypt
       - traefik.http.routers.portfolio-web-${PROJECT}.service=portfolio-web-${PROJECT}
       - traefik.http.services.portfolio-web-${PROJECT}.loadbalancer.server.port=3000
-    # One replica on purpose: the CMS revalidates the page cache through this container's name, and a
-    # second replica would keep serving stale pages. The toolkit's automatic rollback covers bad deploys.
+    # Two replicas behind Traefik: a crash or a deploy (start-first) never drops the site. The CMS
+    # revalidates every replica: it resolves the portfolio-web alias to all its addresses.
     stop_grace_period: 20s
     healthcheck:
       # 127.0.0.1, not localhost: localhost resolves to ::1 first in Alpine.
@@ -67,13 +71,13 @@ services:
         limits:
           cpus: '1'
           memory: 256M
+      replicas: 2
 
-  portfolio-cms:
+  cms:
     image: ${CMS_IMAGE_REFERENCE:?A CMS digest reference is required}
-    container_name: portfolio-cms
     restart: unless-stopped
     depends_on:
-      portfolio-postgres:
+      postgres:
         condition: service_healthy
     environment:
       - DATABASE_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@portfolio-postgres:5432/${POSTGRES_DB}
@@ -83,15 +87,17 @@ services:
       - PREVIEW_SECRET=${PREVIEW_SECRET}
       - REVALIDATE_SECRET=${REVALIDATE_SECRET}
       # Every web that caches CMS content. A missing development container only logs a warning.
-      - REVALIDATE_URLS=http://portfolio-web-prod:3000/_internal/revalidate,http://portfolio-web-dev:3000/_internal/revalidate
+      - REVALIDATE_URLS=http://portfolio-web:3000/_internal/revalidate,http://portfolio-dev-web:3000/_internal/revalidate
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
       - MEDIA_DIR=/data/media
     volumes:
       - portfolio-uploads-volume:/data/media
     networks:
-      - public-network
-      - portfolio-cms-network
-      - portfolio-internal-network
+      public-network:
+      portfolio-cms-network:
+        aliases: [portfolio-cms]
+      portfolio-internal-network:
+        aliases: [portfolio-cms]
     labels:
       - traefik.enable=true
       - traefik.docker.network=public-network
@@ -120,9 +126,8 @@ services:
           cpus: '1'
           memory: 768M
 
-  portfolio-postgres:
+  postgres:
     image: postgres:18.6-alpine
-    container_name: portfolio-postgres
     restart: unless-stopped
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
@@ -131,7 +136,8 @@ services:
     volumes:
       - portfolio-postgres-volume:/var/lib/postgresql
     networks:
-      - portfolio-internal-network
+      portfolio-internal-network:
+        aliases: [portfolio-postgres]
     oom_score_adj: -500
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']

@@ -10,10 +10,13 @@ source "$here/../vendor/toolkit/log.sh"
 
 : "${TOOLKIT_RUNTIME_DIR:?run through deployment/toolkit release deploy}"
 : "${TOOLKIT_ENV_FILE:?run through deployment/toolkit release deploy}"
-container=portfolio-postgres
+# Found by Compose labels; the name before the 2026-10 rename was portfolio-postgres.
+container="$(docker ps -aq --filter label=com.docker.compose.project=portfolio --filter label=com.docker.compose.service=postgres)"
+[[ -n "$container" ]] || container="$(docker ps -aq --filter name='^portfolio-postgres$')"
 dumps="$HOME/portfolio/dumps"
 docker info >/dev/null
-if ! docker inspect "$container" >/dev/null 2>&1; then
+if [[ -z "$container" || "$container" == *$'
+'* ]] || ! docker inspect "$container" >/dev/null 2>&1; then
   if docker volume inspect portfolio-postgres-volume >/dev/null 2>&1; then
     die 'existing CMS database has no container; recover it before migrating'
   fi
