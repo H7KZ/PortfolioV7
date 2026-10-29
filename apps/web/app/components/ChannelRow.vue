@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import TablerArrowRight from '~icons/tabler/arrow-right'
-import TablerArrowUpRight from '~icons/tabler/arrow-up-right'
-
 const {
 	icon,
 	label,
@@ -28,20 +25,16 @@ const NuxtLink = resolveComponent('NuxtLink')
 		:href="to ? undefined : href"
 		:target="external ? '_blank' : undefined"
 		:rel="external ? 'noopener' : undefined"
-		class="group grid min-h-16 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 rounded-lg border border-line bg-surface px-5 py-4 no-underline transition-colors duration-150 ease-(--ease) hover:border-line-strong"
+		class="group flex items-center gap-4 rounded-md border border-line bg-surface py-4 pr-5 pl-4 no-underline transition-colors duration-150 ease-(--ease) hover:border-line-strong"
 		@click="emit('select')"
 	>
-		<span class="grid h-10 w-10 place-items-center rounded-md border border-line bg-surface-2 type-mono-s text-ink-soft" aria-hidden="true"
+		<span class="grid h-11 w-11 shrink-0 place-items-center rounded-sm border border-line-strong bg-bg type-mono-s text-accent" aria-hidden="true"
 			><slot name="icon">{{ icon }}</slot></span
 		>
-		<span class="flex min-w-0 flex-col gap-0.5">
+		<span class="flex min-w-0 flex-1 flex-col gap-0.5">
 			<span class="type-body-medium text-ink"><GlyphLabel :text="label" :new-tab="external" /></span>
 			<span v-if="sub" class="type-mono-s break-words text-mute">{{ sub }}</span>
 		</span>
-		<component
-			:is="external ? TablerArrowUpRight : TablerArrowRight"
-			class="h-4 w-4 text-mute transition-colors duration-150 ease-(--ease) group-hover:text-accent"
-			aria-hidden="true"
-		/>
+		<span class="type-mono-m text-accent transition-transform duration-150 ease-(--ease) group-hover:translate-x-0.5" aria-hidden="true">→</span>
 	</component>
 </template>

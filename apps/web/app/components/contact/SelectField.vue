@@ -13,7 +13,7 @@ const { id, label, emptyOption, options, error } = defineProps<{
 
 <template>
 	<div class="flex flex-col gap-2">
-		<label :for="id" class="type-body-s font-medium text-ink">{{ label }}</label>
+		<label :for="id" class="type-body-s text-ink-soft">{{ label }}</label>
 		<div class="relative">
 			<select
 				:id="id"
@@ -21,7 +21,7 @@ const { id, label, emptyOption, options, error } = defineProps<{
 				:name="id"
 				:aria-invalid="error ? 'true' : undefined"
 				:aria-describedby="error ? `${id}-error` : undefined"
-				class="block min-h-12 w-full appearance-none rounded-md border bg-surface-2 py-0 pr-10 pl-4 type-body text-ink transition-[border-color,box-shadow] duration-150 ease-(--ease)"
+				class="block min-h-13 w-full appearance-none rounded-sm border bg-bg py-3 pr-10 pl-3.5 type-body text-ink transition-[border-color,box-shadow] duration-150 ease-(--ease)"
 				:class="
 					error
 						? 'border-danger shadow-[0_0_0_1px_var(--color-danger)]'
@@ -33,8 +33,9 @@ const { id, label, emptyOption, options, error } = defineProps<{
 			</select>
 			<TablerChevronDown class="pointer-events-none absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2 text-ink-soft" aria-hidden="true" />
 		</div>
-		<p v-if="error" :id="`${id}-error`" class="flex gap-2 type-body-s text-danger">
-			<span aria-hidden="true" class="font-mono font-medium">!</span>{{ error }}
+		<p v-if="error" :id="`${id}-error`" class="flex items-center gap-2 text-danger">
+			<span aria-hidden="true" class="type-mono-s">!</span>
+			<span class="type-body-s">{{ error }}</span>
 		</p>
 	</div>
 </template>

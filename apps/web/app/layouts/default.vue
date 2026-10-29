@@ -11,7 +11,8 @@ const route = useRoute()
 const site = computed(() => layout.value?.site)
 const showContactCta = computed(() => contactCta && route.meta.contactCta !== false)
 // SPEC 11: the Person profile belongs to the pages about Jan, not to every case study and post.
-const isProfilePage = computed(() => ['/', '/resume'].includes(route.path.replace(/^\/cs(?=\/|$)/, '') || '/'))
+const barePath = computed(() => route.path.replace(/^\/cs(?=\/|$)/, '') || '/')
+const isProfilePage = computed(() => ['/', '/resume'].includes(barePath.value))
 
 useHead(() => {
 	const s = site.value
@@ -95,7 +96,7 @@ useHead(() => {
 			>{{ site?.skipToContent }}</a
 		>
 
-		<div class="page-backdrop" aria-hidden="true"></div>
+		<div class="page-backdrop" :class="{ 'page-backdrop--home': barePath === '/' }" aria-hidden="true"></div>
 
 		<SiteNav />
 		<main id="main" class="relative z-[1] flex-1" tabindex="-1" data-menu-inert>

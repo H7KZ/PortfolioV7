@@ -58,26 +58,26 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div id="mobile-menu" ref="panel" class="fixed inset-x-0 top-16 bottom-0 z-40 flex flex-col overflow-y-auto bg-bg md:hidden">
-		<nav :aria-label="navigation.navLabel ?? undefined" class="site-container pt-4">
-			<ul class="flex list-none flex-col p-0">
-				<li v-for="item in links" :key="item.id ?? item.href" class="border-b border-line">
+	<div id="mobile-menu" ref="panel" class="fixed inset-x-0 top-[73px] bottom-0 z-40 flex flex-col overflow-y-auto bg-bg px-5 pt-2 pb-8 md:hidden">
+		<nav :aria-label="navigation.navLabel ?? undefined">
+			<ul class="flex list-none flex-col gap-2 p-0">
+				<li v-for="item in links" :key="item.id ?? item.href" class="h-16 border-b border-line">
 					<NuxtLink
 						:to="href(item.href)"
 						:aria-current="isActive(item) ? 'page' : undefined"
-						class="flex min-h-16 items-center justify-between gap-4 type-h2 no-underline"
+						class="flex h-full items-center gap-3 type-h2 no-underline"
 						:class="isActive(item) ? 'text-ink' : 'text-ink-soft'"
 						@click="emit('close')"
 					>
 						{{ item.label }}
-						<span v-if="isActive(item)" class="type-mono-label text-accent">{{ navigation.currentLabel }}</span>
+						<span v-if="isActive(item)" class="type-mono-s text-accent">{{ navigation.currentLabel }}</span>
 					</NuxtLink>
 				</li>
 			</ul>
 		</nav>
 
-		<div class="site-container mt-auto flex flex-col gap-6 pt-10 pb-8">
-			<div class="grid grid-cols-2 gap-1 rounded-md border border-line p-1">
+		<div class="mt-auto flex flex-col items-start gap-4 pt-8">
+			<div class="flex gap-2 rounded-[8px] border border-line-strong p-1">
 				<NuxtLink
 					v-for="code in LOCALES"
 					:key="code"
@@ -85,8 +85,8 @@ onBeforeUnmount(() => {
 					:hreflang="code"
 					:lang="code"
 					:aria-current="code === currentLocale ? 'true' : undefined"
-					class="flex min-h-11 items-center justify-center rounded-sm type-button no-underline"
-					:class="code === currentLocale ? 'bg-surface-2 text-ink' : 'text-ink-soft hover:text-ink'"
+					class="flex min-h-11 items-center rounded-sm px-4 type-body-s no-underline"
+					:class="code === currentLocale ? 'bg-surface-2 text-ink' : 'text-mute hover:text-ink'"
 					@click="switchTo(code)"
 					>{{ languageNames?.[code] }}</NuxtLink
 				>
@@ -97,7 +97,7 @@ onBeforeUnmount(() => {
 			<a
 				v-if="navigation.mobileMenu?.email"
 				:href="`mailto:${navigation.mobileMenu.email}`"
-				class="inline-flex min-h-11 items-center justify-center type-mono-s text-ink-soft no-underline hover:text-ink"
+				class="relative type-mono-s text-mute no-underline after:absolute after:inset-x-0 after:-inset-y-3 hover:text-ink"
 				@click="trackLink('mailto:')"
 				>{{ navigation.mobileMenu.email }}</a
 			>

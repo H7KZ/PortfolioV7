@@ -97,32 +97,48 @@
 	font-family: var(--font-sans);
 	font-size: var(--text-display-xl);
 	font-weight: 700;
-	line-height: 0.96;
-	letter-spacing: -0.04em;
+	line-height: 0.98;
+	letter-spacing: clamp(-3.4px, -0.9314px - 0.1714vw, -1.6px);
+
+	@media (min-width: 1024px) {
+		line-height: 0.94;
+	}
 }
 
 @utility type-display-l {
 	font-family: var(--font-sans);
 	font-size: var(--text-display-l);
 	font-weight: 700;
-	line-height: 1.02;
-	letter-spacing: -0.0294em;
+	line-height: 1.04;
+	letter-spacing: clamp(-1.9px, -0.6657px - 0.0857vw, -1px);
+
+	@media (min-width: 1024px) {
+		line-height: 1;
+	}
 }
 
 @utility type-h2 {
 	font-family: var(--font-sans);
 	font-size: var(--text-h2);
 	font-weight: 700;
-	line-height: 1.1;
-	letter-spacing: -0.0269em;
+	line-height: 1.12;
+	letter-spacing: clamp(-1.1px, -0.5514px - 0.0381vw, -0.7px);
+
+	@media (min-width: 1024px) {
+		line-height: 1.08;
+	}
 }
 
 @utility type-h3 {
 	font-family: var(--font-sans);
 	font-size: var(--text-h3);
 	font-weight: 500;
-	line-height: 1.24;
-	letter-spacing: -0.015em;
+	line-height: 1.25;
+	letter-spacing: clamp(-0.4px, -0.2629px - 0.0095vw, -0.3px);
+
+	@media (min-width: 1024px) {
+		line-height: 1.22;
+	}
 }
 
 @utility type-h4 {
@@ -274,42 +290,66 @@
 	display: none;
 }
 
-/* Dot grid and green glow behind the top of each page only (SPEC 4.4). */
+/* Dot grid, fade and green glow behind the top of each page only (SPEC 4.4). Three layers as in Figma: dots, then the fade into the page colour, then the glow on top. */
 .page-backdrop {
+	--backdrop-height: 720px;
+	--backdrop-fade: linear-gradient(180deg, rgb(11 13 16 / 0.25), rgb(11 13 16));
+	--backdrop-glow: radial-gradient(ellipse 278.6px 400px at 64.3% 360px, rgb(91 227 143 / 0.12), rgb(91 227 143 / 0) 70%);
 	position: absolute;
 	inset: 0 0 auto;
-	height: 720px;
+	height: var(--backdrop-height);
+	overflow: hidden;
 	pointer-events: none;
 	z-index: 0;
-	background-image:
-		radial-gradient(ellipse 55% 45% at 50% 0%, rgb(91 227 143 / 0.1), transparent 70%),
-		radial-gradient(circle at center, rgb(241 243 245 / 0.07) 1px, transparent 1.5px);
-	background-size:
-		100% 100%,
-		24px 24px;
-	mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+	background-image: radial-gradient(circle at 12px 12px, rgb(255 255 255 / 0.08) 1px, rgb(255 255 255 / 0) 1.4px);
+	background-size: 24px 24px;
+}
+
+.page-backdrop::before,
+.page-backdrop::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+}
+
+.page-backdrop::before {
+	background-image: var(--backdrop-fade);
+}
+
+.page-backdrop::after {
+	background-image: var(--backdrop-glow);
 }
 
 @media (min-width: 768px) {
 	.page-backdrop {
-		height: 820px;
+		--backdrop-height: 820px;
+		--backdrop-glow: radial-gradient(ellipse 548.6px 455.6px at 64.3% 410px, rgb(91 227 143 / 0.12), rgb(91 227 143 / 0) 70%);
 	}
 }
 
 @media (min-width: 1024px) {
 	.page-backdrop {
-		height: 900px;
+		--backdrop-height: 900px;
+		--backdrop-fade: linear-gradient(180deg, rgb(11 13 16 / 0.2), rgb(11 13 16));
+		--backdrop-glow: radial-gradient(ellipse 900px 450px at calc(50% + 360px) 360px, rgb(91 227 143 / 0.1), rgb(91 227 143 / 0) 70%);
+	}
+
+	.page-backdrop--home {
+		--backdrop-height: 1100px;
+		--backdrop-fade:
+			linear-gradient(90deg, rgb(11 13 16 / 0.85) 0%, rgb(11 13 16 / 0) 45%, rgb(11 13 16 / 0) 100%),
+			linear-gradient(180deg, rgb(11 13 16 / 0) 0%, rgb(11 13 16 / 0.35) 55%, rgb(11 13 16) 100%);
+		--backdrop-glow: radial-gradient(ellipse 800px 611.1px at calc(50% + 480px) 464px, rgb(91 227 143 / 0.14), rgb(91 227 143 / 0) 70%);
 	}
 }
 
 .live-dot {
 	display: inline-block;
-	width: 8px;
-	height: 8px;
+	width: 6px;
+	height: 6px;
 	flex-shrink: 0;
 	border-radius: 999px;
 	background: var(--color-accent);
-	box-shadow: 0 0 0 4px var(--color-accent-soft);
 }
 
 /* Long-form text from the CMS: posts, legal pages, case study challenge. */

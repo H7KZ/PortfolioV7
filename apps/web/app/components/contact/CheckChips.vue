@@ -9,15 +9,13 @@ function toggle(key: string, checked: boolean): void {
 
 <template>
 	<fieldset class="m-0 flex min-w-0 flex-col gap-3 border-0 p-0">
-		<legend class="mb-3 p-0 type-body-s font-medium text-ink">{{ legend }}</legend>
+		<legend class="mb-3 p-0 type-body-s text-ink-soft">{{ legend }}</legend>
 		<div class="flex flex-wrap gap-2">
 			<label
 				v-for="option in options"
 				:key="option.key"
-				class="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border px-4 type-body-s transition-colors duration-150 ease-(--ease) has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus"
-				:class="
-					model.includes(option.key) ? 'border-accent bg-accent-soft text-ink' : 'border-control text-ink-soft hover:border-ink-soft hover:text-ink'
-				"
+				class="inline-flex h-11 cursor-pointer items-center justify-center gap-2 rounded-full border px-4 type-body-s whitespace-nowrap transition-colors duration-150 ease-(--ease) has-focus-visible:outline-2 has-focus-visible:outline-offset-3 has-focus-visible:outline-focus"
+				:class="model.includes(option.key) ? 'border-accent bg-accent-soft text-ink' : 'border-control text-ink-soft hover:border-ink-soft'"
 			>
 				<input
 					type="checkbox"
@@ -27,7 +25,7 @@ function toggle(key: string, checked: boolean): void {
 					:checked="model.includes(option.key)"
 					@change="toggle(option.key, ($event.target as HTMLInputElement).checked)"
 				/>
-				<span v-if="model.includes(option.key)" aria-hidden="true" class="text-accent">✓</span>
+				<span v-if="model.includes(option.key)" aria-hidden="true" class="type-mono-s text-accent">✓</span>
 				{{ option.label }}
 			</label>
 		</div>

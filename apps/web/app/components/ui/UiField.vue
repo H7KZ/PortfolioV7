@@ -10,7 +10,7 @@ const {
 	disabled = false,
 	autocomplete,
 	multiline = false,
-	rows = 6,
+	rows = 4,
 	maxlength
 } = defineProps<{
 	id: string
@@ -29,17 +29,17 @@ const emit = defineEmits<{ blur: [] }>()
 
 const errorId = computed(() => `${id}-error`)
 const control = computed(() => [
-	'type-body block w-full rounded-md border bg-surface-2 px-4 text-ink transition-[border-color,box-shadow] duration-150 ease-(--ease) placeholder:text-faint disabled:cursor-not-allowed disabled:opacity-50',
+	'type-body block w-full rounded-sm border bg-bg px-3.5 py-3 text-ink transition-[border-color,box-shadow] duration-150 ease-(--ease) placeholder:text-faint disabled:cursor-not-allowed',
 	error
 		? 'border-danger shadow-[0_0_0_1px_var(--color-danger)]'
 		: 'border-control hover:border-ink-soft focus:border-accent focus:shadow-[0_0_0_1px_var(--color-accent)]',
-	multiline ? 'min-h-36 resize-y py-3' : 'min-h-12'
+	multiline ? 'min-h-[150px] resize-y' : 'min-h-13'
 ])
 </script>
 
 <template>
-	<div class="flex flex-col gap-2">
-		<label :for="id" class="type-body-s font-medium text-ink">{{ label }}</label>
+	<div class="flex flex-col gap-2" :class="disabled ? 'opacity-40' : ''">
+		<label :for="id" class="type-body-s text-ink-soft">{{ label }}</label>
 		<textarea
 			v-if="multiline"
 			:id="id"
@@ -71,9 +71,9 @@ const control = computed(() => [
 			:class="control"
 			@blur="emit('blur')"
 		/>
-		<p v-if="error" :id="errorId" class="flex gap-2 type-body-s text-danger">
-			<span aria-hidden="true" class="font-mono font-medium">!</span>
-			<span>{{ error }}</span>
+		<p v-if="error" :id="errorId" class="flex items-center gap-2 text-danger">
+			<span aria-hidden="true" class="type-mono-s">!</span>
+			<span class="type-body-s">{{ error }}</span>
 		</p>
 	</div>
 </template>
