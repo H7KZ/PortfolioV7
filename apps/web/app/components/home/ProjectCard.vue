@@ -15,7 +15,15 @@ const image = computed(() => asMedia(project.thumbnail))
 		class="group relative flex h-full flex-col overflow-hidden rounded-lg border border-line bg-surface transition-colors duration-150 ease-(--ease) hover:border-line-strong has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-focus xl:flex-row"
 	>
 		<div class="relative aspect-16/10 shrink-0 overflow-hidden border-b border-line bg-surface-2 xl:aspect-auto xl:w-[44%] xl:border-r xl:border-b-0">
-			<ResponsiveImage v-if="image" :image="image" alt="" :priority="priority" sizes="(min-width: 1440px) 260px, (min-width: 1024px) 50vw, 100vw" />
+			<ResponsiveImage
+				v-if="image"
+				:image="image"
+				alt=""
+				:priority="priority"
+				img-class="object-center xl:object-left-top"
+				sizes="(min-width: 1440px) 260px, (min-width: 1024px) 50vw, 100vw"
+			/>
+			<ScreenshotPlaceholder v-else fill :label="project.heroPlaceholderLabel" :spec="project.heroPlaceholderSpec" class="border-0" />
 			<span
 				v-if="project.card?.badge"
 				class="absolute top-3 left-3 rounded-full border border-line-strong bg-bg/85 px-2.5 py-1 type-mono-label text-ink backdrop-blur-sm"
@@ -23,7 +31,7 @@ const image = computed(() => asMedia(project.thumbnail))
 			>
 		</div>
 		<div class="flex flex-1 flex-col gap-4 p-6">
-			<p class="flex flex-wrap justify-between gap-x-4 gap-y-1 type-mono-label text-mute">
+			<p class="flex flex-wrap justify-between gap-x-4 gap-y-1 type-mono-label text-mute xl:flex-col xl:justify-start">
 				<span>{{ project.card?.meta }}</span>
 				<span>{{ project.card?.year }}</span>
 			</p>

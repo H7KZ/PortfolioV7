@@ -9,6 +9,11 @@ const locale = useLocaleCode()
 
 const page = computed(() => data.value.page)
 
+/** Posts written only in English carry an EN tag; on the Czech site they are marked so screen readers switch voice. */
+function postLang(tags: string[] | null | undefined): string | undefined {
+	return locale.value !== 'en' && tags?.includes('EN') ? 'en' : undefined
+}
+
 useSeo(() => ({
 	title: page.value.meta?.title ?? page.value.heading.replace(/\.$/, ''),
 	description: page.value.meta?.description ?? page.value.lead,
@@ -32,6 +37,7 @@ useHead(() => ({
 			<li v-for="post in data.posts" :key="post.slug">
 				<article
 					class="group relative flex flex-col gap-4 rounded-lg border border-line bg-surface p-6 transition-colors duration-150 ease-(--ease) hover:border-line-strong has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-focus md:p-8"
+					:lang="postLang(post.tags)"
 				>
 					<p class="flex flex-wrap gap-x-3 type-mono-label text-mute">
 						<time :datetime="post.date">{{

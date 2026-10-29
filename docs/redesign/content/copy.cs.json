@@ -328,7 +328,7 @@
         "placeholder": "Jana Nováková"
       },
       "email": {
-        "label": "Email address *",
+        "label": "E-mailová adresa *",
         "placeholder": "jana@company.cz"
       },
       "message": {
@@ -368,7 +368,7 @@
       },
       "advancedLabel": "Další informace (nepovinné)",
       "advancedHint": "firma, termín, hosting",
-      "privacyNote": "Stored on my own server, deleted after 12 months.",
+      "privacyNote": "Uloženo na mém vlastním serveru, smazáno po 12 měsících.",
       "sendLabel": "Odeslat zadání",
       "sendingLabel": "Odesílám…",
       "success": {

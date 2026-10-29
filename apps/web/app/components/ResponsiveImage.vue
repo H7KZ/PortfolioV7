@@ -5,13 +5,16 @@ const {
 	image,
 	sizes = '100vw',
 	priority = false,
-	alt
+	alt,
+	imgClass = 'object-center'
 } = defineProps<{
 	image: MediaView
 	sizes?: string
 	priority?: boolean
 	/** Overrides the media alt text, e.g. empty when the image repeats nearby text. */
 	alt?: string
+	/** Object position of the crop, e.g. object-top for portraits. */
+	imgClass?: string
 }>()
 
 const SMALL_WIDTH = 800
@@ -40,6 +43,7 @@ const webp = computed(() => srcset(image.url, image.formats.webp800))
 			:fetchpriority="priority ? 'high' : undefined"
 			decoding="async"
 			class="block h-full w-full object-cover"
+			:class="imgClass"
 		/>
 	</picture>
 </template>

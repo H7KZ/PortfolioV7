@@ -20,7 +20,7 @@ function focusables(): HTMLElement[] {
 	return menuButton ? [menuButton, ...inside] : inside
 }
 
-/** Keeps Tab inside the menu button and the panel while the menu is open. */
+/** Keeps Tab inside the menu button and the panel. The panel renders in body, away from the button, so focus moves by list, not by DOM order. */
 function onKeydown(event: KeyboardEvent): void {
 	if (event.key === 'Escape') {
 		event.preventDefault()
@@ -29,16 +29,11 @@ function onKeydown(event: KeyboardEvent): void {
 	}
 	if (event.key !== 'Tab') return
 	const list = focusables()
-	const first = list[0]
-	const last = list[list.length - 1]
-	if (!first || !last) return
-	if (event.shiftKey && document.activeElement === first) {
-		event.preventDefault()
-		last.focus()
-	} else if (!event.shiftKey && document.activeElement === last) {
-		event.preventDefault()
-		first.focus()
-	}
+	if (list.length === 0) return
+	event.preventDefault()
+	const index = list.indexOf(document.activeElement as HTMLElement)
+	const next = event.shiftKey ? (index <= 0 ? list.length - 1 : index - 1) : (index + 1) % list.length
+	list[next]?.focus()
 }
 
 function setBackground(open: boolean): void {

@@ -53,7 +53,7 @@ export interface LayoutData {
 	footer: Resolved<Footer>
 }
 
-export type ProjectCard = Pick<Resolved<Project>, 'id' | 'slug' | 'title' | 'date' | 'thumbnail' | 'card'>
+export type ProjectCard = Pick<Resolved<Project>, 'id' | 'slug' | 'title' | 'date' | 'thumbnail' | 'heroPlaceholderLabel' | 'heroPlaceholderSpec' | 'card'>
 
 export interface HomeData {
 	page: Resolved<Home>

@@ -172,7 +172,8 @@ function labelClass(edge: DrawnEdge): string {
 	<figure class="m-0 flex flex-col gap-4">
 		<div class="rounded-lg border border-line bg-surface p-5 md:p-8">
 			<p v-if="architecture.textAlternative" class="sr-only">{{ architecture.textAlternative }}</p>
-			<div ref="root" class="relative" aria-hidden="true">
+			<!-- Clipped so a drawing measured at the previous width never widens the page while it is redrawn. -->
+			<div ref="root" class="relative overflow-hidden" aria-hidden="true">
 				<ol class="relative z-[1] grid list-none grid-cols-2 gap-x-6 gap-y-14 p-0 md:gap-x-24">
 					<li
 						v-for="node in nodes"
@@ -183,14 +184,17 @@ function labelClass(edge: DrawnEdge): string {
 						:class="node.external ? 'border-dashed border-control' : 'border-line-strong bg-surface-2'"
 					>
 						<span class="type-body-medium text-ink">{{ node.name }}</span>
-						<span v-if="node.tech" class="type-mono-s break-words text-ink-soft">{{ node.tech }}</span>
+						<span v-if="node.tech" class="type-mono-s text-ink-soft">
+							<template v-for="(part, index) in node.tech.split(' · ')" :key="index"
+								><span v-if="index > 0"> · </span><span :class="{ 'whitespace-nowrap': part.length <= 18 }">{{ part }}</span></template
+							>
+						</span>
 					</li>
 				</ol>
 				<svg
 					v-if="size.width"
-					class="pointer-events-none absolute inset-0 overflow-visible"
-					:width="size.width"
-					:height="size.height"
+					class="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+					preserveAspectRatio="none"
 					:viewBox="`0 0 ${size.width} ${size.height}`"
 				>
 					<defs>

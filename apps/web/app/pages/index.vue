@@ -40,8 +40,6 @@ useHead(() => {
 
 <template>
 	<div>
-		<p v-if="page.geoSummary" class="sr-only">{{ page.geoSummary }}</p>
-
 		<section class="site-container grid gap-12 pt-12 pb-(--block-gap) md:pt-16 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center lg:gap-16 lg:pt-24">
 			<div class="flex flex-col gap-8">
 				<p v-if="page.eyebrowCommand" class="type-mono-s break-words text-mute">
@@ -61,7 +59,7 @@ useHead(() => {
 
 			<figure class="m-0 w-full max-w-[360px] justify-self-center overflow-hidden rounded-lg border border-line bg-surface lg:justify-self-end">
 				<div class="aspect-4/5 bg-surface-2">
-					<ResponsiveImage v-if="portrait" :image="portrait" priority sizes="(min-width: 1024px) 360px, 90vw" class="[&_img]:object-top" />
+					<ResponsiveImage v-if="portrait" :image="portrait" priority sizes="(min-width: 1024px) 360px, 90vw" img-class="object-top" />
 				</div>
 				<figcaption v-if="caption?.user" class="flex flex-wrap gap-x-2 border-t border-line px-4 py-3 type-mono-s text-ink-soft">
 					<span

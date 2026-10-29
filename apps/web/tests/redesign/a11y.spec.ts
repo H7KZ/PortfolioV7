@@ -58,11 +58,17 @@ test('G5 keyboard: mobile menu opens, traps focus, closes on Esc', async ({ page
 	await page.keyboard.press('Enter')
 	await expect(button).toHaveAttribute('aria-expanded', 'true')
 	await expect(page.locator('#mobile-menu a').first()).toBeFocused()
+	const panel = await page.locator('#mobile-menu').boundingBox()
+	expect(panel?.height ?? 0, 'menu panel fills the screen under the header').toBeGreaterThan(700)
+	await expect(page.locator('#mobile-menu a').first()).toBeInViewport()
 	await expect(page.locator('main')).toHaveJSProperty('inert', true)
 	for (let step = 0; step < 12; step += 1) {
 		await page.keyboard.press('Tab')
-		const inside = await page.evaluate(() => Boolean(document.activeElement?.closest('#mobile-menu, button[aria-controls="mobile-menu"]')))
-		expect(inside).toBe(true)
+		const focused = await page.evaluate(() => {
+			const element = document.activeElement
+			return element?.closest('#mobile-menu, button[aria-controls="mobile-menu"]') ? 'inside' : (element?.outerHTML.slice(0, 120) ?? 'nothing')
+		})
+		expect(focused, `Tab ${step + 1}`).toBe('inside')
 	}
 	await page.keyboard.press('Escape')
 	await expect(page.locator('#mobile-menu')).toHaveCount(0)

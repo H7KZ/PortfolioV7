@@ -44,3 +44,14 @@ test('G3 old project URLs answer 301', async ({ request }) => {
 		expect(response.headers().location, from).toBe(to)
 	}
 })
+
+test('G3 resume stats and stack use four columns on desktop', async ({ page }) => {
+	await page.setViewportSize({ width: 1440, height: 900 })
+	await open(page, '/resume')
+	const tracks = await page.evaluate(() =>
+		[...document.querySelectorAll('main dl.grid, #skills-heading ~ div.grid, section[aria-labelledby="skills-heading"] > div.grid')].map(
+			element => getComputedStyle(element).gridTemplateColumns.split(' ').length
+		)
+	)
+	expect(tracks).toEqual([4, 4])
+})

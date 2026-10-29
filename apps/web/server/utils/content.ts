@@ -96,7 +96,16 @@ const loaders = {
 		])
 		const cards: ProjectCard[] = projects.docs
 			.filter(project => project.card?.show)
-			.map(({ id, slug, title, date, thumbnail, card }) => ({ id, slug, title, date, thumbnail, card }))
+			.map(({ id, slug, title, date, thumbnail, heroPlaceholderLabel, heroPlaceholderSpec, card }) => ({
+				id,
+				slug,
+				title,
+				date,
+				thumbnail,
+				heroPlaceholderLabel,
+				heroPlaceholderSpec,
+				card
+			}))
 		return {
 			page,
 			projects: cards,

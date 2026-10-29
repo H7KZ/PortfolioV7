@@ -13,4 +13,4 @@ REDESIGN_VISUAL=1 pnpm --filter @portfolio/web test:redesign     # also G4 scree
 - `visual.spec.ts`: full-page screenshots per route, width and locale. Write baselines with `-- --update-snapshots` only after visual-qa approves them.
 - `lighthouserc.json`: Lighthouse budgets for the four key routes (SPEC 1.1 item 5), run against a production build with `npx @lhci/cli autorun --config=tests/redesign/lighthouserc.json`.
 
-Set `REDESIGN_BASE_URL` to test another host. Reports land in `out/`, which git ignores.
+The specs default to a production build on port 3000 (`.claude/launch.json` has `web-prod`; its env file sets `PORT=3000` and `NUXT_PUBLIC_SITE_URL=http://localhost:3000`). Against a CMS started with `next dev`, request every route once before the run: the first fetch of each page and image compiles a route and can outlast the 60 s test timeout. Set `REDESIGN_BASE_URL` to test another host. Reports land in `out/`, which git ignores.

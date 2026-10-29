@@ -109,13 +109,13 @@ useHead(() => {
 		</div>
 
 		<section v-if="project.contentHtml" class="site-container section-grid pb-(--section-gap)" aria-labelledby="challenge">
-			<h2 id="challenge" class="type-h3">{{ labels.challengeLabel }}</h2>
+			<h2 id="challenge" class="type-h2">{{ labels.challengeLabel }}</h2>
 			<!-- eslint-disable-next-line vue/no-v-html -->
 			<div class="prose-site prose" v-html="demoteHeadings(project.contentHtml)"></div>
 		</section>
 
 		<section v-if="project.contributions?.length" class="site-container section-grid pb-(--section-gap)" aria-labelledby="owned">
-			<h2 id="owned" class="type-h3">{{ labels.contributionsLabel }}</h2>
+			<h2 id="owned" class="type-h2">{{ labels.contributionsLabel }}</h2>
 			<ul class="grid list-none gap-4 p-0 md:grid-cols-2">
 				<li v-for="item in project.contributions" :key="item.id ?? item.title" class="flex flex-col gap-3 rounded-lg border border-line bg-surface p-6">
 					<h3 class="type-h4">{{ item.title }}</h3>
@@ -125,12 +125,12 @@ useHead(() => {
 		</section>
 
 		<section v-if="hasArchitecture && project.architecture" class="site-container section-grid pb-(--section-gap)" aria-labelledby="architecture">
-			<h2 id="architecture" class="type-h3">{{ labels.architectureLabel }}</h2>
+			<h2 id="architecture" class="type-h2">{{ labels.architectureLabel }}</h2>
 			<ArchitectureDiagram :architecture="project.architecture" />
 		</section>
 
 		<section v-if="project.stack?.length" class="site-container section-grid pb-(--section-gap)" aria-labelledby="stack">
-			<h2 id="stack" class="type-h3">{{ labels.stackLabel }}</h2>
+			<h2 id="stack" class="type-h2">{{ labels.stackLabel }}</h2>
 			<UiTags :tags="project.stack" />
 		</section>
 

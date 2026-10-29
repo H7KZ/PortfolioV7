@@ -47,7 +47,7 @@ useSeo(() => ({
 		</header>
 
 		<div v-if="page.impact?.length" class="site-container pb-(--section-gap)">
-			<dl class="grid gap-4 lg:grid-cols-4 lg:gap-6 sm:grid-cols-2">
+			<dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
 				<StatTile
 					v-for="item in page.impact"
 					:key="item.id ?? item.label"
@@ -80,7 +80,7 @@ useSeo(() => ({
 				<h2 id="skills-heading" class="type-h2">{{ page.skills.heading }}</h2>
 				<p v-if="page.skills.sub" class="type-body text-ink-soft">{{ page.skills.sub }}</p>
 			</div>
-			<div class="grid gap-8 xl:grid-cols-4 sm:grid-cols-2">
+			<div class="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
 				<div v-for="(group, index) in page.skillGroups ?? []" :key="group.id ?? index" class="flex flex-col gap-4">
 					<h3 class="border-b border-line pb-3 type-mono-label text-mute">{{ group.title }}</h3>
 					<ul class="flex list-none flex-col gap-2 p-0">

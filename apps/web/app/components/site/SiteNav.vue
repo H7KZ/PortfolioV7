@@ -25,7 +25,7 @@ watch(
 
 <template>
 	<header v-if="navigation" class="sticky top-0 z-40 border-b border-line bg-[color-mix(in_srgb,var(--color-bg)_88%,transparent)] backdrop-blur-md">
-		<div class="site-container flex h-16 items-center justify-between gap-2 lg:h-18 sm:gap-4">
+		<div class="site-container flex h-16 items-center justify-between gap-2 sm:gap-4 lg:h-18">
 			<NuxtLink :to="href('/')" class="inline-flex min-h-11 items-center gap-1 type-mono-m text-ink no-underline" @click="closeMenu(false)">
 				{{ navigation.wordmark }}<span class="inline-block h-4 w-2 bg-accent" aria-hidden="true"></span>
 			</NuxtLink>
@@ -38,7 +38,7 @@ watch(
 				</ul>
 			</nav>
 
-			<div class="flex items-center gap-1 md:gap-6 sm:gap-3">
+			<div class="flex items-center gap-1 sm:gap-3 md:gap-6">
 				<UiButton kind="secondary" size="small" :to="href(navigation.hire.href)">{{ navigation.hire.label }}</UiButton>
 				<NuxtLink
 					:to="localePath(otherLocale)"
@@ -64,7 +64,10 @@ watch(
 			</div>
 		</div>
 
-		<MobileMenu v-if="menuOpen && layout" :layout="layout" :menu-button="menuButton" @close="closeMenu()" />
+		<!-- The header's backdrop blur would make it the containing block of a fixed panel, so the menu renders in body. -->
+		<Teleport to="body">
+			<MobileMenu v-if="menuOpen && layout" :layout="layout" :menu-button="menuButton" @close="closeMenu()" />
+		</Teleport>
 		<!-- Without JavaScript the menu button does nothing, so phones get the links as a plain list instead. -->
 		<nav :aria-label="navigation.navLabel ?? undefined" class="nojs-only site-container border-t border-line md:hidden">
 			<ul class="flex list-none flex-wrap gap-x-6 p-0">
