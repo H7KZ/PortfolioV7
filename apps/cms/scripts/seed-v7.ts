@@ -330,6 +330,15 @@ function paragraphs(texts: string[]): Json {
 
 // ------------------------------------------------------------------------------------------- globals
 
+/** SEO titles reuse the navigation labels; the site appends the name, so "Résumé" becomes "Résumé · Jan Komínek". */
+function navLabel(locale: Locale, href: string): string {
+	const navigation = pick<Json>(locale, 'globals.navigation')
+	const items = [...(navigation.items as Link[]), ...((navigation.mobileMenu as Json).extraItems as Link[])]
+	const item = items.find(entry => entry.href === href)
+	if (!item) throw new Error(`navigation has no ${href}`)
+	return item.label
+}
+
 interface Link {
 	label: string
 	href: string
@@ -416,7 +425,8 @@ async function importGlobals(): Promise<void> {
 				services: { heading: services.heading, sub: services.sub },
 				testimonials: { heading: testimonials.heading, sub: testimonials.sub },
 				readMoreLabel: testimonials.readMoreLabel,
-				quoteLimit: testimonials.quoteLimit
+				quoteLimit: testimonials.quoteLimit,
+				meta: { description: hero.valueProp }
 			}
 		},
 		true
@@ -450,6 +460,7 @@ async function importGlobals(): Promise<void> {
 				education: header('education'),
 				skills: header('skills'),
 				primarySkillLabel: EXTRA[locale].primarySkillLabel,
+				meta: { title: navLabel(locale, '/resume'), description: resume.bio },
 				skillGroups: (resume.skillGroups as { title: string; skills: string[] }[]).map(group => ({
 					title: group.title,
 					skills: group.skills.map(skill => ({ name: skill.replace(/\*$/, ''), primary: skill.endsWith('*') }))
@@ -461,7 +472,7 @@ async function importGlobals(): Promise<void> {
 
 	await writeGlobal('contact', locale => {
 		const contact = pick<Json>(locale, 'globals.contact')
-		return { ...contact }
+		return { ...contact, meta: { title: navLabel(locale, '/contact'), description: contact.intro } }
 	})
 
 	await writeGlobal('contact-form', locale => {
@@ -514,7 +525,7 @@ async function importGlobals(): Promise<void> {
 
 	await writeGlobal('blog', locale => {
 		const blog = pick<Json>(locale, 'globals.blog')
-		return { ...blog }
+		return { ...blog, meta: { title: navLabel(locale, '/blog'), description: blog.lead } }
 	})
 
 	const siteUrl = String(((await payload.findGlobal({ slug: 'site', depth: 0 })) as unknown as Json).siteUrl ?? 'https://jankominek.com').replace(/\/$/, '')
@@ -528,6 +539,7 @@ async function importGlobals(): Promise<void> {
 			newTabLabel: EXTRA[locale].newTabLabel,
 			jobTitle: 'Fullstack Engineer',
 			personDescription: EXTRA[locale].personDescription,
+			description: EXTRA[locale].personDescription,
 			sameAs: ['https://www.linkedin.com/in/jan-kominek', 'https://github.com/H7KZ'],
 			knowsAbout: skills.map(skill => skill.replace(/\*$/, ''))
 		}

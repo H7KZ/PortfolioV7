@@ -56,7 +56,7 @@ export interface LayoutData {
 export type ProjectCard = Pick<Resolved<Project>, 'id' | 'slug' | 'title' | 'date' | 'thumbnail' | 'heroPlaceholderLabel' | 'heroPlaceholderSpec' | 'card'>
 
 export interface HomeData {
-	page: Resolved<Home>
+	page: Omit<Resolved<Home>, 'geoSummary'>
 	projects: ProjectCard[]
 	projectCount: number
 	services: Resolved<Service>[]

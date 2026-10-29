@@ -106,8 +106,10 @@ const loaders = {
 				heroPlaceholderSpec,
 				card
 			}))
+		// The V6 hidden summary is not shown since V7 (SPEC 8.4), so it stays out of the payload too.
+		const { geoSummary: _geoSummary, ...homePage } = page
 		return {
-			page,
+			page: homePage,
 			projects: cards,
 			projectCount: projects.totalDocs,
 			services: services.docs,

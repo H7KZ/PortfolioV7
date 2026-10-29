@@ -186,7 +186,7 @@ function labelClass(edge: DrawnEdge): string {
 						<span class="type-body-medium text-ink">{{ node.name }}</span>
 						<span v-if="node.tech" class="type-mono-s text-ink-soft">
 							<template v-for="(part, index) in node.tech.split(' · ')" :key="index"
-								><span v-if="index > 0"> · </span><span :class="{ 'whitespace-nowrap': part.length <= 18 }">{{ part }}</span></template
+								><span v-if="index > 0">&nbsp;· </span><span :class="{ 'whitespace-nowrap': part.length <= 18 }">{{ part }}</span></template
 							>
 						</span>
 					</li>
