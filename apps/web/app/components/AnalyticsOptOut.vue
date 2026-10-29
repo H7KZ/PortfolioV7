@@ -32,18 +32,11 @@ function toggle(): void {
 </script>
 
 <template>
-	<div class="mt-12 rounded-(--radius) border border-(--line) bg-(--bg-2) px-6 py-5">
-		<div class="mono mb-1 text-[10px] tracking-widest text-(--accent) uppercase">◆ {{ title }}</div>
+	<section class="flex max-w-[68ch] flex-col gap-4 rounded-lg border border-line bg-surface p-6" aria-labelledby="analytics-opt-out">
+		<h2 id="analytics-opt-out" class="type-h4">{{ title }}</h2>
 		<div class="flex flex-wrap items-center justify-between gap-4">
-			<p class="m-0 text-[13px] leading-[1.55] text-(--fg-3)" aria-live="polite">{{ optedOut ? inactiveText : activeText }}</p>
-			<button
-				type="button"
-				:disabled="!ready"
-				class="mono cursor-pointer rounded-md border border-(--line-2) px-3.5 py-2 text-[11px] tracking-wide text-(--fg-3) transition-colors duration-150 hover:border-(--fg-4) hover:text-(--fg) disabled:opacity-50"
-				@click="toggle"
-			>
-				{{ optedOut ? optInLabel : optOutLabel }}
-			</button>
+			<p class="type-body-s text-ink-soft" aria-live="polite">{{ optedOut ? inactiveText : activeText }}</p>
+			<UiButton kind="secondary" size="small" :disabled="!ready" @click="toggle">{{ optedOut ? optInLabel : optOutLabel }}</UiButton>
 		</div>
-	</div>
+	</section>
 </template>

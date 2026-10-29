@@ -6,6 +6,18 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "@portfolio/cms", "run", "dev"],
       "port": 43000
+    },
+    {
+      "name": "web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@portfolio/web", "run", "dev"],
+      "port": 45173
+    },
+    {
+      "name": "web-prod",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["--env-file=apps/web/.env.redesign", "apps/web/.output/server/index.mjs"],
+      "port": 3000
     }
   ]
 }

@@ -15,7 +15,7 @@ jankominek.com. Read [README.md](README.md) for setup and [docs/README.md](docs/
 - The web reads the CMS only on the server (`server/utils/content.ts`, cached by `defineCachedFunction`). Browser code never talks to the CMS.
 - CMS saves clear the web cache through `/_internal/revalidate`. Anything new that caches CMS data must be cleared there too.
 - Rich text is rendered to HTML in the CMS at save time (`src/rich-text`); the web prints the stored `<field>Html`.
-- The visual design matches V6. Change markup or classes only when asked.
+- The visual design matches V7 (Figma `jDa51GQCd58Qv9YBteYeQZ`, see `docs/redesign/`). Change markup or classes only when asked.
 - Media URLs are `/media/<file>` on the site, never the CMS host.
 - Schema change: edit the collection or global, `generate:types`, `migrate:create`. Commit the migration.
 

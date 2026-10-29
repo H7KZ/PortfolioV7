@@ -6,6 +6,7 @@ const slug = computed(() => ([] as string[]).concat(route.params.slug ?? []).joi
 const data = await useContent<PostData>(`posts/${slug.value}`)
 const { data: layout } = useLayoutContent()
 const absoluteUrl = useAbsoluteUrl()
+const locale = useLocaleCode()
 
 const post = computed(() => data.value.post)
 const page = computed(() => data.value.page)
@@ -21,7 +22,7 @@ const shareUrl = computed(() => {
 })
 
 useSeo(() => ({
-	title: post.value.meta?.title ?? `${post.value.title} · ${site.value?.name ?? ''}`,
+	title: post.value.meta?.title ?? post.value.title,
 	description: description.value,
 	image: post.value.meta?.image ?? post.value.thumbnail,
 	type: 'article',
@@ -54,55 +55,45 @@ useHead(() => ({
 </script>
 
 <template>
-	<div class="flex w-full items-center justify-center px-8 max-sm:px-5">
-		<div class="flex w-full max-w-360 flex-col gap-56 pt-16 pb-32">
-			<article class="flex w-full flex-col items-center">
-				<div class="mono mb-8 flex w-full max-w-270 flex-wrap items-center gap-4 text-[11px] tracking-[0.06em] text-(--fg-4)">
-					<time :datetime="publishedIso">
-						{{ formatDate(post.date, 'en-GB', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) }}
-					</time>
-					<template v-if="post.readingTime">
-						<span class="text-(--fg-5)">·</span>
-						<span>{{ post.readingTime }} {{ page.minutesLong }}</span>
-					</template>
-					<template v-for="tag in tags" :key="tag">
-						<span class="text-(--fg-5)">·</span>
-						<span>{{ tag }}</span>
-					</template>
-				</div>
+	<article class="site-container flex flex-col gap-(--block-gap) pt-10 pb-(--section-gap) md:pt-14 lg:pt-20">
+		<header class="flex max-w-[840px] flex-col gap-6">
+			<p class="flex flex-wrap gap-x-3 type-mono-label text-mute">
+				<time :datetime="publishedIso">{{ formatDate(post.date, locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) }}</time>
+				<template v-if="post.readingTime">
+					<span aria-hidden="true">·</span>
+					<span>{{ post.readingTime }} {{ page.minutesLong }}</span>
+				</template>
+			</p>
+			<h1 class="type-display-l">{{ post.title }}</h1>
+			<p v-if="post.description" class="max-w-[60ch] type-body-l text-ink-soft">{{ post.description }}</p>
+			<UiTags :tags="tags" />
+		</header>
 
+		<div class="section-grid">
+			<div class="max-lg:hidden"></div>
+			<div class="flex min-w-0 flex-col gap-(--block-gap)">
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div
-					class="prose w-full max-w-270! prose-neutral prose-invert prose-h1:text-5xl prose-h1:font-semibold prose-h2:text-4xl prose-h2:font-normal prose-h3:text-3xl prose-h3:font-normal prose-h4:text-2xl prose-h4:font-normal prose-h5:text-xl prose-h5:font-normal prose-h6:text-lg prose-h6:font-normal prose-p:font-light prose-p:text-neutral-100 prose-code:bg-neutral-800! prose-pre:bg-neutral-800!"
-					v-html="post.contentHtml"
-				></div>
-			</article>
+				<div class="prose-site prose" v-html="demoteHeadings(post.contentHtml)"></div>
 
-			<div class="mx-auto w-full max-w-270">
-				<div class="rounded-(--radius) border border-(--line) bg-(--bg-2) px-6 py-5">
-					<div class="mono mb-1 text-[10px] tracking-widest text-(--fg-4) uppercase">{{ page.shareLabel }}</div>
-					<p class="m-0 mb-3 text-[13px] leading-[1.55] text-(--fg-3)">{{ page.shareText }}</p>
-					<div class="flex flex-wrap gap-3">
+				<aside class="flex flex-col gap-3 rounded-lg border border-line bg-surface p-6">
+					<h2 class="type-h4">{{ page.shareLabel }}</h2>
+					<p class="type-body-s text-ink-soft">{{ page.shareText }}</p>
+					<p class="flex flex-wrap gap-x-6 type-button">
 						<a
 							:href="shareUrl"
 							target="_blank"
-							rel="noopener noreferrer"
-							class="mono inline-flex items-center gap-1.5 text-[11px] tracking-[0.04em] text-(--fg-3) no-underline transition-colors duration-150 hover:text-(--fg)"
+							rel="noopener"
+							class="inline-flex min-h-11 items-center text-ink underline decoration-control underline-offset-4 hover:decoration-ink"
+							>{{ page.shareOnXLabel }}<span v-if="site?.newTabLabel" class="sr-only"> {{ site.newTabLabel }}</span></a
 						>
-							{{ page.shareOnXLabel }}
-						</a>
-						<span class="text-(--fg-5)">·</span>
 						<a
 							href="/feed.xml"
-							class="mono inline-flex items-center gap-1.5 text-[11px] tracking-[0.04em] text-(--fg-3) no-underline transition-colors duration-150 hover:text-(--fg)"
+							class="inline-flex min-h-11 items-center text-ink underline decoration-control underline-offset-4 hover:decoration-ink"
+							>{{ page.rssLabel }}</a
 						>
-							{{ page.rssLabel }}
-						</a>
-					</div>
-				</div>
+					</p>
+				</aside>
 			</div>
-
-			<ContactFooter />
 		</div>
-	</div>
+	</article>
 </template>

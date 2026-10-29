@@ -28,6 +28,8 @@ export interface MediaView {
 	mimeType: string | null
 	width: number | null
 	height: number | null
+	/** Other encodings uploaded next to the file, as site URLs. */
+	formats: { avif: string | null; avif800: string | null; webp800: string | null }
 }
 
 type IsMedia<T> = [T] extends [Media] ? ([Media] extends [T] ? true : false) : false
@@ -46,15 +48,15 @@ type ResolvedMember<T> =
 export type Relation = number | MediaView | null | undefined
 
 export interface LayoutData {
-	site: Resolved<Site>
+	site: Omit<Resolved<Site>, 'humansTxt' | 'llmsTxt' | 'llmsFullTxt'>
 	navigation: Resolved<Navigation>
 	footer: Resolved<Footer>
 }
 
-export type ProjectCard = Pick<Resolved<Project>, 'id' | 'slug' | 'title' | 'date' | 'thumbnail' | 'card'>
+export type ProjectCard = Pick<Resolved<Project>, 'id' | 'slug' | 'title' | 'date' | 'thumbnail' | 'heroPlaceholderLabel' | 'heroPlaceholderSpec' | 'card'>
 
 export interface HomeData {
-	page: Resolved<Home>
+	page: Omit<Resolved<Home>, 'geoSummary'>
 	projects: ProjectCard[]
 	projectCount: number
 	services: Resolved<Service>[]
@@ -81,6 +83,7 @@ export interface PostData {
 export interface ProjectData {
 	labels: Resolved<ProjectPage>
 	project: Resolved<Project>
+	next: { slug: string; title: string } | null
 }
 
 export interface ContactData {

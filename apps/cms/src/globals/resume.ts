@@ -60,7 +60,8 @@ export const Resume = defineGlobal({
 						sectionHeader('ownProduct', 'Own product'),
 						sectionHeader('leadership', 'Leadership & teaching'),
 						sectionHeader('education', 'Education', false),
-						sectionHeader('skills', 'Skills')
+						sectionHeader('skills', 'Skills'),
+						text('primarySkillLabel', { admin: { description: 'Read by screen readers after a skill with the accent dot, e.g. (daily).' } })
 					]
 				},
 				{
@@ -78,7 +79,7 @@ export const Resume = defineGlobal({
 										{
 											type: 'row',
 											fields: [
-												{ name: 'name', type: 'text', required: true },
+												text('name', { required: true }),
 												{ name: 'primary', type: 'checkbox', admin: { description: 'Daily tool, gets the accent dot.' } }
 											]
 										}

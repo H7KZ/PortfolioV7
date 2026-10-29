@@ -16,6 +16,11 @@ Start at the root [README](../README.md) for what the project is and how to run 
 | review a Dependabot PR, handle a major, move the toolkit pin | [Dependency updates](runbooks/dependency-updates.md)       |
 | diagnose a failure                                           | [Troubleshooting](runbooks/troubleshooting.md)             |
 | import V6 content into a new, empty CMS (one time)           | [V6 content import](runbooks/content-import.md)            |
+| write the V7 redesign copy and images into the CMS           | [V7 content seed](runbooks/v7-content-seed.md)             |
+
+## Redesign
+
+The V7 redesign contract is [redesign/SPEC.md](redesign/SPEC.md), with tasks in [TASKS.md](redesign/TASKS.md) and the build loop in [LOOP.md](redesign/LOOP.md).
 
 ## Architecture decisions
 

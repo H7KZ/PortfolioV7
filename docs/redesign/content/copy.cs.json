@@ -1,0 +1,1238 @@
+{
+  "$meta": {
+    "source": "Figma file jDa51GQCd58Qv9YBteYeQZ (Portfolio-Copied), page 1060:30, desktop frames. Copy is identical across breakpoints unless listed under responsiveOverrides.",
+    "locale": "cs",
+    "updated": "2026-10-29",
+    "shape": "Grouped by the Payload global or collection that will hold it. Keys marked NEW in docs/redesign/SPEC.md section 6 need a schema change first.",
+    "rules": "No em dashes. En dashes only in number and date ranges. List bullets carry no leading dash: the list style draws the marker.",
+    "translation": "Czech by Claude from the English copy. Have a native reader skim it before seeding production. Testimonial quotes stay in English (LinkedIn originals)."
+  },
+  "globals": {
+    "navigation": {
+      "wordmark": "jankominek.com",
+      "items": [
+        {
+          "label": "Práce",
+          "href": "/#work",
+          "match": "exact"
+        },
+        {
+          "label": "Životopis",
+          "href": "/resume",
+          "match": "exact"
+        },
+        {
+          "label": "Blog",
+          "href": "/blog",
+          "match": "prefix"
+        }
+      ],
+      "hire": {
+        "label": "Najmout",
+        "href": "/contact"
+      },
+      "toggleLanguageLabel": "EN / CS",
+      "toggleMenuLabel": "Otevřít menu",
+      "closeMenuLabel": "Zavřít menu",
+      "currentLabel": "právě tady",
+      "mobileMenu": {
+        "extraItems": [
+          {
+            "label": "Kontakt",
+            "href": "/contact"
+          }
+        ],
+        "languages": {
+          "en": "English",
+          "cs": "Čeština"
+        },
+        "primaryCta": {
+          "label": "Začít projekt",
+          "href": "/contact"
+        },
+        "email": "contact@jankominek.com"
+      }
+    },
+    "footer": {
+      "cta": {
+        "title": "Dostaňme ten váš\ndo produkce.",
+        "titleAccent": "do produkce.",
+        "body": "Part-time na IČO, zhruba 10 hodin týdně. Hybridně v Praze, nebo plně na dálku. Ve všední dny odpovídám do 24 hodin.",
+        "primaryCta": {
+          "label": "Začít projekt",
+          "href": "/contact"
+        },
+        "secondaryCta": {
+          "label": "Domluvit 30min hovor",
+          "action": "cal"
+        },
+        "terminal": {
+          "prompt": "contact --jan",
+          "rows": [
+            {
+              "key": "email",
+              "value": "contact@jankominek.com",
+              "href": "mailto:contact@jankominek.com"
+            },
+            {
+              "key": "linkedin",
+              "value": "/in/jan-kominek",
+              "href": "https://www.linkedin.com/in/jan-kominek"
+            },
+            {
+              "key": "call",
+              "value": "30 min, zdarma"
+            },
+            {
+              "key": "reply",
+              "value": "< 24 h ve všední dny"
+            },
+            {
+              "key": "status",
+              "value": "volný pro part-time B2B",
+              "live": true
+            }
+          ]
+        }
+      },
+      "copyright": "© 2026 Jan Komínek · Praha, CZ",
+      "links": [
+        {
+          "label": "Soukromí",
+          "href": "/privacy"
+        },
+        {
+          "label": "Podmínky",
+          "href": "/terms"
+        },
+        {
+          "label": "RSS",
+          "href": "/feed.xml"
+        },
+        {
+          "label": "LinkedIn",
+          "href": "https://www.linkedin.com/in/jan-kominek",
+          "external": true,
+          "arrow": true
+        }
+      ]
+    },
+    "home": {
+      "hero": {
+        "eyebrowCommand": "whoami  # Jan Komínek · fullstack engineer na volné noze · Praha, CZ",
+        "headline": "Od prázdného repa\naž do produkce.",
+        "valueProp": "Zero-trust platforma pro ověřování původu dat, síť nabíjecích stanic s ostrými platbami a rozvrhovač předmětů, který dodnes provozuju. Postavené celé, od infrastruktury po UI. Od roku 2022 sedm firem a přes 12 dodaných projektů.",
+        "primaryCta": {
+          "label": "Začít projekt",
+          "href": "/contact"
+        },
+        "secondaryCta": {
+          "label": "Zobrazit životopis",
+          "href": "/resume"
+        },
+        "availability": "Mám volno na part-time spolupráci na IČO, zhruba 10 hodin týdně, hybridně v Praze nebo na dálku.",
+        "portraitCaption": {
+          "user": "jan@prague",
+          "path": "~",
+          "note": "shipping since 2022"
+        }
+      },
+      "now": {
+        "label": "Právě teď",
+        "items": [
+          {
+            "key": "Fullstack",
+            "value": "VEROC Group: uzo.com, upcomers.com"
+          },
+          {
+            "key": "Building",
+            "value": "Ohlídáme, kontrola povinností e-shopů"
+          },
+          {
+            "key": "Running",
+            "value": "Kreditožrouti, přes 200 studentů VŠE"
+          },
+          {
+            "key": "Teaching",
+            "value": "C# pro prváky na Smíchovské"
+          }
+        ]
+      },
+      "work": {
+        "heading": "Postavené celé.\nNasazené v produkci.",
+        "sub": "Čtyři případové studie, každá postavená celá: infrastruktura, backend i UI.",
+        "readCaseStudyLabel": "Číst případovou studii"
+      },
+      "more": {
+        "heading": "Další práce.",
+        "sub": "Aktuální práce pro klienty, co právě stavím a menší projekty.",
+        "items": [
+          {
+            "meta": "VEROC Group · Teď",
+            "title": "uzo.com a upcomers.com",
+            "description": "Fullstack engineer na dvou produktech VEROC Group.",
+            "linkLabel": "uzo.com ↗",
+            "href": "https://uzo.com",
+            "external": true
+          },
+          {
+            "meta": "Vlastní produkt · Ve vývoji",
+            "title": "Ohlídáme",
+            "description": "Zkontroluje veřejné stránky e-shopu proti vybraným povinnostem a vysvětlí nedostatky bez právničiny.",
+            "linkLabel": "Ve vývoji",
+            "href": null
+          },
+          {
+            "meta": "CORAC Engineering · 2025–2026",
+            "title": "Scorecard",
+            "description": "Nástroj na reporty z kyberauditů s postupy podle NIS2 a exportem do PDF ve značce klienta.",
+            "linkLabel": "Číst případovou studii",
+            "href": "/projects/corac_scorecard"
+          },
+          {
+            "meta": "VŠE · Tým čtyř · 2025–2026",
+            "title": "Diář FISáka",
+            "description": "Vedl jsem čtyři vývojáře na univerzitní platformě a nastavil jim workflow, pravidla code review i infrastrukturu.",
+            "linkLabel": "Viz životopis",
+            "href": "/resume#leadership"
+          },
+          {
+            "meta": "Open source · 2020–2024",
+            "title": "Disenchantment",
+            "description": "Plugin do Minecraftu, který hráčům umožní odebrat a získat zpět enchanty, pro verze 1.18 až 26.x.",
+            "linkLabel": "Číst případovou studii",
+            "href": "/projects/disenchantment"
+          }
+        ]
+      },
+      "services": {
+        "heading": "Tři způsoby spolupráce.",
+        "sub": "Part-time spolupráce na IČO. Za svou oblast nesu plnou odpovědnost: architekturu, kód, dodání i nasazení."
+      },
+      "testimonials": {
+        "heading": "Skutečná zpětná vazba\nod kolegů a vedoucích.",
+        "sub": "Převzato přímo z doporučení na LinkedInu, bez úprav. Citace jsou v původní angličtině.",
+        "readMoreLabel": "Číst dál ↗",
+        "quoteLimit": 160
+      }
+    },
+    "project-page": {
+      "backLabel": "← Všechna práce",
+      "roleLabel": "Role",
+      "timelineLabel": "Období",
+      "sectorLabel": "Obor",
+      "challengeLabel": "Výzva",
+      "contributionsLabel": "Za co jsem odpovídal",
+      "architectureLabel": "Architektura",
+      "stackLabel": "Technologie",
+      "nextLabel": "Další případová studie",
+      "placeholderLabel": "Místo pro snímek obrazovky"
+    },
+    "resume": {
+      "label": "cat ./zivotopis.md  # aktualizováno 10/2026",
+      "name": "Jan Komínek.",
+      "subtitle": "Fullstack Engineer na volné noze · Praha, CZ",
+      "bio": "Dostávám produkty od prázdného repozitáře až do produkce. Od roku 2022 sedm firem, dva produkty postavené od nuly a spuštěné naostro a jeden, který dodnes provozuju sám. Všude TypeScript: Vue a React na frontendu, za nimi Node, na data PostgreSQL, Redis a Elasticsearch, pod tím Docker a CI/CD.",
+      "downloadLabel": "Stáhnout životopis ↓",
+      "hireCta": {
+        "label": "Najmout",
+        "href": "/contact"
+      },
+      "impact": [
+        {
+          "label": "Od roku",
+          "value": "2022",
+          "sub": "Dodávám do produkce",
+          "style": "number"
+        },
+        {
+          "label": "Firmy",
+          "value": "7",
+          "sub": "Od roku 2022",
+          "style": "number"
+        },
+        {
+          "label": "Hlavní stack",
+          "value": "TS · Vue · Node",
+          "sub": "Taky React, Svelte, Nuxt",
+          "style": "text"
+        },
+        {
+          "label": "Stav",
+          "value": "Volný",
+          "sub": "Part-time B2B · ~10 h/týden",
+          "style": "accent"
+        }
+      ],
+      "experience": {
+        "heading": "Kde jsem dodával.",
+        "sub": "Od nejnovějšího."
+      },
+      "ownProduct": {
+        "heading": "Produkty, které provozuju sám.",
+        "sub": "Běží, jsou udržované a mezi zakázkami dál rostou."
+      },
+      "leadership": {
+        "heading": "Vedení a výuka.",
+        "sub": "Kde jsem udával směr týmu nebo třídě."
+      },
+      "education": {
+        "heading": "Vzdělání."
+      },
+      "skills": {
+        "heading": "Technologie.",
+        "sub": "Zelená tečka označuje nástroje, které používám denně."
+      },
+      "skillGroups": [
+        {
+          "title": "Jazyky a frameworky",
+          "skills": ["TypeScript*", "Vue.js*", "Node.js*", "React.js", "Nuxt.js", "SvelteKit", "AdonisJS", "Fastify", "C#", "Tailwind CSS"]
+        },
+        {
+          "title": "Data a úložiště",
+          "skills": ["PostgreSQL*", "MongoDB*", "Redis*", "MySQL", "Elasticsearch", "BullMQ", "REST APIs"]
+        },
+        {
+          "title": "Infra & DevOps",
+          "skills": ["Docker*", "CI/CD*", "Linux*", "Docker Swarm", "Traefik", "Cloudflare", "DigitalOcean", "AWS (Cognito)", "Bash"]
+        },
+        {
+          "title": "Řemeslo a nástroje",
+          "skills": ["Git*", "Figma*", "Agile / Scrum", "Code review", "Systémová architektura", "Mentoring", "Playwright E2E"]
+        }
+      ],
+      "skillsNote": "A trailing * marks primary: true (the accent dot), read from Figma 1082:1076 > Stack columns. Strip the * when seeding."
+    },
+    "contact": {
+      "label": "./najmi --part-time",
+      "heading": "Pojďme\nspolupracovat.",
+      "intro": "Mám volno na part-time spolupráci na IČO, zhruba 10 hodin týdně, hybridně v Praze (osobně ve čtvrtek a v pátek) nebo plně na dálku. Ve všední dny odpovídám do 24 hodin.",
+      "emailLabel": "Napsat e-mail",
+      "emailSub": "contact@jankominek.com",
+      "linkedinLabel": "LinkedIn",
+      "linkedinSub": "500+ kontaktů · 6 doporučení",
+      "bookCallLabel": "Domluvit 30min hovor",
+      "bookCallSub": "Nezávazný úvodní hovor",
+      "includeLabel": "Co napsat",
+      "includeText": "Stručně: problém, očekávaný rozsah, současný tým a technologie, termín a rozpočet. Čím konkrétněji, tím dřív můžu říct „ano, a takhle na to“ nebo „to nebude pro mě, zkuste X“.",
+      "briefTitle": "Zadání projektu",
+      "briefStep": "krok 1 ze 2",
+      "briefSentLabel": "odesláno",
+      "skipFormLabel": "Radši bez formuláře?",
+      "skipFormText": "Rezervujte si 30 minut. Projdeme váš projekt a zjistíme, jestli si sedneme.",
+      "skipFormCta": "Domluvit 30min hovor"
+    },
+    "contact-form": {
+      "fullName": {
+        "label": "Jméno a příjmení *",
+        "placeholder": "Jana Nováková"
+      },
+      "email": {
+        "label": "E-mailová adresa *",
+        "placeholder": "jana@company.cz"
+      },
+      "message": {
+        "label": "Zpráva *",
+        "placeholder": "Popište projekt: problém, technologie, termín…",
+        "placeholderShort": "Problém, technologie, termín…"
+      },
+      "budget": {
+        "label": "Předpokládaný rozpočet",
+        "hint": "nepovinné",
+        "options": [
+          {
+            "key": "lt2k",
+            "label": "Do 2 tis. €"
+          },
+          {
+            "key": "2-5k",
+            "label": "2–5 tis. €"
+          },
+          {
+            "key": "5-10k",
+            "label": "5–10 tis. €"
+          },
+          {
+            "key": "10-25k",
+            "label": "10–25 tis. €"
+          },
+          {
+            "key": "gt25k",
+            "label": "Nad 25 tis. €"
+          },
+          {
+            "key": "unsure",
+            "label": "Zatím nevím"
+          }
+        ]
+      },
+      "advancedLabel": "Další informace (nepovinné)",
+      "advancedHint": "firma, termín, hosting",
+      "privacyNote": "Uloženo na mém vlastním serveru, smazáno po 12 měsících.",
+      "sendLabel": "Odeslat zadání",
+      "sendingLabel": "Odesílám…",
+      "success": {
+        "title": "Díky, {name}. Zadání mám.",
+        "titleNoName": "Díky. Zadání mám.",
+        "body": "Ve všední dny odpovím do 24 hodin z adresy contact@jankominek.com. Pokud spěcháte, domluvte si rovnou hovor.",
+        "sendAnotherLabel": "Poslat další zadání"
+      },
+      "errorMessage": "Zadání se neodeslalo. Zkontrolujte připojení a zkuste to znovu, nebo napište na contact@jankominek.com.",
+      "validation": {
+        "summaryOne": "Před odesláním je potřeba opravit jedno pole: {fields}.",
+        "summaryMany": "Před odesláním je potřeba opravit pole ({count}): {fields}.",
+        "required": "Toto pole je povinné.",
+        "invalidEmail": "Zadejte celou e-mailovou adresu, třeba jana@firma.cz",
+        "tooShort": "Napište o projektu pár vět, alespoň 20 znaků.",
+        "tooLong": "Maximálně {max} znaků.",
+        "invalidOption": "Vyberte jednu z možností.",
+        "invalidDate": "Zadejte platné datum."
+      },
+      "note": "The design shows 'Two fields need a fix before this can send: email address and message.' Build the summary from the live error list; number words are optional."
+    },
+    "errors": {
+      "backLabel": "Zpět na úvod",
+      "fallbackMessage": "Něco se u mě pokazilo. Zkuste to za minutu znovu.",
+      "messages": [
+        {
+          "status": 404,
+          "title": "Tahle stránka neexistuje.",
+          "message": "Možná se při přestavbě webu přesunula, nebo je v odkazu překlep. Nejspíš jste hledali tohle."
+        }
+      ],
+      "suggestions": [
+        {
+          "icon": "~/",
+          "label": "Vybraná práce",
+          "sub": "Případové studie od nabíjení elektroaut po pozorování Země",
+          "href": "/#work"
+        },
+        {
+          "icon": "cv",
+          "label": "Životopis",
+          "sub": "Sedm firem od roku 2022",
+          "href": "/resume"
+        },
+        {
+          "icon": "@",
+          "label": "Kontakt",
+          "sub": "Part-time na IČO, zhruba 10 hodin týdně",
+          "href": "/contact"
+        }
+      ],
+      "codeLabel": "HTTP {status}"
+    },
+    "blog": {
+      "label": "ls -lt ./blog",
+      "heading": "Blog.",
+      "lead": "Články o DevOps, SvelteKitu a TypeScriptu z nastavení, která provozuju v produkci.",
+      "minutesLong": "min čtení",
+      "readLabel": "Číst návod",
+      "draftingLabel": "Rozpracováno",
+      "nextUpText": "Další články se píšou. Sledujte je přes RSS na jankominek.com/feed.xml."
+    }
+  },
+  "collections": {
+    "services": [
+      {
+        "order": 1,
+        "label": "Od nuly",
+        "title": "Nový produkt od nuly",
+        "description": "Od nápadu do produkce. Převezmu stack, dodám MVP a nasadím ho. Platformu pro nabíjení elektroaut jsem dostal od prázdného repozitáře ke spuštění za pět měsíců.",
+        "chips": ["Architecture", "Full-stack", "DevOps"]
+      },
+      {
+        "order": 2,
+        "label": "Záchrana",
+        "title": "Rychle opravit, co nefunguje",
+        "description": "Najdu příčinu, stabilizuju a nastavím pipeline, aby se váš tým zase pohnul.",
+        "chips": ["Refactor", "CI / CD", "Docker"]
+      },
+      {
+        "order": 3,
+        "label": "Růst",
+        "title": "Rozvíjet platformu spolu s týmem",
+        "description": "Dlouhodobě jako senior engineer na částečný úvazek: code review, architektura a mentoring. Tak jsem pracoval s CORAC Engineering a Intedatem.",
+        "chips": ["Mentoring", "Code review", "System design"]
+      }
+    ],
+    "testimonials": [
+      {
+        "order": 1,
+        "name": "Adam Motvička",
+        "initials": "AM",
+        "role": "Intedat · Přímý nadřízený",
+        "quote": "Jan joined our team as a junior, just starting university. Even back then, it was clear to me that he was a talented programmer. He understands very well that as a programmer, he needs to have a broader perspective beyond just coding. He handled a great deal of work at our company, and it was always evident that he could research the context himself and ask the right questions to fill in any missing product context."
+      },
+      {
+        "order": 2,
+        "name": "Petr Hric",
+        "initials": "PH",
+        "role": "IONT tech · Stejný tým",
+        "quote": "We worked with Jan for several months on a complete system for electric vehicle charging stations. Jan is a skilled and thoughtful full-stack developer with an innovative approach to problem-solving and a strong team spirit."
+      },
+      {
+        "order": 3,
+        "name": "Amelie Engelmaierová",
+        "initials": "AE",
+        "role": "Kolegyně ze dvou projektů",
+        "quote": "I've worked with Jan on two projects so far. On both occasions, his problem-solving skills and experienced approach shined through. He is familiar with a variety of tools and procedures and is excellent at explaining them thoroughly to less experienced team members. He is also eager to learn new technologies, always dedicated to finding solutions that work best for both the project and the team. Anyone would be lucky to have him!"
+      }
+    ],
+    "testimonialsNote": "Quotes are LinkedIn recommendations, quoted verbatim in English in both locales. The home shows three; the cut point and 'Read more' come from home.testimonials.quoteLimit. Marek Vospěl, Petr Krejci and Zdeněk Glazer stay in the CMS with home visibility off.",
+    "projects": [
+      {
+        "slug": "deeptrace",
+        "redirectFrom": ["/projects/corac_sith"],
+        "order": 1,
+        "card": {
+          "show": true,
+          "size": "featured",
+          "badge": "Vlajková loď",
+          "year": "2025–2026",
+          "meta": "CORAC Engineering / Senior frontend",
+          "description": "Ověřování hash chainu přímo v prohlížeči, grafy dodavatelského řetězce v D3.js a zero-trust přihlašování pro citlivou pipeline dat z pozorování Země. Jediný frontend engineer.",
+          "chips": ["Vue 3", "D3.js", "AWS Cognito", "Vite"]
+        },
+        "kicker": "CORAC Engineering · 2025–2026",
+        "title": "DeepTrace.",
+        "lede": "Zero-trust platforma pro ověřování původu dat z pozorování Země. Původ a integritu souborů ověřuje v prohlížeči, aniž by se citlivé soubory kamkoli přenášely.",
+        "role": "Senior Frontend Engineer",
+        "timeline": "duben 2025 – srpen 2026",
+        "sector": "GovTech · Aerospace",
+        "impact": [],
+        "challenge": [
+          "Data z pozorování Země jsou citlivá a obrovská. Poskytovatelé i odběratelé potřebují ověřit, že s nimi mezi sběrem, zpracováním a doručením nikdo nemanipuloval, jenže samotné soubory často nesmí opustit svou síť.",
+          "DeepTrace to řeší ověřováním na straně klienta: prohlížeč stáhne kryptografický hash chain, sestaví z něj graf původu a každý krok ověří proti důvěryhodným zdrojům, aniž by provozovatel kdy držel surová data."
+        ],
+        "contributions": [
+          {
+            "title": "Vizualizace původu v D3.js",
+            "body": "Interaktivní silově řízený graf původu dat. Každý uzel je krok zpracování, hrany jsou transformace ověřené hashem. Zvládne přes 1000 uzlů se zoomem, posunem a zvýrazněním podle dotazu."
+          },
+          {
+            "title": "Ověřovač hash chainu v prohlížeči",
+            "body": "Kryptografická kontrola integrity čistě v prohlížeči. Projde řetězec od listu ke kořeni, ověří každý SHA-256 hash proti důvěryhodné kotvě a pozměněný článek označí s přesnou diagnostikou."
+          },
+          {
+            "title": "Zero-trust přihlašování přes Cognito",
+            "body": "OAuth flow přes AWS Cognito, přístupové tokeny se nikdy nedostanou na server. Oddělená oprávnění pro poskytovatele a odběratele dat, citlivé operace hlídá ověření hash chainu na úrovni relace."
+          },
+          {
+            "title": "Stack Vue 3 + Vite + Shadcn",
+            "body": "Projekt jsem založil od nuly. Striktní TypeScript, automatický linting, pnpm workspaces, CI s náhledovými nasazeními. Zavedl jsem postupy, které pak převzal zbytek týmu."
+          }
+        ],
+        "stack": ["Vue 3", "TypeScript", "D3.js", "Vite", "pnpm", "Shadcn UI", "AWS Cognito", "OAuth", "REST API", "SubtleCrypto", "Node.js v22+"],
+        "hero": {
+          "path": "~/projects/deeptrace",
+          "image": "deeptrace-thumbnail"
+        },
+        "gallery": [
+          {
+            "path": "~/projects/deeptrace/hashchain",
+            "image": "deeptrace-hashchain"
+          },
+          {
+            "path": "~/projects/deeptrace/lineage-graph",
+            "placeholder": {
+              "label": "Graf původu přes celou obrazovku",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          },
+          {
+            "path": "~/projects/deeptrace/verification",
+            "placeholder": {
+              "label": "Úspěšné ověření a pozměněný článek vedle sebe",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          }
+        ],
+        "factsToConfirm": ["1000+ nodes", "SHA-256"]
+      },
+      {
+        "slug": "iont_platform",
+        "redirectFrom": ["/projects/iont_info", "/projects/iont_charge", "/projects/iont_admin"],
+        "order": 2,
+        "card": {
+          "show": true,
+          "size": "featured",
+          "year": "2023–2024",
+          "meta": "IONT tech / Fullstack",
+          "description": "Aplikace pro řidiče, platební brána ČSOB a administrace přímo v nabíječce pro veřejnou síť nabíjecích stanic. Od prázdného repozitáře ke spuštění za pět měsíců.",
+          "chips": ["SvelteKit", "Fastify", "MongoDB", "Docker Swarm"]
+        },
+        "kicker": "IONT tech · 2023–2024",
+        "title": "Platforma IONT.",
+        "lede": "Veřejná síť nabíjecích stanic od prázdného repozitáře až ke spuštění: aplikace pro řidiče, platební brána certifikovaná ČSOB a administrace běžící na Raspberry Pi přímo v nabíječce.",
+        "role": "Fullstack Engineer",
+        "timeline": "srpen 2023 – září 2024",
+        "sector": "Čistá energie · Platby",
+        "impact": [
+          {
+            "label": "Spuštění",
+            "value": "5 měsíců",
+            "sub": "Od prázdného repa ke spuštění"
+          },
+          {
+            "label": "Platby",
+            "value": "ČSOB",
+            "sub": "Certifikovaná bankovní brána"
+          },
+          {
+            "label": "Hardware",
+            "value": "Raspberry Pi",
+            "sub": "Administrace v nabíječce"
+          }
+        ],
+        "challenge": [
+          "IONT tech potřeboval tři produkty, které fungují jako jeden: veřejnou aplikaci, kde řidič najde nabíječku a zaplatí, platební bránu certifikovanou ČSOB, která s nabíječkou komunikuje v reálném čase, a administraci, která běží offline přímo v každé jednotce. Jako jediný fullstack engineer jsem to spolu s týmem firmwaru dotáhl od prázdného repozitáře až ke spuštění."
+        ],
+        "contributions": [
+          {
+            "title": "Veřejná aplikace pro nabíjení",
+            "body": "Aplikace ve SvelteKitu, kde řidič najde nabíječku, autorizuje ji a sleduje nabíjení živě. Navržená primárně pro mobil."
+          },
+          {
+            "title": "Platební brána",
+            "body": "Certifikovaná integrace ČSOB s komunikací s nabíječkou v reálném čase, postavená s týmem firmwaru tak, aby splnila požadavky finanční regulace."
+          },
+          {
+            "title": "Administrace v zařízení",
+            "body": "Offline-first panel na Raspberry Pi v nabíječce pro konfiguraci a diagnostiku, s podepsanými automatickými aktualizacemi pro celou flotilu."
+          },
+          {
+            "title": "Infrastruktura a dodávka",
+            "body": "Navrhl a nasadil jsem celé prostředí jako mikroslužby v Docker Swarmu, včetně CI/CD pipeline a správy linuxových serverů."
+          }
+        ],
+        "stack": ["SvelteKit", "Svelte", "Fastify", "Node.js", "MongoDB", "Docker Swarm", "Raspberry Pi", "CI/CD", "Linux"],
+        "hero": {
+          "path": "~/projects/iont_info",
+          "image": "iont-thumbnail"
+        },
+        "gallery": [
+          {
+            "path": "~/projects/iont_info/landing",
+            "image": "iont-landing"
+          },
+          {
+            "path": "~/projects/iont_info/mobile",
+            "image": "iont-phones"
+          },
+          {
+            "path": "~/projects/iont_charge",
+            "image": "iont-charge"
+          },
+          {
+            "path": "~/projects/iont_admin",
+            "image": "iont-admin"
+          },
+          {
+            "path": "~/projects/iont_platform/driver-app",
+            "placeholder": {
+              "label": "Aplikace pro řidiče v telefonu: najít nabíječku, zaplatit, nabít",
+              "spec": "Snímek 390 × 844 ve 3× · jen ukázková data"
+            }
+          },
+          {
+            "path": "~/projects/iont_platform/admin-panel",
+            "placeholder": {
+              "label": "Administrace na displeji nabíječky",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          },
+          {
+            "path": "~/projects/iont_platform/hardware",
+            "placeholder": {
+              "label": "Skutečná nabíječka s aplikací v ruce",
+              "spec": "Fotka · na šířku, dobře nasvícená"
+            }
+          }
+        ],
+        "factsToConfirm": ["ČSOB certification wording", "five months to launch"]
+      },
+      {
+        "slug": "kreditozrouti",
+        "order": 3,
+        "card": {
+          "show": true,
+          "size": "featured",
+          "badge": "Živě",
+          "year": "2025",
+          "meta": "Vlastní produkt / Autor a správce",
+          "description": "Rozvrhovač předmětů pro studenty VŠE, běží na kreditozrouti.cz. Vytvořil jsem ho a provozuju sám, s monitoringem, alertingem a automatickým nasazováním.",
+          "chips": ["Vue.js", "Node.js", "Redis", "BullMQ"]
+        },
+        "kicker": "Vlastní produkt · 2025",
+        "title": "Kreditožrouti.",
+        "lede": "Rozvrhovač předmětů pro studenty VŠE, běží na kreditozrouti.cz. Vytvořil jsem ho a provozuju sám, od scrapování InSISu po nasazování. Čísla jsou záměrně skromná: každý den v tichosti zachrání semestr pár studentům.",
+        "role": "Autor a jediný správce",
+        "timeline": "září 2025 – dosud",
+        "sector": "EdTech · Vysoké školství",
+        "impact": [
+          {
+            "label": "Studenti",
+            "value": "200+",
+            "sub": "Dokončili průvodce nastavením"
+          },
+          {
+            "label": "Onboarding",
+            "value": "35%",
+            "sub": "Z 588 návštěvníků dokončí nastavení"
+          },
+          {
+            "label": "Stav",
+            "value": "Živě",
+            "sub": "Monitorované, nasazované automaticky"
+          }
+        ],
+        "challenge": [
+          "Kreditožrouti je rozvrhovač předmětů pro studenty Vysoké školy ekonomické v Praze. Stahuje veřejná data o předmětech z InSISu a staví nad nimi rychlejší a přehlednější vyhledávání a plánování, takže student zaplní díru v rozvrhu za pár vteřin, místo aby se proklikával univerzitním systémem.",
+          "Nikdy to nebyl startup a čísla jsou záměrně skromná: pár stovek studentů, každý den hrstka z nich, kteří ho našli hlavně přes Discord, Facebook a doporučení. Vedle práce pro klienty je to jediný produkt, který mám celý ve svých rukou: běží, je udržovaný a pořád získává uživatele."
+        ],
+        "contributions": [
+          {
+            "title": "Scrapování InSISu a plánování",
+            "body": "Stahuje veřejná data o předmětech z InSISu a nabízí nad nimi lepší vyhledávání a plánování, než má univerzitní systém, takže student zaplní díru v rozvrhu za pár vteřin. Název je vtip s pointou: se špatně sestaveným rozvrhem vám předměty sežerou kredity."
+          },
+          {
+            "title": "Od hackathonu k produktu",
+            "body": "Vznikl na 4FIS Mini Hackathonu nad živými daty: funkční MVP za 3,5 hodiny a první místo. Když skončil předmět, pod kterým se pak vyvíjel, převzal jsem ho a sám dotáhl do hotového produktu, ne jen dema."
+          },
+          {
+            "title": "Produkční infrastruktura",
+            "body": "Dnes běží s monitoringem, alertingem a automatickým nasazováním. Vue na frontendu, za ním Node s Redisem a workery v BullMQ, vše v kontejnerech s Dockerem a Traefikem."
+          },
+          {
+            "title": "Bakalářská práce",
+            "body": "Práce s InSISem vedla přímo k mé bakalářce: MCP serveru nad daty z InSISu, hostovanému na univerzitních serverech pod oficiální doménou."
+          }
+        ],
+        "architecture": {
+          "nodes": [
+            {
+              "key": "web",
+              "name": "Webová aplikace",
+              "tech": "Vue 3 · Pinia · Tailwind 4 · servíruje Nginx"
+            },
+            {
+              "key": "ai",
+              "name": "AI klienti",
+              "tech": "Libovolný MCP klient"
+            },
+            {
+              "key": "traefik",
+              "name": "Traefik",
+              "tech": "TLS · směruje /, /api a /mcp"
+            },
+            {
+              "key": "api",
+              "name": "API",
+              "tech": "Express 5 · Kysely · Zod"
+            },
+            {
+              "key": "mcp",
+              "name": "MCP server",
+              "tech": "MCP SDK · nástroje nad daty předmětů"
+            },
+            {
+              "key": "redis",
+              "name": "Redis",
+              "tech": "Fronty BullMQ · cache · relace"
+            },
+            {
+              "key": "mysql",
+              "name": "MySQL",
+              "tech": "Předměty · studijní plány"
+            },
+            {
+              "key": "scraper",
+              "name": "Scraper worker",
+              "tech": "BullMQ · Axios · Cheerio"
+            },
+            {
+              "key": "insis",
+              "name": "InSIS",
+              "tech": "Veřejné stránky předmětů VŠE",
+              "external": true
+            }
+          ],
+          "edges": [
+            {
+              "from": "web",
+              "to": "traefik",
+              "kind": "request"
+            },
+            {
+              "from": "ai",
+              "to": "traefik",
+              "kind": "sync"
+            },
+            {
+              "from": "traefik",
+              "to": "api",
+              "kind": "request"
+            },
+            {
+              "from": "traefik",
+              "to": "mcp",
+              "kind": "sync"
+            },
+            {
+              "from": "api",
+              "to": "redis",
+              "kind": "async",
+              "label": "do fronty"
+            },
+            {
+              "from": "api",
+              "to": "mysql",
+              "kind": "request",
+              "label": "čte + zapisuje",
+              "labelShort": "zapisuje"
+            },
+            {
+              "from": "mcp",
+              "to": "mysql",
+              "kind": "sync",
+              "label": "jen čte"
+            },
+            {
+              "from": "redis",
+              "to": "scraper",
+              "kind": "async",
+              "label": "úlohy · výsledky",
+              "bidirectional": true
+            },
+            {
+              "from": "scraper",
+              "to": "insis",
+              "kind": "async"
+            }
+          ],
+          "legend": {
+            "request": "Vyhledávací požadavek",
+            "sync": "Synchronní volání",
+            "async": "Asynchronní obnova přes BullMQ"
+          },
+          "observability": "Observabilita: Alloy → Prometheus a Loki → Grafana. Alertmanager → Discord. Analytika přes Umami.",
+          "caption": "Monorepo na pnpm a Turborepu. Každý zápis do databáze dělá API. Scraper InSIS jen stahuje a parsuje a výsledky vrací přes frontu, takže pomalý univerzitní server nikdy nezablokuje studentovo hledání. MCP server čte stejná data z MySQL pro AI klienty a pro mou bakalářku.",
+          "textAlternative": "Prohlížeč načte aplikaci ve Vue a přes Traefik volá API. API čte a zapisuje MySQL a úlohy pro scraper řadí do fronty v Redisu. Scraper worker si úlohy z Redisu bere, stahuje stránky předmětů z InSISu a výsledky vrací přes Redis. AI klienti se přes Traefik dostanou k samostatnému MCP serveru, který MySQL jen čte."
+        },
+        "stack": ["TypeScript", "Vue.js", "Node.js", "Redis", "BullMQ", "Docker", "Traefik", "CI/CD", "Git"],
+        "hero": {
+          "path": "~/projects/kreditozrouti",
+          "image": "kreditozrouti-dark"
+        },
+        "gallery": [
+          {
+            "path": "kreditozrouti.cz · light mode",
+            "image": "kreditozrouti-desktop"
+          },
+          {
+            "path": "~/projects/kreditozrouti/timetable",
+            "placeholder": {
+              "label": "Sestavování rozvrhu se skutečným rozvrhem",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          },
+          {
+            "path": "~/projects/kreditozrouti/search",
+            "placeholder": {
+              "label": "Hledání předmětů s filtry",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          },
+          {
+            "path": "~/projects/kreditozrouti/usage",
+            "placeholder": {
+              "label": "Graf používání: 588 návštěvníků, 204 dokončilo nastavení",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          }
+        ]
+      },
+      {
+        "slug": "intedat",
+        "order": 4,
+        "isNew": true,
+        "card": {
+          "show": true,
+          "size": "featured",
+          "year": "2024–2026",
+          "meta": "Intedat / Fullstack",
+          "description": "Skoro dva roky funkcí dodaných celých na datové platformě, k tomu přestavba vyhledávání a pipeline, která to všechno dodává.",
+          "chips": ["Nuxt", "AdonisJS", "PostgreSQL", "Elasticsearch"]
+        },
+        "kicker": "Intedat · 2024–2026",
+        "title": "Intedat.",
+        "lede": "Skoro dva roky funkcí dodaných celých na datové platformě, od frontendu v Nuxtu přes backend v AdonisJS po PostgreSQL a Redis.",
+        "role": "Fullstack Engineer",
+        "timeline": "září 2024 – červen 2026",
+        "sector": "Datová platforma",
+        "impact": [],
+        "challenge": [
+          "Do Intedatu jsem nastoupil jako junior na začátku vysoké a vyrostl v engineera, na kterého se produktový tým spoléhal od začátku do konce. Dodával jsem funkce od frontendu v Nuxtu přes backend v AdonisJS po PostgreSQL a Redis a byl jediným kontaktním bodem pro produktové stakeholdery."
+        ],
+        "contributions": [
+          {
+            "title": "Funkce od A do Z",
+            "body": "Dodával jsem funkce napříč celým stackem: Nuxt na frontendu, AdonisJS na backendu, PostgreSQL a Redis pro data."
+          },
+          {
+            "title": "Přestavba vyhledávání",
+            "body": "Přestavěl jsem vyhledávání nad velkými datasety na Elasticsearch a vyladil relevanci i odezvu."
+          },
+          {
+            "title": "CI/CD a infrastruktura",
+            "body": "Měl jsem na starosti CI/CD pipeline a linuxovou infrastrukturu na DigitalOcean, na které běžela produkční nasazení."
+          },
+          {
+            "title": "Produktoví stakeholdeři",
+            "body": "Jediný kontaktní bod pro produktové stakeholdery platformy."
+          }
+        ],
+        "stack": ["Nuxt", "AdonisJS", "TypeScript", "Node.js", "PostgreSQL", "Redis", "Elasticsearch", "DigitalOcean"],
+        "hero": {
+          "path": "~/projects/intedat/main",
+          "placeholder": {
+            "label": "Hlavní pracovní obrazovka",
+            "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+          }
+        },
+        "gallery": [
+          {
+            "path": "~/projects/intedat/search",
+            "placeholder": {
+              "label": "Výsledky vyhledávání",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          },
+          {
+            "path": "~/projects/intedat/detail",
+            "placeholder": {
+              "label": "Obrazovka detailu nebo úprav",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          }
+        ]
+      },
+      {
+        "slug": "corac_scorecard",
+        "order": 5,
+        "card": {
+          "show": false
+        },
+        "kicker": "CORAC Engineering · 2025–2026",
+        "title": "Scorecard.",
+        "lede": "Nástroj na reporty z bezpečnostních auditů pro kyberbezpečnostní profesionály. Z dat analýzy rizik vytvoří během minut PDF report plně ve značce klienta.",
+        "role": "Frontend Engineer",
+        "timeline": "listopad 2025 – srpen 2026",
+        "sector": "GovTech · Reporting",
+        "impact": [],
+        "challenge": [
+          "Scorecard je webová aplikace pro CORAC Engineering, která kyberbezpečnostním auditorům slouží jako interaktivní tabulka pro zadávání dat analýzy rizik a generování reportů. Výzvou bylo vytvořit nástroj, který nahradí provizorní tabulky a přidá profesionální výstupy, a to bez backendové databáze. Výsledkem je přenosná aplikace, která funguje i offline, exportuje výsledky auditu rovnou do PDF ve značce klienta a podporuje postupy podle NIS2."
+        ],
+        "contributions": [
+          {
+            "title": "Export reportu do PDF",
+            "body": "Automatický export do plně konfigurovatelných PDF reportů ve značce klienta (logo, název firmy a metadata), aby se audit dodal rychleji."
+          },
+          {
+            "title": "Přenositelnost dat v JSONu",
+            "body": "Celý stav tabulky jde exportovat a znovu načíst jako JSON, takže zálohy, přenos práce mezi zařízeními i sdílení s kolegy fungují bez serverové databáze."
+          },
+          {
+            "title": "UI pro auditory",
+            "body": "Postavené na komponentách Shadcn a reaktivitě Vue.js, aby auditoři měli rychlé a nerušivé rozhraní pro práci s velkými daty analýzy rizik."
+          },
+          {
+            "title": "Standardizace vývoje",
+            "body": "Zavedl jsem striktní konfiguraci ESLintu a Prettieru spolu s pnpm a Vite, aby byl kód jednotný, udržovatelný a snadno rostl."
+          }
+        ],
+        "stack": ["Vue.js", "Shadcn UI", "Vite", "pnpm", "Node.js", "ESLint", "Prettier"],
+        "hero": {
+          "path": "~/projects/corac_scorecard",
+          "image": "scorecard-thumbnail"
+        },
+        "gallery": [
+          {
+            "path": "~/projects/corac_scorecard/report",
+            "image": "scorecard-main"
+          },
+          {
+            "path": "~/projects/corac_scorecard/report",
+            "placeholder": {
+              "label": "Editor reportu vedle exportované stránky PDF",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          }
+        ]
+      },
+      {
+        "slug": "disenchantment",
+        "order": 6,
+        "card": {
+          "show": false
+        },
+        "kicker": "Osobní projekt · 2024",
+        "title": "Disenchantment.",
+        "lede": "Plugin do Minecraftu, který znovu vymýšlí kovadlinu: hráči mohou z předmětů odebírat a získávat zpět enchanty, což přidává hloubku práci s inventářem. Pro verze 1.18 až 26.x.",
+        "role": "Samostatný vývojář",
+        "timeline": "2020 – 2024",
+        "sector": "Hry · Plugin do Minecraftu",
+        "impact": [
+          {
+            "label": "Verze",
+            "value": "1.18–26.x",
+            "sub": "Více verzí"
+          },
+          {
+            "label": "Zdroj",
+            "value": "Open source",
+            "sub": "GitHub"
+          },
+          {
+            "label": "Závislosti",
+            "value": "Žádné",
+            "sub": "Stačí vložit"
+          }
+        ],
+        "challenge": [
+          "Disenchantment je plugin do Minecraftu v Javě nad Spigot API, který řeší dlouholeté omezení vanilla hry: jednou použitý enchant už nejde sundat. Plugin přidává mechaniku, díky které hráči přes přepracovanou kovadlinu enchanty z předmětů odeberou a získají zpět, což práci s předměty dává skutečnou strategickou hloubku. Je postavený s důrazem na kompatibilitu a výkon, běží na verzích 1.18–26.x bez jakýchkoli závislostí a je open source na GitHubu."
+        ],
+        "contributions": [
+          {
+            "title": "Vylepšená kovadlina",
+            "body": "Přepracoval jsem vanilla kovadlinu tak, aby šlo enchanty odebírat a získávat zpět, a hráči tak mají jemnou kontrolu nad předměty i strategií enchantů."
+          },
+          {
+            "title": "Kompatibilita napříč verzemi",
+            "body": "Zajistil jsem bezproblémovou kompatibilitu s Minecraftem 1.18 až 26.x bez dalších závislostí, takže plugin běží na starších i aktuálních serverech."
+          },
+          {
+            "title": "Vlastní GUI a příkazy",
+            "body": "Vytvořil jsem přívětivá rozhraní inventáře a herní příkazy s oprávněními a podrobnou zpětnou vazbou pro hráče."
+          },
+          {
+            "title": "Výkon a bezpečnost vláken",
+            "body": "Použil jsem osvědčené postupy pro bezpečnost vláken a výkon, včetně asynchronního ověřování předmětů a práce s daty enchantů v event systému Spigotu."
+          }
+        ],
+        "stack": ["Java", "Spigot API", "Maven", "IntelliJ IDEA", "Git", "YAML"],
+        "hero": {
+          "path": "~/projects/disenchantment",
+          "image": "disenchantment-thumbnail-crop"
+        },
+        "gallery": [
+          {
+            "path": "~/projects/disenchantment/anvil",
+            "image": "disenchantment-anvil"
+          },
+          {
+            "path": "~/projects/disenchantment/repo",
+            "placeholder": {
+              "label": "Hlavička repozitáře na GitHubu s hvězdičkami a staženími",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          }
+        ]
+      }
+    ],
+    "projectsNote": "Next-case-study order follows 'order' and wraps: DeepTrace → IONT platform → Kreditožrouti → Intedat → Scorecard → Disenchantment → DeepTrace. Archived (published, card.show false, never linked): pangolin, noteful. 'iont_charge' and 'iont_admin' redirect to iont_platform.",
+    "experience": {
+      "work": [
+        {
+          "order": 1,
+          "current": true,
+          "dates": "září 2026 – dosud",
+          "role": "Fullstack Engineer",
+          "organization": "VEROC Group · Na volné noze · Na dálku",
+          "description": "Fullstack engineer na volné noze na dvou produktech VEROC Group: uzo.com a upcomers.com (financování traderů).",
+          "chips": ["TypeScript", "Node.js", "React", "Tailwind"]
+        },
+        {
+          "order": 2,
+          "dates": "duben 2025 – srpen 2026",
+          "duration": "1 rok 5 měs.",
+          "role": "Senior Frontend Engineer",
+          "organization": "CORAC Engineering · Na volné noze · Na dálku",
+          "description": "Jediný frontend engineer na DeepTrace, platformě, kde poskytovatelé i odběratelé ověří původ a integritu dat z pozorování Země, aniž by se soubory kamkoli přenášely.",
+          "highlights": [
+            "Navrhl jsem interaktivní vizualizaci původu v D3.js, která sleduje vznik souboru a každý krok jeho zpracování",
+            "Implementoval jsem ověřování hash chainu v prohlížeči, takže data se ověří bez nutnosti věřit serveru",
+            "Zapojil jsem AWS Cognito (OAuth) pro přihlašování čistě na straně klienta nad Vue 3, Vite a Shadcn UI"
+          ],
+          "chips": ["Vue 3", "TypeScript", "D3.js", "AWS Cognito", "Vite", "pnpm"]
+        },
+        {
+          "order": 3,
+          "dates": "září 2024 – červen 2026",
+          "duration": "1 rok 10 měs.",
+          "role": "Fullstack Engineer",
+          "organization": "Intedat · Na volné noze · Na dálku",
+          "description": "Fullstack datová platforma stavěná na škálování, rychlé vyhledávání a spolehlivou infrastrukturu. Jediný kontaktní bod pro produktové stakeholdery.",
+          "highlights": [
+            "Dodával jsem funkce od A do Z, od frontendu v Nuxtu přes backend v AdonisJS po PostgreSQL a Redis",
+            "Přestavěl jsem vyhledávání nad velkými datasety na Elasticsearch a vyladil relevanci i odezvu dotazů",
+            "Měl jsem na starosti CI/CD pipeline a linuxovou infrastrukturu na DigitalOcean pod produkcí"
+          ],
+          "chips": ["Node.js", "TypeScript", "Nuxt", "AdonisJS", "PostgreSQL", "Elasticsearch"]
+        },
+        {
+          "order": 4,
+          "dates": "srpen 2023 – září 2024",
+          "duration": "1 rok 2 měs.",
+          "role": "Fullstack Engineer",
+          "organization": "IONT tech · Na volné noze · Na dálku",
+          "description": "Jako jediný fullstack engineer jsem dovedl platformu pro správu nabíječek elektroaut od holé infrastruktury až k ostrým platbám.",
+          "highlights": [
+            "Dodal jsem veřejnou aplikaci pro nabíjení s online platbami a vzdálenou autorizací nabíječek a k ní administraci pro provozovatele",
+            "Navrhl a od nuly nasadil celé prostředí jako mikroslužby v Docker Swarmu na IaaS",
+            "Spolu s týmem hardwaru a firmwaru postavil systém pro automatickou distribuci firmwaru"
+          ],
+          "chips": ["SvelteKit", "Fastify", "TypeScript", "Docker Swarm", "MongoDB", "Redis"]
+        },
+        {
+          "order": 5,
+          "dates": "leden 2023 – listopad 2023",
+          "duration": "11 měs.",
+          "role": "Fullstack Developer",
+          "organization": "PRECISMO · Na volné noze · Hybridně",
+          "description": "Interní zákaznický portál, který jsme stavěli v cross-funkčním Scrum týmu. Denně jsem pracoval s 6 vývojáři a produktovým manažerem.",
+          "highlights": [
+            "Stavěl jsem funkce frontendu v Reactu a backendové služby v Node.js",
+            "Udělal jsem analýzu nového modulu pro správu obsahu a rozdělil ho na menší úkoly, aby na něm mohlo pracovat víc lidí najednou",
+            "Do procesu vydávání jsem přidal end-to-end testy v Playwrightu, které zachytí regrese"
+          ],
+          "chips": ["React", "Node.js", "Playwright", "SQL"]
+        },
+        {
+          "order": 6,
+          "dates": "říjen 2022 – červenec 2023",
+          "duration": "10 měs.",
+          "role": "Frontend Developer",
+          "organization": "HAXAGON · Částečný úvazek · Na dálku",
+          "description": "Frontend e-learningové platformy pro kyberbezpečnost, ve spolupráci s designérem a vývojovým týmem.",
+          "highlights": [
+            "Stavěl a udržoval jsem frontend platformy ve Vue a TypeScriptu",
+            "Zavedl jsem postupy pro kvalitu kódu a dodávání, které tým používá dál",
+            "Řídil jsem vydávání verzí a s designéry jsem se podílel na rozhodnutích o UX"
+          ],
+          "chips": ["Vue.js", "TypeScript", "Tailwind"]
+        }
+      ],
+      "ownProduct": [
+        {
+          "order": 1,
+          "current": true,
+          "dates": "září 2025 – dosud",
+          "duration": "běží",
+          "role": "Kreditožrouti · autor a jediný správce",
+          "organization": "kreditozrouti.cz · přes 200 studentů",
+          "description": "Rozvrhovač předmětů pro studenty VŠE. Autor a jediný správce.",
+          "highlights": [
+            "Stahuje veřejná data o předmětech z InSISu a nabízí lepší vyhledávání a plánování, než má univerzitní systém",
+            "Začal jako vítězný prototyp z hackathonu se dvěma kolegy, do produkce s monitoringem, alertingem a automatickým nasazováním jsem ho dotáhl sám",
+            "Vedl přímo k mé bakalářce: MCP serveru nad stejnými daty, hostovanému na univerzitních serverech"
+          ],
+          "chips": ["TypeScript", "Vue.js", "Node.js", "Redis", "BullMQ", "Docker"]
+        },
+        {
+          "order": 2,
+          "current": true,
+          "dates": "září 2026 – dosud",
+          "duration": "ve vývoji",
+          "role": "Ohlídáme",
+          "organization": "Vlastní produkt · Český e-commerce",
+          "description": "Za minutu uvidíte, co vašemu e-shopu vůči zákazníkům chybí. Ohlídáme zkontroluje veřejné stránky e-shopu proti vybraným povinnostem, srozumitelně a bez právničiny. Není napojené na ČOI.",
+          "chips": ["System architecture", "Claude Code", "OpenAI Codex"]
+        }
+      ],
+      "leadership": [
+        {
+          "order": 1,
+          "current": true,
+          "dates": "září 2026 – dosud",
+          "role": "Učitel odborných předmětů",
+          "organization": "Smíchovská SPŠ · Částečný úvazek · Prezenčně",
+          "description": "Učím prváky základy programování v C#.",
+          "highlights": [
+            "Algoritmizace, proměnné a řízení toku",
+            "Datové struktury a logika: jednorozměrná pole, seznamy a metody",
+            "Základy objektově orientovaného programování včetně struktur a tříd"
+          ],
+          "chips": ["C#", "OOP", "Teaching"]
+        },
+        {
+          "order": 2,
+          "dates": "říjen 2025 – únor 2026",
+          "duration": "5 měs.",
+          "role": "Lead Backend Engineer a DevOps architekt",
+          "organization": "Diář FISáka · VŠE · Tým 4 lidí",
+          "description": "Vedl jsem tým 4 vývojářů. Nastavil agilní workflow, strategii větvení v Gitu a pravidla code review a napsal technickou dokumentaci, podle které tým pracuje.",
+          "highlights": [
+            "Navrhl jsem kontejnerovou infrastrukturu na VPS u Hetzneru s Dockerem, Traefikem a Cloudflare",
+            "Postavil jsem REST API v Node.js s asynchronními workery v BullMQ a Redisu",
+            "Mentoroval jsem tým v TypeScriptu, Dockeru a architektonických vzorech"
+          ],
+          "chips": ["TypeScript", "Node.js", "Docker", "Traefik", "Redis", "BullMQ"]
+        },
+        {
+          "order": 3,
+          "dates": "2022 – 2026",
+          "duration": "5 ročníků · po 50 studentech",
+          "role": "Lektor a organizátor",
+          "organization": "Smíchovská SPŠ · Letní škola · Na smlouvu · Prezenčně",
+          "description": "Týdenní letní škola základů vývoje her pro studenty od 13 do 16 let.",
+          "highlights": [
+            "Sám jsem učil Úvod a základy 2D grafiky a ve zpětné vazbě studentů jsem byl nejlépe hodnocený lektor",
+            "Sepsal jsem osnovu, navrhl závěrečné projekty a prošel každé odevzdání",
+            "S ostatními lektory jsem zajišťoval logistiku a koordinaci celého týdne"
+          ],
+          "chips": ["Unity", "C#", "Figma"]
+        }
+      ],
+      "education": [
+        {
+          "order": 1,
+          "current": true,
+          "dates": "září 2024 – červenec 2027",
+          "duration": "Bakalářské, probíhá",
+          "role": "Aplikovaná informatika",
+          "organization": "Vysoká škola ekonomická v Praze (VŠE)",
+          "description": "Bakalářský obor na pomezí softwarového inženýrství a byznysové strategie.",
+          "highlights": [
+            "Předměty ze systémového návrhu, strojového učení, cloud computingu, kvantitativního výzkumu a datové analytiky, k tomu marketing, finance a obchodní právo",
+            "Bakalářská práce: MCP server nad daty předmětů z InSISu, hostovaný na univerzitních serverech, který vyrostl z Kreditožroutů",
+            "Certifikace: Building AI, Elements of AI, Introduction to Data Science in Python, Joining Data in SQL, Supervised Learning with scikit-learn, Unsupervised Learning in Python"
+          ]
+        },
+        {
+          "order": 2,
+          "dates": "září 2020 – květen 2024",
+          "duration": "Maturita",
+          "role": "Kybernetická bezpečnost a počítačová forenzní analýza",
+          "organization": "Smíchovská střední průmyslová škola",
+          "description": "Maturita s výbornými známkami z odborných předmětů v oboru zaměřeném na kyberbezpečnost.",
+          "highlights": [
+            "Síťová bezpečnost, počítačová forenzní analýza a správa systémů",
+            "Navrhl a postavil jsem od nuly funkční procesor v Assembly (Logisim Evolution)",
+            "Maturitní práce: fullstack e-shop včetně DevOps a CI/CD"
+          ]
+        }
+      ]
+    }
+  },
+  "unchanged": {
+    "posts": "Post 'Traefik with Cloudflare inside Docker, simplified.' keeps its CMS body. Only the template is re-skinned (Figma 1084:1511).",
+    "legal": "Privacy and Terms keep their CMS text in both locales. Re-skin only (Figma 1084:1708, 1084:1829). Check the privacy text still says Umami is the only analytics after the Cloudflare beacon is switched off."
+  },
+  "responsiveOverrides": {
+    "contact-form.message.placeholder": "Tablet and mobile use placeholderShort.",
+    "case_kreditozrouti.architecture.edges[api->mysql].label": "Mobile uses labelShort ('writes').",
+    "home.more.items": "Mobile keeps every item; descriptions wrap, nothing is cut."
+  }
+}

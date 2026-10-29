@@ -23,17 +23,21 @@ export function mediaUrl(value: Relation | string | undefined): string | null {
 export function useSeo(input: () => SeoInput) {
 	const route = useRoute()
 	const absoluteUrl = useAbsoluteUrl()
+	const { data: layout } = useLayoutContent()
 	useHead(() => {
 		const seo = input()
+		const name = layout.value?.site.name
+		// Titles read "<Page> · Jan Komínek"; CMS SEO titles that already carry the name stay as written.
+		const title = !name || !seo.title || seo.title.includes(name) ? seo.title : `${seo.title} · ${name}`
 		const url = absoluteUrl(route.path)
 		const image = mediaUrl(seo.image)
 		const imageUrl = image ? (image.startsWith('http') ? image : absoluteUrl(image)) : undefined
 		return {
-			title: seo.title,
+			title,
 			meta: [
 				{ key: 'description', name: 'description', content: seo.description ?? undefined },
 				{ key: 'og:type', property: 'og:type', content: seo.type ?? 'website' },
-				{ key: 'og:title', property: 'og:title', content: seo.title },
+				{ key: 'og:title', property: 'og:title', content: title },
 				{ key: 'og:description', property: 'og:description', content: seo.description ?? undefined },
 				{ key: 'og:url', property: 'og:url', content: url },
 				...(imageUrl
@@ -44,7 +48,7 @@ export function useSeo(input: () => SeoInput) {
 						]
 					: []),
 				{ key: 'twitter:card', name: 'twitter:card', content: 'summary_large_image' },
-				{ key: 'twitter:title', name: 'twitter:title', content: seo.title },
+				{ key: 'twitter:title', name: 'twitter:title', content: title },
 				{ key: 'twitter:description', name: 'twitter:description', content: seo.description ?? undefined }
 			],
 			link: [{ key: 'canonical', rel: 'canonical', href: url }],

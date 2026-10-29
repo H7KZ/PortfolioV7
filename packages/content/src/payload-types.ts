@@ -185,7 +185,23 @@ export interface Project {
   title: string;
   layout: 'caseStudy' | 'simple';
   tags?: string[] | null;
+  /**
+   * Small line above the title, e.g. "CORAC Engineering · 2025–2026".
+   */
+  kicker?: string | null;
+  /**
+   * Hero image of the case study and image of the home card.
+   */
   thumbnail?: (number | null) | Media;
+  /**
+   * Path shown in the window title bar of the hero.
+   */
+  heroPath?: string | null;
+  /**
+   * Shown instead of the hero image while none is uploaded.
+   */
+  heroPlaceholderLabel?: string | null;
+  heroPlaceholderSpec?: string | null;
   /**
    * Intro under the title. Also used as the meta description when no SEO description is set.
    */
@@ -228,10 +244,75 @@ export interface Project {
       }[]
     | null;
   stack?: string[] | null;
+  /**
+   * Window frames under the stack. A row without an image shows its placeholder label and spec until one is uploaded.
+   */
+  screens?:
+    | {
+        image?: (number | null) | Media;
+        path?: string | null;
+        placeholderLabel?: string | null;
+        placeholderSpec?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * V6 only, not shown since V7. Use Gallery above.
+   */
   gallery?: (number | Media)[] | null;
+  architecture?: {
+    /**
+     * The key ties a node to its place in the diagram and must stay stable.
+     */
+    nodes?:
+      | {
+          key: string;
+          name: string;
+          tech?: string | null;
+          /**
+           * Outside the system, drawn with a dashed border.
+           */
+          external?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+    edges?:
+      | {
+          from: string;
+          to: string;
+          kind: 'request' | 'sync' | 'async';
+          bidirectional?: boolean | null;
+          label?: string | null;
+          /**
+           * Used on phones.
+           */
+          labelShort?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    legend?: {
+      request?: string | null;
+      sync?: string | null;
+      async?: string | null;
+    };
+    observability?: string | null;
+    caption?: string | null;
+    /**
+     * Read by screen readers instead of the drawing. Describe the flow in sentences.
+     */
+    textAlternative?: string | null;
+  };
   card?: {
     show?: boolean | null;
     size?: ('featured' | 'wide' | 'narrow' | 'default') | null;
+    /**
+     * Line above the title, e.g. "IONT tech / Fullstack".
+     */
+    meta?: string | null;
+    /**
+     * e.g. 2023–2024
+     */
+    year?: string | null;
     company?: string | null;
     role?: string | null;
     badge?: string | null;
@@ -263,6 +344,18 @@ export interface Media {
    * Describes the image for screen readers and search engines.
    */
   alt?: string | null;
+  /**
+   * Other encodings of this image (AVIF, 800 px wide) uploaded alongside it. The site offers them to browsers that support them.
+   */
+  formats?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   /**
    * Path this file had on the V6 site. Old links redirect here.
    */
@@ -388,6 +481,11 @@ export interface Testimonial {
    * Where "Read more" points for long quotes.
    */
   linkedinUrl?: string | null;
+  show?: boolean | null;
+  /**
+   * Language the quote is written in, so screen readers pronounce it correctly.
+   */
+  quoteLanguage?: ('en' | 'cs') | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -402,6 +500,13 @@ export interface Service {
    * Lower numbers come first.
    */
   order?: number | null;
+  /**
+   * Status label on the card, e.g. "From scratch".
+   */
+  label?: string | null;
+  /**
+   * V6 only, not shown since V7.
+   */
   number: string;
   title: string;
   description: string;
@@ -421,6 +526,13 @@ export interface ContactSubmission {
   fullName: string;
   email: string;
   company?: string | null;
+  /**
+   * Key of the budget option the visitor picked.
+   */
+  budgetRange?: string | null;
+  /**
+   * V6 slider value, kept for older submissions.
+   */
   budget?: number | null;
   message: string;
   /**
@@ -701,7 +813,11 @@ export interface ProjectsSelect<T extends boolean = true> {
   title?: T;
   layout?: T;
   tags?: T;
+  kicker?: T;
   thumbnail?: T;
+  heroPath?: T;
+  heroPlaceholderLabel?: T;
+  heroPlaceholderSpec?: T;
   lede?: T;
   client?: T;
   role?: T;
@@ -727,12 +843,57 @@ export interface ProjectsSelect<T extends boolean = true> {
         id?: T;
       };
   stack?: T;
+  screens?:
+    | T
+    | {
+        image?: T;
+        path?: T;
+        placeholderLabel?: T;
+        placeholderSpec?: T;
+        id?: T;
+      };
   gallery?: T;
+  architecture?:
+    | T
+    | {
+        nodes?:
+          | T
+          | {
+              key?: T;
+              name?: T;
+              tech?: T;
+              external?: T;
+              id?: T;
+            };
+        edges?:
+          | T
+          | {
+              from?: T;
+              to?: T;
+              kind?: T;
+              bidirectional?: T;
+              label?: T;
+              labelShort?: T;
+              id?: T;
+            };
+        legend?:
+          | T
+          | {
+              request?: T;
+              sync?: T;
+              async?: T;
+            };
+        observability?: T;
+        caption?: T;
+        textAlternative?: T;
+      };
   card?:
     | T
     | {
         show?: T;
         size?: T;
+        meta?: T;
+        year?: T;
         company?: T;
         role?: T;
         badge?: T;
@@ -819,6 +980,8 @@ export interface TestimonialsSelect<T extends boolean = true> {
   role?: T;
   quote?: T;
   linkedinUrl?: T;
+  show?: T;
+  quoteLanguage?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -829,6 +992,7 @@ export interface TestimonialsSelect<T extends boolean = true> {
  */
 export interface ServicesSelect<T extends boolean = true> {
   order?: T;
+  label?: T;
   number?: T;
   title?: T;
   description?: T;
@@ -843,6 +1007,7 @@ export interface ServicesSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  formats?: T;
   legacyPath?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -864,6 +1029,7 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
   fullName?: T;
   email?: T;
   company?: T;
+  budgetRange?: T;
   budget?: T;
   message?: T;
   details?: T;
@@ -990,6 +1156,14 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Home {
   id: number;
   /**
+   * Monospace command line above the headline. The $ prompt is drawn by the site.
+   */
+  eyebrowCommand?: string | null;
+  /**
+   * A line break in the text becomes a line break on the page.
+   */
+  headline?: string | null;
+  /**
    * Small line above the name. The first item is highlighted.
    */
   taglines?:
@@ -1021,7 +1195,15 @@ export interface Home {
     | null;
   portrait?: (number | null) | Media;
   /**
-   * Badge on the portrait.
+   * Terminal-style caption bar under the portrait, e.g. jan@prague ~ · shipping since 2022.
+   */
+  portraitCaption?: {
+    user?: string | null;
+    path?: string | null;
+    note?: string | null;
+  };
+  /**
+   * The detail text is the availability line under the buttons.
    */
   availability: {
     status: string;
@@ -1033,6 +1215,19 @@ export interface Home {
   geoSummary?: string | null;
   now: {
     label: string;
+    /**
+     * Key and value rows, e.g. "Running" and "Kreditožrouti, 200+ VŠE students".
+     */
+    items?:
+      | {
+          key: string;
+          value: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * V6 only, not shown since V7.
+     */
     title: string;
     description?: string | null;
     date?: string | null;
@@ -1045,6 +1240,27 @@ export interface Home {
   };
   viewProjectLabel: string;
   readCaseStudyLabel: string;
+  more: {
+    heading: string;
+    sub?: string | null;
+    /**
+     * Rows without a link render as plain text.
+     */
+    items?:
+      | {
+          meta: string;
+          title: string;
+          description?: string | null;
+          linkLabel?: string | null;
+          href?: string | null;
+          /**
+           * Opens in a new tab.
+           */
+          external?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
   services: {
     label: string;
     heading: string;
@@ -1125,6 +1341,10 @@ export interface Resume {
     heading: string;
     sub?: string | null;
   };
+  /**
+   * Read by screen readers after a skill with the accent dot, e.g. (daily).
+   */
+  primarySkillLabel?: string | null;
   skillGroups?:
     | {
         title: string;
@@ -1161,6 +1381,13 @@ export interface Blog {
   id: number;
   label: string;
   heading: string;
+  lead?: string | null;
+  /**
+   * Link label on each post card.
+   */
+  readLabel?: string | null;
+  draftingLabel?: string | null;
+  nextUpText?: string | null;
   /**
    * After the reading time in the list, e.g. MIN
    */
@@ -1196,6 +1423,7 @@ export interface Contact {
   heading: string;
   intro: string;
   emailLabel: string;
+  emailSub?: string | null;
   linkedinLabel: string;
   linkedinSub?: string | null;
   bookCallLabel: string;
@@ -1204,8 +1432,13 @@ export interface Contact {
   includeText: string;
   briefTitle: string;
   briefStep?: string | null;
+  /**
+   * Replaces the step label after the brief is sent.
+   */
+  briefSentLabel?: string | null;
   skipFormLabel: string;
   skipFormText: string;
+  skipFormCta?: string | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -1234,6 +1467,9 @@ export interface ProjectPage {
   challengeLabel: string;
   contributionsLabel: string;
   stackLabel: string;
+  architectureLabel?: string | null;
+  nextLabel?: string | null;
+  placeholderLabel?: string | null;
   /**
    * Appended to meta descriptions, e.g. "A project by Jan Komínek, Fullstack Engineer."
    */
@@ -1335,12 +1571,28 @@ export interface Term {
 export interface Error {
   id: number;
   backLabel: string;
+  /**
+   * Small status line, {status} becomes the HTTP status code.
+   */
+  codeLabel?: string | null;
   fallbackMessage: string;
   messages?:
     | {
         status: number;
         title: string;
         message: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Links on the 404 page.
+   */
+  suggestions?:
+    | {
+        icon: string;
+        label: string;
+        sub?: string | null;
+        href: string;
         id?: string | null;
       }[]
     | null;
@@ -1353,7 +1605,18 @@ export interface Error {
  */
 export interface Navigation {
   id: number;
+  /**
+   * V6 only, not shown since V7.
+   */
   monogram: string;
+  /**
+   * Text logo in the top left, e.g. jankominek.com.
+   */
+  wordmark?: string | null;
+  /**
+   * Accessible name of the main navigation landmark.
+   */
+  navLabel?: string | null;
   /**
    * Accessible label of the monogram link.
    */
@@ -1373,6 +1636,35 @@ export interface Navigation {
   };
   toggleLanguageLabel: string;
   toggleMenuLabel: string;
+  closeMenuLabel?: string | null;
+  /**
+   * Marker next to the current page in the mobile menu.
+   */
+  currentLabel?: string | null;
+  /**
+   * Names in the language switcher, each written in its own language.
+   */
+  languageNames?: {
+    en?: string | null;
+    cs?: string | null;
+  };
+  mobileMenu?: {
+    /**
+     * Links shown only in the mobile menu, after the main items.
+     */
+    extraItems?:
+      | {
+          label: string;
+          href: string;
+          id?: string | null;
+        }[]
+      | null;
+    primaryCta?: {
+      label?: string | null;
+      href?: string | null;
+    };
+    email?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1384,6 +1676,48 @@ export interface Navigation {
  */
 export interface Footer {
   id: number;
+  /**
+   * Shown above the footer on every page except Contact, errors and the legal pages.
+   */
+  cta?: {
+    /**
+     * A line break in the text becomes a line break on the page.
+     */
+    title?: string | null;
+    /**
+     * Words at the end of the title drawn in the accent color.
+     */
+    titleAccent?: string | null;
+    body?: string | null;
+    primaryCta?: {
+      label?: string | null;
+      href?: string | null;
+    };
+    /**
+     * Label of the button that opens the Cal.com booking page.
+     */
+    secondaryCtaLabel?: string | null;
+    /**
+     * Command shown at the top of the terminal card.
+     */
+    terminalPrompt?: string | null;
+    terminalRows?:
+      | {
+          key: string;
+          value: string;
+          href?: string | null;
+          /**
+           * Adds the green live dot.
+           */
+          live?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  copyright?: string | null;
+  /**
+   * V6 only, not shown since V7.
+   */
   label: string;
   /**
    * Text before the button. A line break becomes a line break.
@@ -1436,6 +1770,10 @@ export interface Site {
    * Screen-reader link at the top of every page.
    */
   skipToContent: string;
+  /**
+   * Read by screen readers after links that open in a new tab, e.g. (opens in a new tab).
+   */
+  newTabLabel?: string | null;
   title: string;
   description: string;
   keywords?: string | null;
@@ -1503,9 +1841,30 @@ export interface ContactForm {
   message: {
     label: string;
     placeholder?: string | null;
+    /**
+     * Placeholder on tablets and phones.
+     */
+    placeholderShort?: string | null;
   };
   budget: {
     label: string;
+    /**
+     * Small text after the label, e.g. optional.
+     */
+    hint?: string | null;
+    /**
+     * Preset ranges shown as chips. The key is stored with each submission and must stay stable.
+     */
+    options?:
+      | {
+          key: string;
+          label: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * V6 slider, not shown since V7.
+     */
     currency: string;
     min: number;
     max: number;
@@ -1516,6 +1875,11 @@ export interface ContactForm {
    * Title of the collapsible section below.
    */
   advancedLabel: string;
+  advancedHint?: string | null;
+  /**
+   * Small line next to the send button.
+   */
+  privacyNote?: string | null;
   company: {
     label: string;
     placeholder?: string | null;
@@ -1678,14 +2042,44 @@ export interface ContactForm {
   };
   sendLabel: string;
   sendingLabel: string;
+  /**
+   * V6 only, not shown since V7.
+   */
   successMessage: string;
+  success?: {
+    /**
+     * {name} becomes the first name.
+     */
+    title?: string | null;
+    /**
+     * Used when the name has no first word.
+     */
+    titleNoName?: string | null;
+    body?: string | null;
+    sendAnotherLabel?: string | null;
+  };
   errorMessage: string;
   validation: {
+    /**
+     * {fields} becomes the field name.
+     */
+    summaryOne?: string | null;
+    /**
+     * {count} and {fields} become the number and the field names.
+     */
+    summaryMany?: string | null;
     required: string;
     invalidEmail: string;
+    /**
+     * Message shorter than 20 characters.
+     */
+    tooShort?: string | null;
     tooLong: string;
     invalidOption: string;
     invalidDate: string;
+    /**
+     * V6 only, not shown since V7.
+     */
     budgetRange: string;
   };
   updatedAt?: string | null;
@@ -1714,6 +2108,8 @@ export interface PayloadJobsStat {
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
+  eyebrowCommand?: T;
+  headline?: T;
   taglines?:
     | T
     | {
@@ -1743,6 +2139,13 @@ export interface HomeSelect<T extends boolean = true> {
         id?: T;
       };
   portrait?: T;
+  portraitCaption?:
+    | T
+    | {
+        user?: T;
+        path?: T;
+        note?: T;
+      };
   availability?:
     | T
     | {
@@ -1754,6 +2157,13 @@ export interface HomeSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
+        items?:
+          | T
+          | {
+              key?: T;
+              value?: T;
+              id?: T;
+            };
         title?: T;
         description?: T;
         date?: T;
@@ -1768,6 +2178,23 @@ export interface HomeSelect<T extends boolean = true> {
       };
   viewProjectLabel?: T;
   readCaseStudyLabel?: T;
+  more?:
+    | T
+    | {
+        heading?: T;
+        sub?: T;
+        items?:
+          | T
+          | {
+              meta?: T;
+              title?: T;
+              description?: T;
+              linkLabel?: T;
+              href?: T;
+              external?: T;
+              id?: T;
+            };
+      };
   services?:
     | T
     | {
@@ -1857,6 +2284,7 @@ export interface ResumeSelect<T extends boolean = true> {
         heading?: T;
         sub?: T;
       };
+  primarySkillLabel?: T;
   skillGroups?:
     | T
     | {
@@ -1889,6 +2317,10 @@ export interface ResumeSelect<T extends boolean = true> {
 export interface BlogSelect<T extends boolean = true> {
   label?: T;
   heading?: T;
+  lead?: T;
+  readLabel?: T;
+  draftingLabel?: T;
+  nextUpText?: T;
   minutesShort?: T;
   minutesLong?: T;
   shareLabel?: T;
@@ -1917,6 +2349,7 @@ export interface ContactSelect<T extends boolean = true> {
   heading?: T;
   intro?: T;
   emailLabel?: T;
+  emailSub?: T;
   linkedinLabel?: T;
   linkedinSub?: T;
   bookCallLabel?: T;
@@ -1925,8 +2358,10 @@ export interface ContactSelect<T extends boolean = true> {
   includeText?: T;
   briefTitle?: T;
   briefStep?: T;
+  briefSentLabel?: T;
   skipFormLabel?: T;
   skipFormText?: T;
+  skipFormCta?: T;
   meta?:
     | T
     | {
@@ -1952,6 +2387,9 @@ export interface ProjectPageSelect<T extends boolean = true> {
   challengeLabel?: T;
   contributionsLabel?: T;
   stackLabel?: T;
+  architectureLabel?: T;
+  nextLabel?: T;
+  placeholderLabel?: T;
   metaSuffix?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2014,6 +2452,7 @@ export interface TermsSelect<T extends boolean = true> {
  */
 export interface ErrorsSelect<T extends boolean = true> {
   backLabel?: T;
+  codeLabel?: T;
   fallbackMessage?: T;
   messages?:
     | T
@@ -2021,6 +2460,15 @@ export interface ErrorsSelect<T extends boolean = true> {
         status?: T;
         title?: T;
         message?: T;
+        id?: T;
+      };
+  suggestions?:
+    | T
+    | {
+        icon?: T;
+        label?: T;
+        sub?: T;
+        href?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -2033,6 +2481,8 @@ export interface ErrorsSelect<T extends boolean = true> {
  */
 export interface NavigationSelect<T extends boolean = true> {
   monogram?: T;
+  wordmark?: T;
+  navLabel?: T;
   homeLabel?: T;
   items?:
     | T
@@ -2051,6 +2501,32 @@ export interface NavigationSelect<T extends boolean = true> {
       };
   toggleLanguageLabel?: T;
   toggleMenuLabel?: T;
+  closeMenuLabel?: T;
+  currentLabel?: T;
+  languageNames?:
+    | T
+    | {
+        en?: T;
+        cs?: T;
+      };
+  mobileMenu?:
+    | T
+    | {
+        extraItems?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        primaryCta?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+        email?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2060,6 +2536,31 @@ export interface NavigationSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
+  cta?:
+    | T
+    | {
+        title?: T;
+        titleAccent?: T;
+        body?: T;
+        primaryCta?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+            };
+        secondaryCtaLabel?: T;
+        terminalPrompt?: T;
+        terminalRows?:
+          | T
+          | {
+              key?: T;
+              value?: T;
+              href?: T;
+              live?: T;
+              id?: T;
+            };
+      };
+  copyright?: T;
   label?: T;
   headingBefore?: T;
   ctaLabel?: T;
@@ -2092,6 +2593,7 @@ export interface SiteSelect<T extends boolean = true> {
   linkedinUrl?: T;
   calLink?: T;
   skipToContent?: T;
+  newTabLabel?: T;
   title?: T;
   description?: T;
   keywords?: T;
@@ -2150,11 +2652,20 @@ export interface ContactFormSelect<T extends boolean = true> {
     | {
         label?: T;
         placeholder?: T;
+        placeholderShort?: T;
       };
   budget?:
     | T
     | {
         label?: T;
+        hint?: T;
+        options?:
+          | T
+          | {
+              key?: T;
+              label?: T;
+              id?: T;
+            };
         currency?: T;
         min?: T;
         max?: T;
@@ -2162,6 +2673,8 @@ export interface ContactFormSelect<T extends boolean = true> {
         default?: T;
       };
   advancedLabel?: T;
+  advancedHint?: T;
+  privacyNote?: T;
   company?:
     | T
     | {
@@ -2293,12 +2806,23 @@ export interface ContactFormSelect<T extends boolean = true> {
   sendLabel?: T;
   sendingLabel?: T;
   successMessage?: T;
+  success?:
+    | T
+    | {
+        title?: T;
+        titleNoName?: T;
+        body?: T;
+        sendAnotherLabel?: T;
+      };
   errorMessage?: T;
   validation?:
     | T
     | {
+        summaryOne?: T;
+        summaryMany?: T;
         required?: T;
         invalidEmail?: T;
+        tooShort?: T;
         tooLong?: T;
         invalidOption?: T;
         invalidDate?: T;

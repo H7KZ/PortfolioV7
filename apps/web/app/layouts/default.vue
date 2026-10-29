@@ -1,13 +1,17 @@
 <script setup lang="ts">
+const { contactCta = true } = defineProps<{ contactCta?: boolean }>()
+
 const { data: layout } = await useLayoutContent()
 const absoluteUrl = useAbsoluteUrl()
 const { public: config } = useRuntimeConfig()
 const localeHead = useLocaleHead()
-const href = useHref()
 const preview = useState<boolean>('preview')
 const route = useRoute()
 
 const site = computed(() => layout.value?.site)
+const showContactCta = computed(() => contactCta && route.meta.contactCta !== false)
+// SPEC 11: the Person profile belongs to the pages about Jan, not to every case study and post.
+const isProfilePage = computed(() => ['/', '/resume'].includes(route.path.replace(/^\/cs(?=\/|$)/, '') || '/'))
 
 useHead(() => {
 	const s = site.value
@@ -25,95 +29,88 @@ useHead(() => {
 			{ key: 'og:site_name', property: 'og:site_name', content: s?.name },
 			...(image ? [{ key: 'og:image', property: 'og:image', content: absoluteUrl(image) }] : [])
 		],
-		script: s
-			? [
-					{
-						key: 'ld-profile',
-						type: 'application/ld+json',
-						innerHTML: JSON.stringify({
-							'@context': 'https://schema.org',
-							'@type': 'ProfilePage',
-							'@id': `${s.siteUrl}/#profilepage`,
-							url: s.siteUrl,
-							name: `${s.name} · ${s.jobTitle}`,
-							description: s.profileDescription ?? undefined,
-							mainEntity: {
-								'@type': 'Person',
-								'@id': `${s.siteUrl}/#person`,
-								name: s.name,
-								alternateName: s.alternateName ?? undefined,
-								jobTitle: s.jobTitle,
-								description: s.personDescription,
-								image: mediaUrl(s.portrait) ? absoluteUrl(mediaUrl(s.portrait)!) : undefined,
-								email: s.email,
+		script:
+			s && isProfilePage.value
+				? [
+						{
+							key: 'ld-profile',
+							type: 'application/ld+json',
+							innerHTML: JSON.stringify({
+								'@context': 'https://schema.org',
+								'@type': 'ProfilePage',
+								'@id': `${s.siteUrl}/#profilepage`,
 								url: s.siteUrl,
-								sameAs: s.sameAs ?? [],
-								address: { '@type': 'PostalAddress', addressLocality: s.locality ?? undefined, addressCountry: s.country ?? undefined },
-								alumniOf: (s.alumniOf ?? []).map(school => ({
-									'@type': 'EducationalOrganization',
-									name: school.name,
-									alternateName: school.alternateName ?? undefined
-								})),
-								hasOccupation: s.occupationSkills
-									? {
-											'@type': 'Occupation',
-											name: 'Software Engineer',
-											occupationLocation: { '@type': 'City', name: s.locality ?? undefined },
-											skills: s.occupationSkills
-										}
-									: undefined,
-								knowsAbout: s.knowsAbout ?? [],
-								hasOfferCatalog: s.services?.length
-									? {
-											'@type': 'OfferCatalog',
-											name: s.offerCatalogName ?? undefined,
-											itemListElement: s.services.map(service => ({
-												'@type': 'Offer',
-												itemOffered: { '@type': 'Service', name: service.name }
-											}))
-										}
-									: undefined
-							}
-						})
-					}
-				]
-			: []
+								name: `${s.name} · ${s.jobTitle}`,
+								description: s.profileDescription ?? undefined,
+								mainEntity: {
+									'@type': 'Person',
+									'@id': `${s.siteUrl}/#person`,
+									name: s.name,
+									alternateName: s.alternateName ?? undefined,
+									jobTitle: s.jobTitle,
+									description: s.personDescription,
+									image: mediaUrl(s.portrait) ? absoluteUrl(mediaUrl(s.portrait)!) : undefined,
+									email: s.email,
+									url: s.siteUrl,
+									sameAs: s.sameAs ?? [],
+									address: { '@type': 'PostalAddress', addressLocality: s.locality ?? undefined, addressCountry: s.country ?? undefined },
+									alumniOf: (s.alumniOf ?? []).map(school => ({
+										'@type': 'EducationalOrganization',
+										name: school.name,
+										alternateName: school.alternateName ?? undefined
+									})),
+									hasOccupation: s.occupationSkills
+										? {
+												'@type': 'Occupation',
+												name: 'Software Engineer',
+												occupationLocation: { '@type': 'City', name: s.locality ?? undefined },
+												skills: s.occupationSkills
+											}
+										: undefined,
+									knowsAbout: s.knowsAbout ?? [],
+									hasOfferCatalog: s.services?.length
+										? {
+												'@type': 'OfferCatalog',
+												name: s.offerCatalogName ?? undefined,
+												itemListElement: s.services.map(service => ({
+													'@type': 'Offer',
+													itemOffered: { '@type': 'Service', name: service.name }
+												}))
+											}
+										: undefined
+								}
+							})
+						}
+					]
+				: []
 	}
 })
 </script>
 
 <template>
-	<div>
+	<div class="relative isolate flex min-h-screen flex-col">
 		<a
-			href="#main-content"
-			class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-black"
+			href="#main"
+			class="sr-only z-50 rounded-md bg-accent px-4 py-3 type-button text-accent-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+			>{{ site?.skipToContent }}</a
 		>
-			{{ site?.skipToContent }}
-		</a>
 
-		<div class="grid-bg"></div>
+		<div class="page-backdrop" aria-hidden="true"></div>
 
-		<div class="relative z-[1] flex h-full min-h-screen w-full flex-col">
-			<header>
-				<Navbar />
-			</header>
-			<main id="main-content" class="flex-1">
-				<slot />
-			</main>
-			<footer v-if="layout" class="mono flex justify-center gap-4 pb-8 text-[11px] tracking-[0.04em] text-(--fg-5)">
-				<NuxtLink :to="href('/privacy')" class="no-underline transition-colors duration-150 hover:text-(--fg-3)">{{
-					layout.footer.privacyLabel
-				}}</NuxtLink>
-				<span>·</span>
-				<NuxtLink :to="href('/terms')" class="no-underline transition-colors duration-150 hover:text-(--fg-3)">{{ layout.footer.termsLabel }}</NuxtLink>
-			</footer>
+		<SiteNav />
+		<main id="main" class="relative z-[1] flex-1" tabindex="-1" data-menu-inert>
+			<slot />
+		</main>
+		<div class="relative z-[1]" data-menu-inert>
+			<ContactCta v-if="showContactCta" />
+			<SiteFooter />
 		</div>
 
 		<a
 			v-if="preview"
 			:href="`/_preview/exit?path=${encodeURIComponent(route.fullPath)}`"
-			class="mono fixed right-5 bottom-5 z-[9999] rounded-full border border-(--accent-ring) bg-(--bg-2) px-4 py-2 text-[11px] tracking-widest text-(--accent) uppercase no-underline"
-			>◆ Preview · exit</a
+			class="fixed right-5 bottom-5 z-50 rounded-full border border-accent bg-surface px-4 py-2 type-mono-label text-accent no-underline"
+			>Preview · exit</a
 		>
 	</div>
 </template>

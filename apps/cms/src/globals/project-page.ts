@@ -22,6 +22,10 @@ export const ProjectPage = defineGlobal({
 			type: 'row',
 			fields: [text('challengeLabel', { required: true }), text('contributionsLabel', { required: true }), text('stackLabel', { required: true })]
 		},
+		{
+			type: 'row',
+			fields: [text('architectureLabel'), text('nextLabel'), text('placeholderLabel')]
+		},
 		text('metaSuffix', { admin: { description: 'Appended to meta descriptions, e.g. "A project by Jan Komínek, Fullstack Engineer."' } })
 	]
 })
