@@ -1,0 +1,146 @@
+{
+  "note": "Upload the AVIF/WebP pair to the CMS media collection (the web serves /media/<file>). 'name' matches the image keys in content/copy.*.json. Alt text lives in the CMS media 'alt' field; write it in both locales. Dark-treated PNG sources live in the Figma file, not here.",
+  "assets": [
+    {
+      "name": "deeptrace-thumbnail",
+      "source": "img_dark/projects-corac_sith-thumbnail.png",
+      "width": 1600,
+      "height": 1066,
+      "description": "DeepTrace hero, dark-treated",
+      "files": ["deeptrace-thumbnail-800.avif", "deeptrace-thumbnail-800.webp", "deeptrace-thumbnail.avif", "deeptrace-thumbnail.webp"]
+    },
+    {
+      "name": "deeptrace-hashchain",
+      "source": "img_dark/projects-corac_sith-hashchain.png",
+      "width": 1600,
+      "height": 1066,
+      "description": "DeepTrace hash-chain view",
+      "files": ["deeptrace-hashchain-800.avif", "deeptrace-hashchain-800.webp", "deeptrace-hashchain.avif", "deeptrace-hashchain.webp"]
+    },
+    {
+      "name": "iont-thumbnail",
+      "source": "img_dark/projects-iont_info-thumbnail.png",
+      "width": 920,
+      "height": 811,
+      "description": "IONT platform hero",
+      "files": ["iont-thumbnail-800.avif", "iont-thumbnail-800.webp", "iont-thumbnail.avif", "iont-thumbnail.webp"]
+    },
+    {
+      "name": "iont-landing",
+      "source": "img_dark/projects-iont_info-landing.png",
+      "width": 1132,
+      "height": 684,
+      "description": "IONT landing page",
+      "files": ["iont-landing-800.avif", "iont-landing-800.webp", "iont-landing.avif", "iont-landing.webp"]
+    },
+    {
+      "name": "iont-phones",
+      "source": "img_dark/projects-iont_info-phones.png",
+      "width": 1234,
+      "height": 620,
+      "description": "IONT driver app on phones",
+      "files": ["iont-phones-800.avif", "iont-phones-800.webp", "iont-phones.avif", "iont-phones.webp"]
+    },
+    {
+      "name": "iont-charge",
+      "source": "img_dark/projects-iont_charge-thumbnail.png",
+      "width": 920,
+      "height": 845,
+      "description": "IONT charge app",
+      "files": ["iont-charge-800.avif", "iont-charge-800.webp", "iont-charge.avif", "iont-charge.webp"]
+    },
+    {
+      "name": "iont-admin",
+      "source": "img_dark/projects-iont_admin-thumbnail.png",
+      "width": 920,
+      "height": 735,
+      "description": "IONT admin panel",
+      "files": ["iont-admin-800.avif", "iont-admin-800.webp", "iont-admin.avif", "iont-admin.webp"]
+    },
+    {
+      "name": "kreditozrouti-dark",
+      "source": "img/kz_dark.jpg",
+      "width": 1440,
+      "height": 900,
+      "description": "Kreditožrouti hero, dark mode",
+      "files": ["kreditozrouti-dark-800.avif", "kreditozrouti-dark-800.webp", "kreditozrouti-dark.avif", "kreditozrouti-dark.webp"]
+    },
+    {
+      "name": "kreditozrouti-desktop",
+      "source": "img/kz_desktop.jpg",
+      "width": 1440,
+      "height": 900,
+      "description": "Kreditožrouti, light mode",
+      "files": ["kreditozrouti-desktop-800.avif", "kreditozrouti-desktop-800.webp", "kreditozrouti-desktop.avif", "kreditozrouti-desktop.webp"]
+    },
+    {
+      "name": "kreditozrouti-mobile",
+      "source": "img/kz_mobile.jpg",
+      "width": 780,
+      "height": 1688,
+      "description": "Kreditožrouti on mobile",
+      "files": ["kreditozrouti-mobile.avif", "kreditozrouti-mobile.webp"]
+    },
+    {
+      "name": "scorecard-thumbnail",
+      "source": "img_dark/projects-corac_scorecard-thumbnail.png",
+      "width": 1600,
+      "height": 1066,
+      "description": "Scorecard hero",
+      "files": ["scorecard-thumbnail-800.avif", "scorecard-thumbnail-800.webp", "scorecard-thumbnail.avif", "scorecard-thumbnail.webp"]
+    },
+    {
+      "name": "scorecard-main",
+      "source": "img_dark/projects-corac_scorecard-main.png",
+      "width": 1600,
+      "height": 900,
+      "description": "Scorecard report view",
+      "files": ["scorecard-main-800.avif", "scorecard-main-800.webp", "scorecard-main.avif", "scorecard-main.webp"]
+    },
+    {
+      "name": "disenchantment-thumbnail-crop",
+      "source": "img_dark/projects-disenchantment-thumbnail-crop.png",
+      "width": 920,
+      "height": 622,
+      "description": "Disenchantment hero crop",
+      "files": [
+        "disenchantment-thumbnail-crop-800.avif",
+        "disenchantment-thumbnail-crop-800.webp",
+        "disenchantment-thumbnail-crop.avif",
+        "disenchantment-thumbnail-crop.webp"
+      ]
+    },
+    {
+      "name": "disenchantment-anvil",
+      "source": "img/projects-disenchantment-anvil.jpg",
+      "width": 1600,
+      "height": 816,
+      "description": "Disenchantment anvil GUI",
+      "files": ["disenchantment-anvil-800.avif", "disenchantment-anvil-800.webp", "disenchantment-anvil.avif", "disenchantment-anvil.webp"]
+    },
+    {
+      "name": "portrait",
+      "source": "img/profile.png",
+      "width": 900,
+      "height": 1428,
+      "description": "Portrait, home hero",
+      "files": ["portrait.avif", "portrait.webp"]
+    },
+    {
+      "name": "portrait-resume",
+      "source": "img/resume_profile.jpg",
+      "width": 939,
+      "height": 928,
+      "description": "Portrait, résumé",
+      "files": ["portrait-resume-800.avif", "portrait-resume-800.webp", "portrait-resume.avif", "portrait-resume.webp"]
+    },
+    {
+      "name": "post-traefik-cover",
+      "source": "img/posts-traefik_with_cloudflare_inside_docker_simplified-image.jpg",
+      "width": 1156,
+      "height": 972,
+      "description": "Blog post cover",
+      "files": ["post-traefik-cover-800.avif", "post-traefik-cover-800.webp", "post-traefik-cover.avif", "post-traefik-cover.webp"]
+    }
+  ]
+}

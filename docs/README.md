@@ -17,6 +17,10 @@ Start at the root [README](../README.md) for what the project is and how to run 
 | diagnose a failure                                           | [Troubleshooting](runbooks/troubleshooting.md)             |
 | import V6 content into a new, empty CMS (one time)           | [V6 content import](runbooks/content-import.md)            |
 
+## Redesign
+
+The V7 redesign contract is [redesign/SPEC.md](redesign/SPEC.md), with tasks in [TASKS.md](redesign/TASKS.md) and the build loop in [LOOP.md](redesign/LOOP.md).
+
 ## Architecture decisions
 
 | ADR                                     | Decision                                         |

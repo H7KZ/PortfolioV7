@@ -1,0 +1,850 @@
+{
+  "$meta": {
+    "source": "Figma file jDa51GQCd58Qv9YBteYeQZ (Portfolio-Copied), page 1060:30, desktop frames. Copy is identical across breakpoints unless listed under responsiveOverrides.",
+    "locale": "en",
+    "updated": "2026-10-29",
+    "shape": "Grouped by the Payload global or collection that will hold it. Keys marked NEW in docs/redesign/SPEC.md section 6 need a schema change first.",
+    "rules": "No em dashes. En dashes only in number and date ranges. List bullets carry no leading dash: the list style draws the marker."
+  },
+  "globals": {
+    "navigation": {
+      "wordmark": "jankominek.com",
+      "items": [
+        { "label": "Work", "href": "/#work", "match": "exact" },
+        { "label": "Résumé", "href": "/resume", "match": "exact" },
+        { "label": "Blog", "href": "/blog", "match": "prefix" }
+      ],
+      "hire": { "label": "Hire me", "href": "/contact" },
+      "toggleLanguageLabel": "EN / CS",
+      "toggleMenuLabel": "Open menu",
+      "closeMenuLabel": "Close menu",
+      "currentLabel": "current",
+      "mobileMenu": {
+        "extraItems": [{ "label": "Contact", "href": "/contact" }],
+        "languages": { "en": "English", "cs": "Čeština" },
+        "primaryCta": { "label": "Start a project", "href": "/contact" },
+        "email": "contact@jankominek.com"
+      }
+    },
+    "footer": {
+      "cta": {
+        "title": "Let's take yours\nto production.",
+        "titleAccent": "production.",
+        "body": "Part-time B2B, around 10 hours a week. Hybrid in Prague or fully remote. I reply within 24 hours on weekdays.",
+        "primaryCta": { "label": "Start a project", "href": "/contact" },
+        "secondaryCta": { "label": "Book a 30-min call", "action": "cal" },
+        "terminal": {
+          "prompt": "contact --jan",
+          "rows": [
+            { "key": "email", "value": "contact@jankominek.com", "href": "mailto:contact@jankominek.com" },
+            { "key": "linkedin", "value": "/in/jan-kominek", "href": "https://www.linkedin.com/in/jan-kominek" },
+            { "key": "call", "value": "30 min, free" },
+            { "key": "reply", "value": "< 24 h on weekdays" },
+            { "key": "status", "value": "open to part-time B2B", "live": true }
+          ]
+        }
+      },
+      "copyright": "© 2026 Jan Komínek · Prague, CZ",
+      "links": [
+        { "label": "Privacy", "href": "/privacy" },
+        { "label": "Terms", "href": "/terms" },
+        { "label": "RSS", "href": "/feed.xml" },
+        { "label": "LinkedIn", "href": "https://www.linkedin.com/in/jan-kominek", "external": true, "arrow": true }
+      ]
+    },
+    "home": {
+      "hero": {
+        "eyebrowCommand": "whoami  # Jan Komínek · freelance fullstack engineer · Prague, CZ",
+        "headline": "From empty repo\nto production.",
+        "valueProp": "A zero-trust data provenance platform, an EV charging network with live payments, and a course scheduler I still run today. Built end to end, from infrastructure to UI. Seven companies and 12+ shipped projects since 2022.",
+        "primaryCta": { "label": "Start a project", "href": "/contact" },
+        "secondaryCta": { "label": "View résumé", "href": "/resume" },
+        "availability": "Available for part-time B2B work, about 10 hours a week, hybrid in Prague or remote.",
+        "portraitCaption": { "user": "jan@prague", "path": "~", "note": "shipping since 2022" }
+      },
+      "now": {
+        "label": "Right now",
+        "items": [
+          { "key": "Fullstack", "value": "VEROC Group: uzo.com, upcomers.com" },
+          { "key": "Building", "value": "Ohlídáme, e-shop compliance checks" },
+          { "key": "Running", "value": "Kreditožrouti, 200+ VŠE students" },
+          { "key": "Teaching", "value": "C# for first-years at Smíchovská" }
+        ]
+      },
+      "work": {
+        "heading": "Built end-to-end.\nDeployed in production.",
+        "sub": "Four case studies, each built end to end: infrastructure, backend and UI.",
+        "readCaseStudyLabel": "Read case study"
+      },
+      "more": {
+        "heading": "More work.",
+        "sub": "Current client work, what I’m building and smaller projects.",
+        "items": [
+          {
+            "meta": "VEROC Group · Now",
+            "title": "uzo.com and upcomers.com",
+            "description": "Fullstack engineer on two VEROC Group products.",
+            "linkLabel": "uzo.com ↗",
+            "href": "https://uzo.com",
+            "external": true
+          },
+          {
+            "meta": "Own product · Building",
+            "title": "Ohlídáme",
+            "description": "Checks an e-shop’s public pages against selected obligations and explains the gaps without legalese.",
+            "linkLabel": "In development",
+            "href": null
+          },
+          {
+            "meta": "CORAC Engineering · 2025–2026",
+            "title": "Scorecard",
+            "description": "Cyber-audit reporting tool with NIS2 workflows and white-label PDF export.",
+            "linkLabel": "Read case study",
+            "href": "/projects/corac_scorecard"
+          },
+          {
+            "meta": "VŠE · Team of four · 2025–2026",
+            "title": "Diář FISáka",
+            "description": "Led four developers on a university platform and set its workflow, review standards and infrastructure.",
+            "linkLabel": "See résumé",
+            "href": "/resume#leadership"
+          },
+          {
+            "meta": "Open source · 2020–2024",
+            "title": "Disenchantment",
+            "description": "Minecraft plugin that lets players remove and recover enchantments, on versions 1.18 to 26.x.",
+            "linkLabel": "Read case study",
+            "href": "/projects/disenchantment"
+          }
+        ]
+      },
+      "services": {
+        "heading": "Three ways to work together.",
+        "sub": "Part-time B2B engagements. I take full responsibility for the area I own: architecture, code, delivery, deployment."
+      },
+      "testimonials": {
+        "heading": "Real feedback from\nteammates and managers.",
+        "sub": "Pulled directly from LinkedIn recommendations, unedited.",
+        "readMoreLabel": "Read more ↗",
+        "quoteLimit": 160
+      }
+    },
+    "project-page": {
+      "backLabel": "← All work",
+      "roleLabel": "Role",
+      "timelineLabel": "Timeline",
+      "sectorLabel": "Sector",
+      "challengeLabel": "The challenge",
+      "contributionsLabel": "What I owned",
+      "architectureLabel": "Architecture",
+      "stackLabel": "Stack",
+      "nextLabel": "Next case study",
+      "placeholderLabel": "Screenshot placeholder"
+    },
+    "resume": {
+      "label": "cat ./resume.md  # updated Oct 2026",
+      "name": "Jan Komínek.",
+      "subtitle": "Freelance Fullstack Engineer · Prague, CZ",
+      "bio": "I take products from an empty repository to production. Seven companies since 2022, two products built from scratch and shipped live, and one I still run myself. TypeScript everywhere: Vue and React on the front, Node behind it, PostgreSQL, Redis and Elasticsearch for data, Docker and CI/CD underneath.",
+      "downloadLabel": "Download résumé ↓",
+      "hireCta": { "label": "Hire me", "href": "/contact" },
+      "impact": [
+        { "label": "Since", "value": "2022", "sub": "Shipping in production", "style": "number" },
+        { "label": "Companies", "value": "7", "sub": "Since 2022", "style": "number" },
+        { "label": "Primary stack", "value": "TS · Vue · Node", "sub": "Also React, Svelte, Nuxt", "style": "text" },
+        { "label": "Status", "value": "Available", "sub": "Part-time B2B · ~10 h/week", "style": "accent" }
+      ],
+      "experience": { "heading": "Where I've been shipping.", "sub": "Newest first." },
+      "ownProduct": { "heading": "Products I run myself.", "sub": "Live, maintained, and still growing between contracts." },
+      "leadership": { "heading": "Leading and teaching.", "sub": "Where I set the direction for a team or a classroom." },
+      "education": { "heading": "Formal training." },
+      "skills": { "heading": "Stack.", "sub": "A green dot marks the tools I use daily." },
+      "skillGroups": [
+        {
+          "title": "Languages & frameworks",
+          "skills": ["TypeScript*", "Vue.js*", "Node.js*", "React.js", "Nuxt.js", "SvelteKit", "AdonisJS", "Fastify", "C#", "Tailwind CSS"]
+        },
+        { "title": "Data & storage", "skills": ["PostgreSQL*", "MongoDB*", "Redis*", "MySQL", "Elasticsearch", "BullMQ", "REST APIs"] },
+        {
+          "title": "Infra & DevOps",
+          "skills": ["Docker*", "CI/CD*", "Linux*", "Docker Swarm", "Traefik", "Cloudflare", "DigitalOcean", "AWS (Cognito)", "Bash"]
+        },
+        { "title": "Craft & tools", "skills": ["Git*", "Figma*", "Agile / Scrum", "Code review", "System architecture", "Mentoring", "Playwright E2E"] }
+      ],
+      "skillsNote": "A trailing * marks primary: true (the accent dot), read from Figma 1082:1076 > Stack columns. Strip the * when seeding."
+    },
+    "contact": {
+      "label": "./hire --part-time",
+      "heading": "Let's work\ntogether.",
+      "intro": "Available for part-time B2B work, around 10 hours a week, hybrid in Prague (on-site Thursdays and Fridays) or fully remote. I reply within 24 hours on weekdays.",
+      "emailLabel": "Email direct",
+      "emailSub": "contact@jankominek.com",
+      "linkedinLabel": "LinkedIn",
+      "linkedinSub": "500+ connections · 6 recommendations",
+      "bookCallLabel": "Book a 30-min call",
+      "bookCallSub": "Free discovery chat",
+      "includeLabel": "What to include",
+      "includeText": "Briefly: the problem, expected scale, current team and stack, timeline, and budget range. The more concrete, the faster I can say “yes, and here’s how” or “not the right fit, try X”.",
+      "briefTitle": "Project brief",
+      "briefStep": "step 1 of 2",
+      "briefSentLabel": "sent",
+      "skipFormLabel": "Prefer to skip the form?",
+      "skipFormText": "Grab 30 minutes. We'll chat through your project and see if it's a fit.",
+      "skipFormCta": "Book a 30-min call"
+    },
+    "contact-form": {
+      "fullName": { "label": "Your full name *", "placeholder": "Jana Nováková" },
+      "email": { "label": "Email address *", "placeholder": "jana@company.cz" },
+      "message": {
+        "label": "Message *",
+        "placeholder": "Describe your project: the problem, the stack, the timeline…",
+        "placeholderShort": "The problem, the stack, the timeline…"
+      },
+      "budget": {
+        "label": "Expected budget",
+        "hint": "optional",
+        "options": [
+          { "key": "lt2k", "label": "Under €2k" },
+          { "key": "2-5k", "label": "€2–5k" },
+          { "key": "5-10k", "label": "€5–10k" },
+          { "key": "10-25k", "label": "€10–25k" },
+          { "key": "gt25k", "label": "€25k+" },
+          { "key": "unsure", "label": "Not sure yet" }
+        ]
+      },
+      "advancedLabel": "More information (optional)",
+      "advancedHint": "company, deadline, hosting",
+      "privacyNote": "Stored on my own server, deleted after 12 months.",
+      "sendLabel": "Send brief",
+      "sendingLabel": "Sending…",
+      "success": {
+        "title": "Thanks, {name}. Your brief is in.",
+        "titleNoName": "Thanks. Your brief is in.",
+        "body": "I reply within 24 hours on weekdays, from contact@jankominek.com. If it's urgent, book a call and skip the wait.",
+        "sendAnotherLabel": "Send another brief"
+      },
+      "errorMessage": "The brief didn't send. Check your connection and try again, or email contact@jankominek.com.",
+      "validation": {
+        "summaryOne": "One field needs a fix before this can send: {fields}.",
+        "summaryMany": "{count} fields need a fix before this can send: {fields}.",
+        "required": "This field is required.",
+        "invalidEmail": "Enter a full email address, like jana@company.cz",
+        "tooShort": "Add a few sentences about the project, at least 20 characters.",
+        "tooLong": "Keep it under {max} characters.",
+        "invalidOption": "Pick one of the options.",
+        "invalidDate": "Enter a valid date."
+      },
+      "note": "The design shows 'Two fields need a fix before this can send: email address and message.' Build the summary from the live error list; number words are optional."
+    },
+    "errors": {
+      "backLabel": "Back to home",
+      "fallbackMessage": "Something went wrong on my side. Try again in a minute.",
+      "messages": [
+        {
+          "status": 404,
+          "title": "This page doesn't exist.",
+          "message": "It may have moved when the site was rebuilt, or the link has a typo. These are probably what you were after."
+        }
+      ],
+      "suggestions": [
+        { "icon": "~/", "label": "Selected work", "sub": "Case studies from EV charging to Earth Observation", "href": "/#work" },
+        { "icon": "cv", "label": "Résumé", "sub": "Seven companies since 2022", "href": "/resume" },
+        { "icon": "@", "label": "Contact", "sub": "Part-time B2B, around 10 hours a week", "href": "/contact" }
+      ],
+      "codeLabel": "HTTP {status}"
+    },
+    "blog": {
+      "label": "ls -lt ./blog",
+      "heading": "Blog.",
+      "lead": "Write-ups on DevOps, SvelteKit and TypeScript, from setups I run in production.",
+      "minutesLong": "min read",
+      "readLabel": "Read the guide",
+      "draftingLabel": "Drafting",
+      "nextUpText": "More posts are in progress. Follow along via RSS at jankominek.com/feed.xml."
+    }
+  },
+  "collections": {
+    "services": [
+      {
+        "order": 1,
+        "label": "From scratch",
+        "title": "Ship a new product from scratch",
+        "description": "Idea to production. I own the stack, ship the MVP, and deploy it. I took an EV charging platform from an empty repository to public launch in five months.",
+        "chips": ["Architecture", "Full-stack", "DevOps"]
+      },
+      {
+        "order": 2,
+        "label": "Rescue",
+        "title": "Fix what's broken, fast",
+        "description": "Diagnose, stabilize, and set up the pipelines so your team can move again.",
+        "chips": ["Refactor", "CI / CD", "Docker"]
+      },
+      {
+        "order": 3,
+        "label": "Scale",
+        "title": "Grow the platform alongside the team",
+        "description": "Ongoing fractional senior engineer: code review, architecture, and mentoring. The way I worked with CORAC Engineering and Intedat.",
+        "chips": ["Mentoring", "Code review", "System design"]
+      }
+    ],
+    "testimonials": [
+      {
+        "order": 1,
+        "name": "Adam Motvička",
+        "initials": "AM",
+        "role": "Intedat · Direct manager",
+        "quote": "Jan joined our team as a junior, just starting university. Even back then, it was clear to me that he was a talented programmer. He understands very well that as a programmer, he needs to have a broader perspective beyond just coding. He handled a great deal of work at our company, and it was always evident that he could research the context himself and ask the right questions to fill in any missing product context."
+      },
+      {
+        "order": 2,
+        "name": "Petr Hric",
+        "initials": "PH",
+        "role": "IONT tech · Same team",
+        "quote": "We worked with Jan for several months on a complete system for electric vehicle charging stations. Jan is a skilled and thoughtful full-stack developer with an innovative approach to problem-solving and a strong team spirit."
+      },
+      {
+        "order": 3,
+        "name": "Amelie Engelmaierová",
+        "initials": "AE",
+        "role": "Teammate on two projects",
+        "quote": "I've worked with Jan on two projects so far. On both occasions, his problem-solving skills and experienced approach shined through. He is familiar with a variety of tools and procedures and is excellent at explaining them thoroughly to less experienced team members. He is also eager to learn new technologies, always dedicated to finding solutions that work best for both the project and the team. Anyone would be lucky to have him!"
+      }
+    ],
+    "testimonialsNote": "Quotes are LinkedIn recommendations, quoted verbatim in English in both locales. The home shows three; the cut point and 'Read more' come from home.testimonials.quoteLimit. Marek Vospěl, Petr Krejci and Zdeněk Glazer stay in the CMS with home visibility off.",
+    "projects": [
+      {
+        "slug": "deeptrace",
+        "redirectFrom": ["/projects/corac_sith"],
+        "order": 1,
+        "card": {
+          "show": true,
+          "size": "featured",
+          "badge": "Flagship",
+          "year": "2025–2026",
+          "meta": "CORAC Engineering / Senior frontend",
+          "description": "Client-side hash-chain verification, D3.js supply-chain graphs and zero-trust auth for a sensitive Earth Observation data pipeline. Sole frontend engineer.",
+          "chips": ["Vue 3", "D3.js", "AWS Cognito", "Vite"]
+        },
+        "kicker": "CORAC Engineering · 2025–2026",
+        "title": "DeepTrace.",
+        "lede": "A zero-trust data provenance platform for Earth Observation data. It verifies file lineage and integrity in the browser, without ever transferring the sensitive files.",
+        "role": "Senior Frontend Engineer",
+        "timeline": "Apr 2025 – Aug 2026",
+        "sector": "GovTech · Aerospace",
+        "impact": [],
+        "challenge": [
+          "Earth Observation data is sensitive and massive. Providers and consumers need to verify that nothing was tampered with between collection, processing and delivery, but the files themselves often can’t move across networks.",
+          "DeepTrace solves this by doing the verification client-side: the browser fetches a cryptographic hash chain, reconstructs the lineage graph, and validates each step against trusted sources, without the operator ever holding the raw data."
+        ],
+        "contributions": [
+          {
+            "title": "Lineage visualization in D3.js",
+            "body": "Interactive force-directed graph of provenance. Each node is a processing step; edges are hash-verified transforms. Supports 1000+ nodes with zoom, pan, and query-based highlighting."
+          },
+          {
+            "title": "Client-side hash-chain verifier",
+            "body": "Pure-browser cryptographic integrity check. Walks the chain from leaf to root, validates each SHA-256 hash against a trusted anchor, flags any tampered link with precise diagnostics."
+          },
+          {
+            "title": "Zero-trust auth with Cognito",
+            "body": "AWS Cognito OAuth flow; access tokens never reach the server. Scoped permissions for data providers vs. consumers, with session-level hash-chain verification gating sensitive operations."
+          },
+          {
+            "title": "Vue 3 + Vite + Shadcn stack",
+            "body": "Set up the project from scratch. Strict TypeScript, automated linting, pnpm workspaces, CI with preview deploys. Established patterns the rest of the team adopted."
+          }
+        ],
+        "stack": ["Vue 3", "TypeScript", "D3.js", "Vite", "pnpm", "Shadcn UI", "AWS Cognito", "OAuth", "REST API", "SubtleCrypto", "Node.js v22+"],
+        "hero": { "path": "~/projects/deeptrace", "image": "deeptrace-thumbnail" },
+        "gallery": [
+          { "path": "~/projects/deeptrace/hashchain", "image": "deeptrace-hashchain" },
+          {
+            "path": "~/projects/deeptrace/lineage-graph",
+            "placeholder": { "label": "Lineage graph, full screen", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+          },
+          {
+            "path": "~/projects/deeptrace/verification",
+            "placeholder": { "label": "Verification passed vs. tampered link, side by side", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+          }
+        ],
+        "factsToConfirm": ["1000+ nodes", "SHA-256"]
+      },
+      {
+        "slug": "iont_platform",
+        "redirectFrom": ["/projects/iont_info", "/projects/iont_charge", "/projects/iont_admin"],
+        "order": 2,
+        "card": {
+          "show": true,
+          "size": "featured",
+          "year": "2023–2024",
+          "meta": "IONT tech / Fullstack",
+          "description": "Driver app, ČSOB payment gateway and on-device admin panel for a public EV-charging network, from an empty repository to launch in five months.",
+          "chips": ["SvelteKit", "Fastify", "MongoDB", "Docker Swarm"]
+        },
+        "kicker": "IONT tech · 2023–2024",
+        "title": "IONT platform.",
+        "lede": "A public EV-charging network from an empty repository to launch: the driver app, a ČSOB-certified payment gateway and an admin panel running on the charger’s own Raspberry Pi.",
+        "role": "Fullstack Engineer",
+        "timeline": "Aug 2023 – Sep 2024",
+        "sector": "Clean Energy · Payments",
+        "impact": [
+          { "label": "Launch", "value": "5 months", "sub": "Empty repo to public launch" },
+          { "label": "Payments", "value": "ČSOB", "sub": "Certified bank gateway" },
+          { "label": "Hardware", "value": "Raspberry Pi", "sub": "Admin panel on the charger" }
+        ],
+        "challenge": [
+          "IONT tech needed three products that work as one: a public app where drivers find a charger and pay, a payment gateway certified by ČSOB that talks to the charger in real time, and an admin panel that runs offline inside each unit. As the only fullstack engineer, working with the firmware team, I took it from an empty repository to public launch."
+        ],
+        "contributions": [
+          {
+            "title": "Public charging app",
+            "body": "SvelteKit app where drivers find a charger, authorise it and follow the session live, designed mobile-first."
+          },
+          {
+            "title": "Payment gateway",
+            "body": "Certified ČSOB integration with real-time charger communication, built with the firmware team to meet financial compliance requirements."
+          },
+          {
+            "title": "On-device admin panel",
+            "body": "Offline-first panel on the charger’s Raspberry Pi for configuration and diagnostics, with a signed auto-update system for the fleet."
+          },
+          {
+            "title": "Infrastructure and delivery",
+            "body": "Designed and deployed the whole environment as Docker Swarm microservices, with CI/CD pipelines and Linux server administration."
+          }
+        ],
+        "stack": ["SvelteKit", "Svelte", "Fastify", "Node.js", "MongoDB", "Docker Swarm", "Raspberry Pi", "CI/CD", "Linux"],
+        "hero": { "path": "~/projects/iont_info", "image": "iont-thumbnail" },
+        "gallery": [
+          { "path": "~/projects/iont_info/landing", "image": "iont-landing" },
+          { "path": "~/projects/iont_info/mobile", "image": "iont-phones" },
+          { "path": "~/projects/iont_charge", "image": "iont-charge" },
+          { "path": "~/projects/iont_admin", "image": "iont-admin" },
+          {
+            "path": "~/projects/iont_platform/driver-app",
+            "placeholder": { "label": "Driver app on a phone: find a charger, pay, charge", "spec": "Capture 390 × 844 at 3× · demo data only" }
+          },
+          {
+            "path": "~/projects/iont_platform/admin-panel",
+            "placeholder": { "label": "On-device admin panel on the charger screen", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+          },
+          {
+            "path": "~/projects/iont_platform/hardware",
+            "placeholder": { "label": "A real charger with the app in hand", "spec": "Photo · landscape, well lit" }
+          }
+        ],
+        "factsToConfirm": ["ČSOB certification wording", "five months to launch"]
+      },
+      {
+        "slug": "kreditozrouti",
+        "order": 3,
+        "card": {
+          "show": true,
+          "size": "featured",
+          "badge": "Live",
+          "year": "2025",
+          "meta": "Own product / Creator & maintainer",
+          "description": "A course scheduler for VŠE students, live at kreditozrouti.cz. I created it and run it alone, with monitoring, alerting and automatic deployments.",
+          "chips": ["Vue.js", "Node.js", "Redis", "BullMQ"]
+        },
+        "kicker": "Own product · 2025",
+        "title": "Kreditožrouti.",
+        "lede": "A course scheduler for VŠE students, live at kreditozrouti.cz. I created it and run it alone, from the InSIS scraping to the deployments. The numbers are modest on purpose: it quietly saves a few students their semester, every day.",
+        "role": "Creator & Sole Maintainer",
+        "timeline": "Sep 2025 – present",
+        "sector": "EdTech · Higher Education",
+        "impact": [
+          { "label": "Students", "value": "200+", "sub": "Finished the setup wizard" },
+          { "label": "Onboarding", "value": "35%", "sub": "Of 588 visitors finish setup" },
+          { "label": "Status", "value": "Live", "sub": "Monitored, auto-deployed" }
+        ],
+        "challenge": [
+          "Kreditožrouti is a course scheduler for students at the Prague University of Economics and Business. It scrapes public InSIS course data and puts a faster, clearer layer of search and scheduling on top, so a student can close a gap in their timetable in seconds instead of clicking through the university system.",
+          "It was never a startup, and the metrics are modest on purpose: a few hundred students, a handful of them every day, found mostly through Discord, Facebook and word of mouth. Alongside my client work, it is the one product I own end to end: live, maintained and still gaining users."
+        ],
+        "contributions": [
+          {
+            "title": "InSIS scraping and scheduling",
+            "body": "Scrapes public InSIS course data and puts better search and scheduling on top of it than the university system offers, so a student can fill a gap in their timetable in seconds. The name is a joke that means something: when a timetable is set badly, courses eat your ECTS credits. Credit-gobblers."
+          },
+          {
+            "title": "From hackathon to product",
+            "body": "Born at the 4FIS Mini Hackathon on live scraped data, a working MVP in 3.5 hours, first place. When the course that later hosted it ended, I picked it up and carried it alone to a finished product rather than a demo."
+          },
+          {
+            "title": "Production infrastructure",
+            "body": "Runs today with monitoring, alerting and automatic deployments. Vue on the front, Node with Redis and BullMQ workers behind it, containerized with Docker and Traefik."
+          },
+          {
+            "title": "Bachelor thesis",
+            "body": "The InSIS work led directly to my bachelor thesis: an MCP server over InSIS data, hosted on university servers under an official domain."
+          }
+        ],
+        "architecture": {
+          "nodes": [
+            { "key": "web", "name": "Web app", "tech": "Vue 3 · Pinia · Tailwind 4 · served by Nginx" },
+            { "key": "ai", "name": "AI clients", "tech": "Any MCP client" },
+            { "key": "traefik", "name": "Traefik", "tech": "TLS · routes /, /api and /mcp" },
+            { "key": "api", "name": "API", "tech": "Express 5 · Kysely · Zod" },
+            { "key": "mcp", "name": "MCP server", "tech": "MCP SDK · tools over course data" },
+            { "key": "redis", "name": "Redis", "tech": "BullMQ queues · cache · sessions" },
+            { "key": "mysql", "name": "MySQL", "tech": "Courses · study plans" },
+            { "key": "scraper", "name": "Scraper worker", "tech": "BullMQ · Axios · Cheerio" },
+            { "key": "insis", "name": "InSIS", "tech": "VŠE's public course pages", "external": true }
+          ],
+          "edges": [
+            { "from": "web", "to": "traefik", "kind": "request" },
+            { "from": "ai", "to": "traefik", "kind": "sync" },
+            { "from": "traefik", "to": "api", "kind": "request" },
+            { "from": "traefik", "to": "mcp", "kind": "sync" },
+            { "from": "api", "to": "redis", "kind": "async", "label": "enqueue" },
+            { "from": "api", "to": "mysql", "kind": "request", "label": "reads + writes", "labelShort": "writes" },
+            { "from": "mcp", "to": "mysql", "kind": "sync", "label": "read-only" },
+            { "from": "redis", "to": "scraper", "kind": "async", "label": "jobs · results", "bidirectional": true },
+            { "from": "scraper", "to": "insis", "kind": "async" }
+          ],
+          "legend": { "request": "Search request", "sync": "Sync call", "async": "Async refresh over BullMQ" },
+          "observability": "Observability: Alloy → Prometheus and Loki → Grafana. Alertmanager → Discord. Umami for analytics.",
+          "caption": "A pnpm and Turborepo monorepo. The API owns every database write. The scraper only fetches and parses InSIS, then hands results back over a queue, so a slow university server never blocks a student's search. The MCP server reads the same MySQL data for AI clients and my bachelor thesis.",
+          "textAlternative": "The browser loads the Vue app and calls the API through Traefik. The API reads and writes MySQL and queues scrape jobs in Redis. A scraper worker takes jobs from Redis, fetches InSIS course pages and returns results through Redis. AI clients reach a separate MCP server through Traefik; it only reads MySQL."
+        },
+        "stack": ["TypeScript", "Vue.js", "Node.js", "Redis", "BullMQ", "Docker", "Traefik", "CI/CD", "Git"],
+        "hero": { "path": "~/projects/kreditozrouti", "image": "kreditozrouti-dark" },
+        "gallery": [
+          { "path": "kreditozrouti.cz · light mode", "image": "kreditozrouti-desktop" },
+          {
+            "path": "~/projects/kreditozrouti/timetable",
+            "placeholder": { "label": "Timetable builder with a real schedule", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+          },
+          {
+            "path": "~/projects/kreditozrouti/search",
+            "placeholder": { "label": "Course search with filters", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+          },
+          {
+            "path": "~/projects/kreditozrouti/usage",
+            "placeholder": { "label": "Usage chart: 588 visitors, 204 finished setup", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+          }
+        ]
+      },
+      {
+        "slug": "intedat",
+        "order": 4,
+        "isNew": true,
+        "card": {
+          "show": true,
+          "size": "featured",
+          "year": "2024–2026",
+          "meta": "Intedat / Fullstack",
+          "description": "Almost two years of features shipped end to end on a data platform, plus a search rebuild and the delivery pipeline behind it.",
+          "chips": ["Nuxt", "AdonisJS", "PostgreSQL", "Elasticsearch"]
+        },
+        "kicker": "Intedat · 2024–2026",
+        "title": "Intedat.",
+        "lede": "Almost two years of features shipped end to end on a data platform, from the Nuxt frontend through the AdonisJS backend to PostgreSQL and Redis.",
+        "role": "Fullstack Engineer",
+        "timeline": "Sep 2024 – Jun 2026",
+        "sector": "Data platform",
+        "impact": [],
+        "challenge": [
+          "I joined Intedat as a junior while starting university and grew into the engineer the product team relied on end to end. I delivered features from the Nuxt frontend through the AdonisJS backend to PostgreSQL and Redis, and was the single point of contact for product stakeholders."
+        ],
+        "contributions": [
+          {
+            "title": "End-to-end features",
+            "body": "Shipped features across the whole stack: Nuxt on the frontend, AdonisJS on the backend, PostgreSQL and Redis for data."
+          },
+          { "title": "Search rebuild", "body": "Rebuilt search on Elasticsearch across large datasets, tuning relevance and latency." },
+          { "title": "CI/CD and infrastructure", "body": "Owned the CI/CD pipelines and the DigitalOcean Linux infrastructure behind production deployments." },
+          { "title": "Product stakeholders", "body": "The single point of contact for product stakeholders on the platform." }
+        ],
+        "stack": ["Nuxt", "AdonisJS", "TypeScript", "Node.js", "PostgreSQL", "Redis", "Elasticsearch", "DigitalOcean"],
+        "hero": { "path": "~/projects/intedat/main", "placeholder": { "label": "Main workflow screen", "spec": "Capture 1440 × 900 at 2× · demo data only" } },
+        "gallery": [
+          { "path": "~/projects/intedat/search", "placeholder": { "label": "Search results", "spec": "Capture 1440 × 900 at 2× · demo data only" } },
+          { "path": "~/projects/intedat/detail", "placeholder": { "label": "A detail or editing screen", "spec": "Capture 1440 × 900 at 2× · demo data only" } }
+        ]
+      },
+      {
+        "slug": "corac_scorecard",
+        "order": 5,
+        "card": { "show": false },
+        "kicker": "CORAC Engineering · 2025–2026",
+        "title": "Scorecard.",
+        "lede": "A security audit reporting tool built for cyber professionals. It turns risk analysis data into fully branded PDF reports in minutes.",
+        "role": "Frontend Engineer",
+        "timeline": "Nov 2025 – Aug 2026",
+        "sector": "GovTech · Reporting",
+        "impact": [],
+        "challenge": [
+          "Scorecard is a web application built for CORAC Engineering that functions as an interactive spreadsheet for cyber auditors, built for risk analysis data entry and report generation. The challenge was creating a tool that could replace ad-hoc spreadsheets while adding professional output capabilities without requiring a backend database. The result is a portable, offline-capable application that exports audit results directly to white-labeled PDFs and supports NIS2 compliance workflows."
+        ],
+        "contributions": [
+          {
+            "title": "PDF Report Export",
+            "body": "Automated export to fully configurable PDF reports with white-label options (client logo, company name and metadata) for faster audit delivery."
+          },
+          {
+            "title": "JSON Data Portability",
+            "body": "Full table state can be exported and reimported as JSON, enabling backups, cross-device work transfer, and sharing among colleagues without a server database."
+          },
+          {
+            "title": "Auditor-Focused UI",
+            "body": "Built with Shadcn components and Vue.js reactivity to give auditors a fast, low-noise interface for working with large risk analysis datasets."
+          },
+          {
+            "title": "Development Standardization",
+            "body": "Enforced strict ESLint and Prettier configuration alongside pnpm and Vite for a consistent, maintainable codebase that scales easily."
+          }
+        ],
+        "stack": ["Vue.js", "Shadcn UI", "Vite", "pnpm", "Node.js", "ESLint", "Prettier"],
+        "hero": { "path": "~/projects/corac_scorecard", "image": "scorecard-thumbnail" },
+        "gallery": [
+          { "path": "~/projects/corac_scorecard/report", "image": "scorecard-main" },
+          {
+            "path": "~/projects/corac_scorecard/report",
+            "placeholder": { "label": "Report builder next to an exported PDF page", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+          }
+        ]
+      },
+      {
+        "slug": "disenchantment",
+        "order": 6,
+        "card": { "show": false },
+        "kicker": "Personal project · 2024",
+        "title": "Disenchantment.",
+        "lede": "A Minecraft plugin that reimagines the anvil, letting players remove and recover enchantments from items for deeper inventory strategy across versions 1.18 to 26.x.",
+        "role": "Solo Developer",
+        "timeline": "2020 – 2024",
+        "sector": "Gaming · Minecraft Plugin",
+        "impact": [
+          { "label": "Versions", "value": "1.18–26.x", "sub": "Multi-version" },
+          { "label": "Source", "value": "Open source", "sub": "GitHub" },
+          { "label": "Dependencies", "value": "Zero", "sub": "Drop-in plugin" }
+        ],
+        "challenge": [
+          "Disenchantment is a Java-based Minecraft plugin built with the Spigot API that solves a longstanding vanilla limitation: once you apply an enchantment, it’s permanent. The plugin introduces a new mechanic allowing players to remove and recover enchantments from items via a redesigned anvil interaction, adding real strategic depth to item management. Built with a focus on compatibility and performance, it runs across Minecraft versions 1.18–26.x with zero dependencies and is open source on GitHub."
+        ],
+        "contributions": [
+          {
+            "title": "Enhanced Anvil Mechanics",
+            "body": "Redesigned the vanilla anvil system to support enchantment removal and recovery, giving players fine-grained control over item management and enchantment strategy."
+          },
+          {
+            "title": "Multi-Version Compatibility",
+            "body": "Ensured seamless compatibility across Minecraft 1.18 through 26.x with no additional dependencies, enabling wide adoption on both legacy and current servers."
+          },
+          {
+            "title": "Custom GUI & Command System",
+            "body": "Implemented user-friendly inventory interfaces and in-game commands with permission-based controls and detailed player feedback for smooth interaction."
+          },
+          {
+            "title": "Performance & Thread Safety",
+            "body": "Applied best practices for thread safety and performance including asynchronous processing for item validation and enchantment data handling within the Spigot event system."
+          }
+        ],
+        "stack": ["Java", "Spigot API", "Maven", "IntelliJ IDEA", "Git", "YAML"],
+        "hero": { "path": "~/projects/disenchantment", "image": "disenchantment-thumbnail-crop" },
+        "gallery": [
+          { "path": "~/projects/disenchantment/anvil", "image": "disenchantment-anvil" },
+          {
+            "path": "~/projects/disenchantment/repo",
+            "placeholder": { "label": "GitHub repository header with stars and downloads", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+          }
+        ]
+      }
+    ],
+    "projectsNote": "Next-case-study order follows 'order' and wraps: DeepTrace → IONT platform → Kreditožrouti → Intedat → Scorecard → Disenchantment → DeepTrace. Archived (published, card.show false, never linked): pangolin, noteful. 'iont_charge' and 'iont_admin' redirect to iont_platform.",
+    "experience": {
+      "work": [
+        {
+          "order": 1,
+          "current": true,
+          "dates": "Sep 2026 – present",
+          "role": "Fullstack Engineer",
+          "organization": "VEROC Group · Freelance · Remote",
+          "description": "Freelance fullstack engineer on two VEROC Group products: uzo.com and upcomers.com (trader funding).",
+          "chips": ["TypeScript", "Node.js", "React", "Tailwind"]
+        },
+        {
+          "order": 2,
+          "dates": "Apr 2025 – Aug 2026",
+          "duration": "1 yr 5 mos",
+          "role": "Senior Frontend Engineer",
+          "organization": "CORAC Engineering · Freelance · Remote",
+          "description": "Sole frontend engineer on DeepTrace, a platform that lets providers and consumers verify the lineage and integrity of Earth Observation data without ever transferring the files.",
+          "highlights": [
+            "Architected the interactive D3.js lineage visualization, tracing a file’s origin and every processing step",
+            "Implemented client-side hash-chain verification, so the browser validates data with no server trust required",
+            "Integrated AWS Cognito (OAuth) for client-side-only authentication on Vue 3, Vite and Shadcn UI"
+          ],
+          "chips": ["Vue 3", "TypeScript", "D3.js", "AWS Cognito", "Vite", "pnpm"]
+        },
+        {
+          "order": 3,
+          "dates": "Sep 2024 – Jun 2026",
+          "duration": "1 yr 10 mos",
+          "role": "Fullstack Engineer",
+          "organization": "Intedat · Freelance · Remote",
+          "description": "Fullstack data platform built for scale, search performance and reliable infrastructure. Single point of contact for product stakeholders.",
+          "highlights": [
+            "Delivered features end to end, from the Nuxt frontend through the AdonisJS backend to PostgreSQL and Redis",
+            "Rebuilt search on Elasticsearch across large datasets, tuning relevance and query latency",
+            "Owned the CI/CD pipelines and DigitalOcean Linux infrastructure behind production"
+          ],
+          "chips": ["Node.js", "TypeScript", "Nuxt", "AdonisJS", "PostgreSQL", "Elasticsearch"]
+        },
+        {
+          "order": 4,
+          "dates": "Aug 2023 – Sep 2024",
+          "duration": "1 yr 2 mos",
+          "role": "Fullstack Engineer",
+          "organization": "IONT tech · Freelance · Remote",
+          "description": "Led an EV charger management platform from bare infrastructure to live payments as the only fullstack engineer on it.",
+          "highlights": [
+            "Shipped the public charging app with online payments and remote charger authorization, plus the operator control panel",
+            "Designed and deployed the whole environment from scratch as Docker Swarm microservices on IaaS",
+            "Built an auto-updating firmware delivery system with the hardware and firmware team"
+          ],
+          "chips": ["SvelteKit", "Fastify", "TypeScript", "Docker Swarm", "MongoDB", "Redis"]
+        },
+        {
+          "order": 5,
+          "dates": "Jan 2023 – Nov 2023",
+          "duration": "11 mos",
+          "role": "Fullstack Developer",
+          "organization": "PRECISMO · Freelance · Hybrid",
+          "description": "Internal customer portal, built inside a cross-functional Scrum team, working daily with 6 developers and a product manager.",
+          "highlights": [
+            "Built frontend features in React and backend services in Node.js",
+            "Ran the analysis for a new Content Management module and split it into smaller work items so several team members could contribute at once",
+            "Added Playwright end-to-end tests to the release path to catch regressions"
+          ],
+          "chips": ["React", "Node.js", "Playwright", "SQL"]
+        },
+        {
+          "order": 6,
+          "dates": "Oct 2022 – Jul 2023",
+          "duration": "10 mos",
+          "role": "Frontend Developer",
+          "organization": "HAXAGON · Part-time · Remote",
+          "description": "Frontend of a cybersecurity e-learning platform, alongside a dedicated designer and engineering team.",
+          "highlights": [
+            "Built and maintained the platform frontend in Vue and TypeScript",
+            "Introduced code quality and delivery processes the team kept using",
+            "Managed releases and collaborated on UX decisions with the design team"
+          ],
+          "chips": ["Vue.js", "TypeScript", "Tailwind"]
+        }
+      ],
+      "ownProduct": [
+        {
+          "order": 1,
+          "current": true,
+          "dates": "Sep 2025 – present",
+          "duration": "live",
+          "role": "Kreditožrouti · creator & sole maintainer",
+          "organization": "kreditozrouti.cz · 200+ students",
+          "description": "Course scheduler for VŠE students. Creator and sole maintainer.",
+          "highlights": [
+            "Scrapes public InSIS course data and adds better search and scheduling than the university system offers",
+            "Started as a first-place hackathon prototype with two teammates; I carried it alone to production with monitoring, alerting and automatic deployments",
+            "Led directly to my bachelor thesis: an MCP server over the same data, hosted on university servers"
+          ],
+          "chips": ["TypeScript", "Vue.js", "Node.js", "Redis", "BullMQ", "Docker"]
+        },
+        {
+          "order": 2,
+          "current": true,
+          "dates": "Sep 2026 – present",
+          "duration": "in development",
+          "role": "Ohlídáme",
+          "organization": "Own product · Czech e-commerce",
+          "description": "See in a minute what your e-shop is missing for its customers. Ohlídáme checks an e-shop’s public pages against selected obligations, clearly and without legalese. Not affiliated with ČOI.",
+          "chips": ["System architecture", "Claude Code", "OpenAI Codex"]
+        }
+      ],
+      "leadership": [
+        {
+          "order": 1,
+          "current": true,
+          "dates": "Sep 2026 – present",
+          "role": "Technology Education Teacher",
+          "organization": "Smíchovská SPŠ · Part-time · On-site",
+          "description": "Teaching introductory C# programming to first-year students.",
+          "highlights": [
+            "Algorithmization, variables and control flow",
+            "Data structures and logic: 1D arrays, lists and methods",
+            "Fundamentals of object-oriented programming, including structures and classes"
+          ],
+          "chips": ["C#", "OOP", "Teaching"]
+        },
+        {
+          "order": 2,
+          "dates": "Oct 2025 – Feb 2026",
+          "duration": "5 mos",
+          "role": "Lead Backend Engineer & DevOps Architect",
+          "organization": "Diář FISáka · VŠE · Team of 4",
+          "description": "Led a team of 4 developers. Set the Agile workflow, Git branching strategy and code review standards, and wrote the technical documentation the team works from.",
+          "highlights": [
+            "Designed containerized infrastructure on a Hetzner VPS with Docker, Traefik and Cloudflare",
+            "Built a Node.js REST API with BullMQ and Redis async workers",
+            "Mentored the team on TypeScript, Docker and architectural patterns"
+          ],
+          "chips": ["TypeScript", "Node.js", "Docker", "Traefik", "Redis", "BullMQ"]
+        },
+        {
+          "order": 3,
+          "dates": "2022 – 2026",
+          "duration": "5 editions · 50 students each",
+          "role": "Lecturer & Organizer",
+          "organization": "Smíchovská SPŠ · Summer school · Contract · On-site",
+          "description": "Week-long summer school in game development fundamentals for students aged 13 to 16.",
+          "highlights": [
+            "Solo-taught Intro and Basics of 2D Graphics; top-rated lecturer in student feedback",
+            "Wrote the curriculum, designed the final projects and reviewed every submission",
+            "Ran logistics and coordination for the week alongside the other lecturers"
+          ],
+          "chips": ["Unity", "C#", "Figma"]
+        }
+      ],
+      "education": [
+        {
+          "order": 1,
+          "current": true,
+          "dates": "Sep 2024 – Jul 2027",
+          "duration": "Bachelor’s, in progress",
+          "role": "Applied Computer Science",
+          "organization": "Prague University of Economics and Business (VŠE)",
+          "description": "B.Sc. bridging software engineering and business strategy.",
+          "highlights": [
+            "Coursework in system design, machine learning, cloud computing, quantitative research and data analytics, alongside marketing, finance and corporate law",
+            "Bachelor thesis: an MCP server over InSIS course data, hosted on university servers, grown out of Kreditožrouti",
+            "Certifications: Building AI, Elements of AI, Introduction to Data Science in Python, Joining Data in SQL, Supervised Learning with scikit-learn, Unsupervised Learning in Python"
+          ]
+        },
+        {
+          "order": 2,
+          "dates": "Sep 2020 – May 2024",
+          "duration": "High school diploma",
+          "role": "Cybersecurity and computer forensics",
+          "organization": "Smíchovská střední průmyslová škola",
+          "description": "Graduated with full marks in technical subjects from a cybersecurity-focused program.",
+          "highlights": [
+            "Network security, computer forensics and system administration",
+            "Designed and built a functional CPU from scratch in Assembly (Logisim Evolution)",
+            "Final thesis: a full-stack e-commerce store, covering DevOps and CI/CD"
+          ]
+        }
+      ]
+    }
+  },
+  "unchanged": {
+    "posts": "Post 'Traefik with Cloudflare inside Docker, simplified.' keeps its CMS body. Only the template is re-skinned (Figma 1084:1511).",
+    "legal": "Privacy and Terms keep their CMS text in both locales. Re-skin only (Figma 1084:1708, 1084:1829). Check the privacy text still says Umami is the only analytics after the Cloudflare beacon is switched off."
+  },
+  "responsiveOverrides": {
+    "contact-form.message.placeholder": "Tablet and mobile use placeholderShort.",
+    "case_kreditozrouti.architecture.edges[api->mysql].label": "Mobile uses labelShort ('writes').",
+    "home.more.items": "Mobile keeps every item; descriptions wrap, nothing is cut."
+  }
+}
