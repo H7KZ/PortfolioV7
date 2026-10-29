@@ -3,6 +3,8 @@ import type { Privacy } from '@portfolio/content'
 
 import type { Resolved } from '#shared/types/content'
 
+definePageMeta({ contactCta: false })
+
 const page = await useContent<Resolved<Privacy>>('legal/privacy')
 
 useSeo(() => ({

@@ -10,14 +10,16 @@ export default defineNuxtConfig({
 
 	css: ['~/assets/css/app.css'],
 
+	components: [{ path: '~/components', pathPrefix: false }],
+
 	app: {
 		head: {
 			htmlAttrs: { lang: 'en' },
-			bodyAttrs: { class: 'h-full w-full' },
+			bodyAttrs: { class: 'min-h-full' },
 			meta: [
 				{ charset: 'utf-8' },
 				{ name: 'viewport', content: 'width=device-width, initial-scale=1' },
-				{ name: 'theme-color', content: '#121212' },
+				{ name: 'theme-color', content: '#0b0d10' },
 				{ name: 'apple-mobile-web-app-title', content: 'Jan Komínek' },
 				{ name: 'google', content: 'notranslate' },
 				{ name: 'format-detection', content: 'telephone=no' }
@@ -30,8 +32,8 @@ export default defineNuxtConfig({
 				{ rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },
 				{ rel: 'manifest', href: '/favicon/site.webmanifest' },
 				{ rel: 'author', href: '/humans.txt' },
-				{ rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/dm-sans-latin-opsz-normal.woff2', crossorigin: '' },
-				{ rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/fraunces-latin-opsz-normal.woff2', crossorigin: '' }
+				{ rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/space-grotesk-latin-wght-normal.woff2', crossorigin: '' },
+				{ rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/jetbrains-mono-latin-wght-normal.woff2', crossorigin: '' }
 			]
 		}
 	},

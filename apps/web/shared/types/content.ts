@@ -28,6 +28,8 @@ export interface MediaView {
 	mimeType: string | null
 	width: number | null
 	height: number | null
+	/** Other encodings uploaded next to the file, as site URLs. */
+	formats: { avif: string | null; avif800: string | null; webp800: string | null }
 }
 
 type IsMedia<T> = [T] extends [Media] ? ([Media] extends [T] ? true : false) : false
@@ -81,6 +83,7 @@ export interface PostData {
 export interface ProjectData {
 	labels: Resolved<ProjectPage>
 	project: Resolved<Project>
+	next: { slug: string; title: string } | null
 }
 
 export interface ContactData {

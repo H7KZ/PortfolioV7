@@ -32,7 +32,7 @@ export default defineEventHandler(async event => {
 			email: values.email,
 			company: values.company || null,
 			message: values.message,
-			budget: values.budget,
+			budgetRange: values.budget || null,
 			details: describeSelections(values, config),
 			deadline: values.deadline ? new Date(values.deadline).toISOString() : null,
 			locale

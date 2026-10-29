@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import TablerArrowRight from '~icons/tabler/arrow-right'
+
 import type { BlogData } from '#shared/types/content'
 
 const data = await useContent<BlogData>('blog')
@@ -8,8 +10,8 @@ const locale = useLocaleCode()
 const page = computed(() => data.value.page)
 
 useSeo(() => ({
-	title: page.value.meta?.title ?? page.value.heading,
-	description: page.value.meta?.description,
+	title: page.value.meta?.title ?? page.value.heading.replace(/\.$/, ''),
+	description: page.value.meta?.description ?? page.value.lead,
 	image: page.value.meta?.image,
 	type: 'website'
 }))
@@ -19,40 +21,47 @@ useHead(() => ({
 </script>
 
 <template>
-	<div class="mx-auto max-w-(--max) px-8 max-sm:px-5">
-		<div class="flex items-end justify-between gap-6 border-b border-(--line) pt-10 pb-5">
-			<div>
-				<div class="mono mb-1.5 text-[11px] tracking-widest text-(--fg-4) uppercase">{{ page.label }}</div>
-				<h1 class="serif m-0 text-[clamp(28px,3.5vw,44px)] font-light tracking-[-0.02em]">{{ page.heading }}</h1>
-			</div>
-		</div>
+	<div class="site-container flex flex-col gap-(--block-gap) pt-10 pb-(--section-gap) md:pt-14 lg:pt-20">
+		<header class="flex max-w-[840px] flex-col gap-6">
+			<p class="type-mono-s text-mute"><span class="text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
+			<h1 class="type-display-l">{{ page.heading }}</h1>
+			<p v-if="page.lead" class="max-w-[60ch] type-body-l text-ink-soft">{{ page.lead }}</p>
+		</header>
 
-		<div class="mb-20 flex flex-col">
-			<NuxtLink
-				v-for="post in data.posts"
-				:key="post.slug"
-				:to="href(`/blog/${post.slug}`)"
-				class="grid grid-cols-[120px_1fr_auto_auto] items-center gap-7 border-t border-(--line) py-6 text-(--fg) no-underline transition-[padding-left] duration-200 last:border-b last:border-(--line) hover:pl-2.5 max-md:grid-cols-1 max-md:gap-1.5 max-md:py-4.5"
-			>
-				<div class="mono text-[12px] tracking-[0.04em] text-(--fg-4)">{{ formatDate(post.date, locale) }}</div>
-				<div>
-					<h2 class="serif m-0 text-[20px] leading-[1.3] font-light tracking-[-0.01em]">{{ post.title }}</h2>
-					<p v-if="post.description" class="m-0 mt-1 text-[13px] leading-[1.5] text-(--fg-4) max-md:hidden">{{ post.description }}</p>
-				</div>
-				<div class="mono flex gap-1 text-[11px] whitespace-nowrap text-(--fg-4)">
-					<template v-for="tag in post.tags ?? []" :key="tag">
-						<span>{{ tag }}</span>
-						<span class="text-(--fg-5)">/</span>
-					</template>
-				</div>
-				<div class="mono text-[11px] tracking-[0.04em] whitespace-nowrap text-(--fg-4)">
-					{{ post.readingTime ? `${post.readingTime} ${page.minutesShort}` : '' }}
-				</div>
-			</NuxtLink>
-		</div>
+		<ul class="grid list-none gap-4 p-0 lg:gap-6">
+			<li v-for="post in data.posts" :key="post.slug">
+				<article
+					class="group relative flex flex-col gap-4 rounded-lg border border-line bg-surface p-6 transition-colors duration-150 ease-(--ease) hover:border-line-strong has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-focus md:p-8"
+				>
+					<p class="flex flex-wrap gap-x-3 type-mono-label text-mute">
+						<time :datetime="post.date">{{
+							formatDate(post.date, locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+						}}</time>
+						<template v-if="post.readingTime">
+							<span aria-hidden="true">·</span>
+							<span>{{ post.readingTime }} {{ page.minutesLong }}</span>
+						</template>
+					</p>
+					<h2 class="max-w-[40ch] type-h3">
+						<NuxtLink
+							:to="href(`/blog/${post.slug}`)"
+							class="text-ink no-underline after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+							>{{ post.title }}</NuxtLink
+						>
+					</h2>
+					<p v-if="post.description" class="max-w-[68ch] type-body text-ink-soft">{{ post.description }}</p>
+					<UiTags :tags="(post.tags ?? []).filter(tag => tag !== 'EN')" />
+					<p v-if="page.readLabel" class="flex items-center gap-2 type-button text-ink" aria-hidden="true">
+						{{ page.readLabel }}
+						<TablerArrowRight class="h-4 w-4 transition-transform duration-200 ease-(--ease) group-hover:translate-x-1" />
+					</p>
+				</article>
+			</li>
+		</ul>
 
-		<div class="pb-20">
-			<ContactFooter />
-		</div>
+		<aside v-if="page.draftingLabel || page.nextUpText" class="flex flex-col gap-2 border-t border-line pt-8">
+			<p class="flex items-center gap-2 type-mono-label text-mute"><span class="live-dot" aria-hidden="true"></span>{{ page.draftingLabel }}</p>
+			<p class="type-body text-ink-soft">{{ page.nextUpText }}</p>
+		</aside>
 	</div>
 </template>

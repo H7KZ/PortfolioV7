@@ -70,6 +70,11 @@ async function list<T>(collection: CollectionSlug, { locale, draft, where, sort,
 	return { docs: resolve(response.docs) as Resolved<T>[], totalDocs: response.totalDocs }
 }
 
+async function fetchRedirects(): Promise<Record<string, { to: string; permanent: boolean }>> {
+	const redirects = await list<Redirect>('redirects', { limit: 1000 })
+	return Object.fromEntries(redirects.docs.map(row => [row.from, { to: row.to, permanent: row.permanent !== false }]))
+}
+
 const loaders = {
 	async layout(locale: Locale, draft: boolean): Promise<LayoutData> {
 		const [site, navigation, footer] = await Promise.all([
@@ -90,7 +95,13 @@ const loaders = {
 		const cards: ProjectCard[] = projects.docs
 			.filter(project => project.card?.show)
 			.map(({ id, slug, title, date, thumbnail, card }) => ({ id, slug, title, date, thumbnail, card }))
-		return { page, projects: cards, projectCount: projects.totalDocs, services: services.docs, testimonials: testimonials.docs }
+		return {
+			page,
+			projects: cards,
+			projectCount: projects.totalDocs,
+			services: services.docs,
+			testimonials: testimonials.docs.filter(testimonial => testimonial.show !== false)
+		}
 	},
 
 	async resume(locale: Locale, draft: boolean): Promise<ResumeData> {
@@ -125,12 +136,19 @@ const loaders = {
 	},
 
 	async project(slug: string, locale: Locale, draft: boolean): Promise<ProjectData | null> {
-		const [labels, projects] = await Promise.all([
+		const [labels, projects, all, redirects] = await Promise.all([
 			global<ProjectPage>('project-page', { locale, draft }),
-			list<Project>('projects', { locale, draft, where: { slug: { equals: slug } }, limit: 1 }, true)
+			list<Project>('projects', { locale, draft, where: { slug: { equals: slug } }, limit: 1 }, true),
+			list<Project>('projects', { locale, draft, sort: 'order' }, true),
+			fetchRedirects()
 		])
 		const project = projects.docs[0]
-		return project ? { labels, project } : null
+		if (!project) return null
+		// Archived V6 projects have no kicker and are never linked, so the case study sequence skips them, as it does redirected slugs.
+		const sequence = all.docs.filter(doc => doc.kicker && !redirects[`/projects/${doc.slug}`])
+		const index = sequence.findIndex(doc => doc.slug === slug)
+		const following = sequence.length > 1 ? sequence[(index + 1) % sequence.length] : undefined
+		return { labels, project, next: following && following.slug !== slug ? { slug: following.slug, title: following.title } : null }
 	},
 
 	async contact(locale: Locale, draft: boolean): Promise<ContactData> {
@@ -146,10 +164,7 @@ const loaders = {
 		return global<ErrorPage>('errors', { locale, draft })
 	},
 
-	async redirects(): Promise<Record<string, { to: string; permanent: boolean }>> {
-		const redirects = await list<Redirect>('redirects', { limit: 1000 })
-		return Object.fromEntries(redirects.docs.map(row => [row.from, { to: row.to, permanent: row.permanent !== false }]))
-	},
+	redirects: fetchRedirects,
 
 	async feed(): Promise<{ blog: Resolved<Blog>; site: Resolved<Site>; posts: Resolved<Post>[] }> {
 		const [blog, site, posts] = await Promise.all([
@@ -161,12 +176,13 @@ const loaders = {
 	},
 
 	async sitemap(): Promise<{ projects: { slug: string; updatedAt: string }[]; posts: { slug: string; updatedAt: string }[] }> {
-		const [projects, posts] = await Promise.all([
+		const [projects, posts, redirects] = await Promise.all([
 			list<Project>('projects', { locale: 'en', sort: 'order' }, true),
-			list<Post>('posts', { locale: 'en', sort: '-date' }, true)
+			list<Post>('posts', { locale: 'en', sort: '-date' }, true),
+			fetchRedirects()
 		])
 		return {
-			projects: projects.docs.map(({ slug, updatedAt }) => ({ slug, updatedAt })),
+			projects: projects.docs.filter(({ slug }) => !redirects[`/projects/${slug}`]).map(({ slug, updatedAt }) => ({ slug, updatedAt })),
 			posts: posts.docs.map(({ slug, updatedAt }) => ({ slug, updatedAt }))
 		}
 	},
