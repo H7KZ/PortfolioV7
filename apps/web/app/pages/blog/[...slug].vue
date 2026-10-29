@@ -22,7 +22,7 @@ const shareUrl = computed(() => {
 })
 
 useSeo(() => ({
-	title: post.value.meta?.title ?? `${post.value.title} · ${site.value?.name ?? ''}`,
+	title: post.value.meta?.title ?? post.value.title,
 	description: description.value,
 	image: post.value.meta?.image ?? post.value.thumbnail,
 	type: 'article',
@@ -73,7 +73,7 @@ useHead(() => ({
 			<div class="max-lg:hidden"></div>
 			<div class="flex min-w-0 flex-col gap-(--block-gap)">
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div class="prose-site prose" v-html="post.contentHtml"></div>
+				<div class="prose-site prose" v-html="demoteHeadings(post.contentHtml)"></div>
 
 				<aside class="flex flex-col gap-3 rounded-lg border border-line bg-surface p-6">
 					<h2 class="type-h4">{{ page.shareLabel }}</h2>

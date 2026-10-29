@@ -10,6 +10,8 @@ const route = useRoute()
 
 const site = computed(() => layout.value?.site)
 const showContactCta = computed(() => contactCta && route.meta.contactCta !== false)
+// SPEC 11: the Person profile belongs to the pages about Jan, not to every case study and post.
+const isProfilePage = computed(() => ['/', '/resume'].includes(route.path.replace(/^\/cs(?=\/|$)/, '') || '/'))
 
 useHead(() => {
 	const s = site.value
@@ -27,59 +29,60 @@ useHead(() => {
 			{ key: 'og:site_name', property: 'og:site_name', content: s?.name },
 			...(image ? [{ key: 'og:image', property: 'og:image', content: absoluteUrl(image) }] : [])
 		],
-		script: s
-			? [
-					{
-						key: 'ld-profile',
-						type: 'application/ld+json',
-						innerHTML: JSON.stringify({
-							'@context': 'https://schema.org',
-							'@type': 'ProfilePage',
-							'@id': `${s.siteUrl}/#profilepage`,
-							url: s.siteUrl,
-							name: `${s.name} · ${s.jobTitle}`,
-							description: s.profileDescription ?? undefined,
-							mainEntity: {
-								'@type': 'Person',
-								'@id': `${s.siteUrl}/#person`,
-								name: s.name,
-								alternateName: s.alternateName ?? undefined,
-								jobTitle: s.jobTitle,
-								description: s.personDescription,
-								image: mediaUrl(s.portrait) ? absoluteUrl(mediaUrl(s.portrait)!) : undefined,
-								email: s.email,
+		script:
+			s && isProfilePage.value
+				? [
+						{
+							key: 'ld-profile',
+							type: 'application/ld+json',
+							innerHTML: JSON.stringify({
+								'@context': 'https://schema.org',
+								'@type': 'ProfilePage',
+								'@id': `${s.siteUrl}/#profilepage`,
 								url: s.siteUrl,
-								sameAs: s.sameAs ?? [],
-								address: { '@type': 'PostalAddress', addressLocality: s.locality ?? undefined, addressCountry: s.country ?? undefined },
-								alumniOf: (s.alumniOf ?? []).map(school => ({
-									'@type': 'EducationalOrganization',
-									name: school.name,
-									alternateName: school.alternateName ?? undefined
-								})),
-								hasOccupation: s.occupationSkills
-									? {
-											'@type': 'Occupation',
-											name: 'Software Engineer',
-											occupationLocation: { '@type': 'City', name: s.locality ?? undefined },
-											skills: s.occupationSkills
-										}
-									: undefined,
-								knowsAbout: s.knowsAbout ?? [],
-								hasOfferCatalog: s.services?.length
-									? {
-											'@type': 'OfferCatalog',
-											name: s.offerCatalogName ?? undefined,
-											itemListElement: s.services.map(service => ({
-												'@type': 'Offer',
-												itemOffered: { '@type': 'Service', name: service.name }
-											}))
-										}
-									: undefined
-							}
-						})
-					}
-				]
-			: []
+								name: `${s.name} · ${s.jobTitle}`,
+								description: s.profileDescription ?? undefined,
+								mainEntity: {
+									'@type': 'Person',
+									'@id': `${s.siteUrl}/#person`,
+									name: s.name,
+									alternateName: s.alternateName ?? undefined,
+									jobTitle: s.jobTitle,
+									description: s.personDescription,
+									image: mediaUrl(s.portrait) ? absoluteUrl(mediaUrl(s.portrait)!) : undefined,
+									email: s.email,
+									url: s.siteUrl,
+									sameAs: s.sameAs ?? [],
+									address: { '@type': 'PostalAddress', addressLocality: s.locality ?? undefined, addressCountry: s.country ?? undefined },
+									alumniOf: (s.alumniOf ?? []).map(school => ({
+										'@type': 'EducationalOrganization',
+										name: school.name,
+										alternateName: school.alternateName ?? undefined
+									})),
+									hasOccupation: s.occupationSkills
+										? {
+												'@type': 'Occupation',
+												name: 'Software Engineer',
+												occupationLocation: { '@type': 'City', name: s.locality ?? undefined },
+												skills: s.occupationSkills
+											}
+										: undefined,
+									knowsAbout: s.knowsAbout ?? [],
+									hasOfferCatalog: s.services?.length
+										? {
+												'@type': 'OfferCatalog',
+												name: s.offerCatalogName ?? undefined,
+												itemListElement: s.services.map(service => ({
+													'@type': 'Offer',
+													itemOffered: { '@type': 'Service', name: service.name }
+												}))
+											}
+										: undefined
+								}
+							})
+						}
+					]
+				: []
 	}
 })
 </script>

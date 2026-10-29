@@ -24,7 +24,7 @@ const locale = useLocaleCode()
 			<div class="max-lg:hidden"></div>
 			<div class="flex min-w-0 flex-col gap-(--block-gap)">
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div class="prose-site prose" v-html="page.contentHtml"></div>
+				<div class="prose-site prose" v-html="demoteHeadings(page.contentHtml)"></div>
 				<slot />
 			</div>
 		</div>

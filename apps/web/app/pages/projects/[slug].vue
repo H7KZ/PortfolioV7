@@ -29,7 +29,7 @@ const facts = computed(() =>
 const hasArchitecture = computed(() => (project.value.architecture?.nodes?.length ?? 0) > 0)
 
 useSeo(() => ({
-	title: project.value.meta?.title ?? `${project.value.title.replace(/\.$/, '')} · ${site.value?.name ?? ''}`,
+	title: project.value.meta?.title ?? project.value.title.replace(/\.$/, ''),
 	description: project.value.meta?.description ?? project.value.lede,
 	image: project.value.meta?.image ?? project.value.thumbnail,
 	imageAlt: hero.value?.alt,
@@ -111,7 +111,7 @@ useHead(() => {
 		<section v-if="project.contentHtml" class="site-container section-grid pb-(--section-gap)" aria-labelledby="challenge">
 			<h2 id="challenge" class="type-h3">{{ labels.challengeLabel }}</h2>
 			<!-- eslint-disable-next-line vue/no-v-html -->
-			<div class="prose-site prose" v-html="project.contentHtml"></div>
+			<div class="prose-site prose" v-html="demoteHeadings(project.contentHtml)"></div>
 		</section>
 
 		<section v-if="project.contributions?.length" class="site-container section-grid pb-(--section-gap)" aria-labelledby="owned">

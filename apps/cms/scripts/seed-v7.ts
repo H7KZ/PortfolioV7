@@ -517,10 +517,14 @@ async function importGlobals(): Promise<void> {
 		return { ...blog }
 	})
 
+	const siteUrl = String(((await payload.findGlobal({ slug: 'site', depth: 0 })) as unknown as Json).siteUrl ?? 'https://jankominek.com').replace(/\/$/, '')
+	const texts = llmsTexts(siteUrl)
 	await writeGlobal('site', locale => {
 		const resume = pick<Json>(locale, 'globals.resume')
 		const skills = (resume.skillGroups as { skills: string[] }[]).flatMap(group => group.skills.filter(skill => skill.endsWith('*')))
 		return {
+			llmsTxt: texts.short,
+			llmsFullTxt: texts.full,
 			newTabLabel: EXTRA[locale].newTabLabel,
 			jobTitle: 'Fullstack Engineer',
 			personDescription: EXTRA[locale].personDescription,
@@ -528,6 +532,82 @@ async function importGlobals(): Promise<void> {
 			knowsAbout: skills.map(skill => skill.replace(/\*$/, ''))
 		}
 	})
+}
+
+/** /llms.txt and /llms-full.txt, built from the English copy so they say what the site says. */
+function llmsTexts(siteUrl: string): { short: string; full: string } {
+	const home = pick<Json>('en', 'globals.home')
+	const hero = home.hero as Json
+	const resume = pick<Json>('en', 'globals.resume')
+	const contact = pick<Json>('en', 'globals.contact')
+	const blog = pick<Json>('en', 'globals.blog')
+	const projects = pick<CopyProject[]>('en', 'collections.projects')
+	const experience = pick<Record<string, Json[]>>('en', 'collections.experience')
+	const skills = (resume.skillGroups as { title: string; skills: string[] }[]).map(
+		group => `${group.title}: ${group.skills.map(skill => skill.replace(/\*$/, '')).join(', ')}`
+	)
+	const name = (title: string) => title.replace(/\.$/, '')
+
+	const head = [
+		'# Jan Komínek · Fullstack Engineer',
+		'',
+		`> ${EXTRA.en.personDescription}`,
+		'',
+		String(hero.valueProp),
+		'',
+		'## Key pages',
+		'',
+		`- [Home](${siteUrl}/): ${String(hero.headline).replace(/\n/g, ' ')}`,
+		`- [Résumé](${siteUrl}/resume): ${resume.bio}`,
+		`- [Contact](${siteUrl}/contact): ${contact.intro}`,
+		`- [Blog](${siteUrl}/blog): ${blog.lead}`,
+		'',
+		'## Case studies',
+		'',
+		...projects.map(project => `- [${name(project.title)}](${siteUrl}/projects/${project.slug}): ${project.lede}`),
+		'',
+		'## Profiles',
+		'',
+		'- [LinkedIn](https://www.linkedin.com/in/jan-kominek)',
+		'- [GitHub](https://github.com/H7KZ)',
+		'',
+		'## Stack',
+		'',
+		...skills.map(line => `- ${line}`),
+		'',
+		'## Availability',
+		'',
+		String(contact.intro),
+		''
+	]
+
+	const details = projects.flatMap(project => [
+		`### ${name(project.title)}`,
+		'',
+		`${project.kicker} · ${project.role} · ${project.timeline} · ${project.sector}`,
+		'',
+		...project.challenge.flatMap(paragraph => [paragraph, '']),
+		...project.contributions.map(item => `- ${item.title}: ${item.body}`),
+		'',
+		`Stack: ${project.stack.join(', ')}`,
+		''
+	])
+	const timeline = Object.values(experience)
+		.flat()
+		.flatMap(entry => [
+			`### ${entry.role} · ${entry.organization}`,
+			'',
+			`${entry.dates}${entry.duration ? ` · ${entry.duration}` : ''}`,
+			'',
+			...(entry.description ? [String(entry.description), ''] : []),
+			...((entry.highlights as string[] | undefined) ?? []).map(text => `- ${text}`),
+			''
+		])
+
+	return {
+		short: head.join('\n'),
+		full: [...head, '## Case study details', '', ...details, '## Experience', '', ...timeline].join('\n')
+	}
 }
 
 // --------------------------------------------------------------------------------------- collections
