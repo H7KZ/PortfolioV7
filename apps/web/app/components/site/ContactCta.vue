@@ -43,7 +43,7 @@ const title = computed(() => {
 				<dl class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-6 gap-y-2 type-mono-s">
 					<template v-for="row in cta.terminalRows ?? []" :key="row.id ?? row.key">
 						<dt class="text-faint">{{ row.key }}</dt>
-						<dd class="m-0 flex min-w-0 items-center gap-2 break-words text-ink-soft">
+						<dd class="m-0 flex min-w-0 items-center gap-2 [overflow-wrap:anywhere] text-ink-soft">
 							<span v-if="row.live" class="live-dot" aria-hidden="true"></span>
 							<a
 								v-if="row.href"

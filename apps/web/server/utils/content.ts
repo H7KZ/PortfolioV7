@@ -82,7 +82,9 @@ const loaders = {
 			global<Navigation>('navigation', { locale, draft }),
 			global<Footer>('footer', { locale, draft })
 		])
-		return { site, navigation, footer }
+		// The text files have their own routes; leaving them out keeps them out of every page payload.
+		const { humansTxt: _humans, llmsTxt: _llms, llmsFullTxt: _llmsFull, ...pageSite } = site
+		return { site: pageSite, navigation, footer }
 	},
 
 	async home(locale: Locale, draft: boolean): Promise<HomeData> {

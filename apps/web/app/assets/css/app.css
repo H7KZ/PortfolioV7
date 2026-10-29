@@ -266,6 +266,11 @@
 	}
 }
 
+/* Fallbacks for visitors without JavaScript; the head script marks the page as scripted before it paints. */
+.js .nojs-only {
+	display: none;
+}
+
 /* Dot grid and green glow behind the top of each page only (SPEC 4.4). */
 .page-backdrop {
 	position: absolute;

@@ -48,7 +48,7 @@ type ResolvedMember<T> =
 export type Relation = number | MediaView | null | undefined
 
 export interface LayoutData {
-	site: Resolved<Site>
+	site: Omit<Resolved<Site>, 'humansTxt' | 'llmsTxt' | 'llmsFullTxt'>
 	navigation: Resolved<Navigation>
 	footer: Resolved<Footer>
 }

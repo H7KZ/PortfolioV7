@@ -24,6 +24,7 @@ export default defineNuxtConfig({
 				{ name: 'google', content: 'notranslate' },
 				{ name: 'format-detection', content: 'telephone=no' }
 			],
+			script: [{ innerHTML: "document.documentElement.classList.add('js')" }],
 			link: [
 				{ rel: 'icon', href: '/favicon.png' },
 				{ rel: 'icon', type: 'image/png', href: '/favicon/favicon-96x96.png', sizes: '96x96' },
@@ -32,10 +33,14 @@ export default defineNuxtConfig({
 				{ rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },
 				{ rel: 'manifest', href: '/favicon/site.webmanifest' },
 				{ rel: 'author', href: '/humans.txt' },
-				{ rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/space-grotesk-latin-wght-normal.woff2', crossorigin: '' },
-				{ rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/jetbrains-mono-latin-wght-normal.woff2', crossorigin: '' }
+				{ rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/space-grotesk-latin-wght-normal.woff2', crossorigin: '' }
 			]
 		}
+	},
+
+	// The whole stylesheet is about 10 kB gzip, so inlining it beats a render-blocking request on a phone.
+	features: {
+		inlineStyles: true
 	},
 
 	experimental: {

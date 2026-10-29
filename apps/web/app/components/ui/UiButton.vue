@@ -25,7 +25,7 @@ const {
 
 const classes = computed(() => [
 	'type-button inline-flex shrink-0 items-center justify-center gap-2.5 rounded-md px-5 whitespace-nowrap no-underline transition-colors duration-150 ease-(--ease) disabled:cursor-not-allowed disabled:opacity-50',
-	size === 'small' ? 'min-h-11 px-4' : 'min-h-11 md:min-h-12',
+	size === 'small' ? 'min-h-11 px-3 sm:px-4' : 'min-h-11 md:min-h-12',
 	block ? 'w-full' : '',
 	kind === 'primary'
 		? 'bg-accent text-accent-ink hover:bg-accent-hover'

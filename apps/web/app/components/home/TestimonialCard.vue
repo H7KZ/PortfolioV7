@@ -20,7 +20,7 @@ const quoteLang = computed(() => (testimonial.quoteLanguage && testimonial.quote
 					:href="testimonial.linkedinUrl"
 					target="_blank"
 					rel="noopener"
-					class="inline-flex items-center type-body-s whitespace-nowrap text-ink underline decoration-control underline-offset-4 hover:decoration-ink"
+					class="type-body-s whitespace-nowrap text-ink underline decoration-control underline-offset-4 hover:decoration-ink"
 					:lang="quoteLang ? locale : undefined"
 					@click="trackLink(testimonial.linkedinUrl)"
 					><GlyphLabel :text="readMoreLabel" new-tab
