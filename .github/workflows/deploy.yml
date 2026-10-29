@@ -1,5 +1,5 @@
 # Verifies, builds or reuses images, and deploys development or production as an immutable toolkit
-# release. Every push to main deploys development; manual development runs pick any source ref, while
+# release. Every push to develop deploys development; manual development runs pick any source ref, while
 # production, monitoring and ingress run only from main and only for a commit on main.
 # Not supported here (the repo has no qualified-development promotion): modes `promote`, input `run_id`.
 
@@ -8,11 +8,11 @@ run-name: "Deploy · ${{ inputs.environment || 'development' }} · ${{ inputs.re
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
   workflow_dispatch:
     inputs:
       environment:
-        description: Target environment (production includes the CMS)
+        description: Target environment (each has its own CMS)
         required: true
         type: choice
         options: [development, production]
@@ -40,7 +40,7 @@ on:
         type: string
         default: ''
       digests:
-        description: 'Existing mode only: complete digest JSON {"web":"sha256:...","cms":"sha256:..."}; development needs web only'
+        description: 'Existing mode only: complete digest JSON {"web":"sha256:...","cms":"sha256:..."}'
         required: false
         type: string
         default: ''
@@ -111,8 +111,7 @@ jobs:
           case "$TARGET" in production|development) ;; *) exit 1 ;; esac
           case "$MODE" in build|reuse|existing) ;; *) exit 1 ;; esac
           case "$OPERATION" in deploy|stage) ;; *) exit 1 ;; esac
-          services='["web"]'
-          [[ "$TARGET" != production ]] || services='["web","cms"]'
+          services='["web","cms"]'
           [[ -z "$DIGESTS" || "$MODE" == existing ]] || { echo 'digests requires existing mode' >&2; exit 1; }
           [[ -z "$DIGESTS" || -z "$IMAGE_TAG" ]] || { echo 'Choose digests or image_tag' >&2; exit 1; }
           [[ -z "$IMAGE_TAG" || "$MODE" != build ]] || { echo 'image_tag requires reuse or existing mode' >&2; exit 1; }
@@ -164,14 +163,14 @@ jobs:
     name: Build CMS image
     needs: [source, resolve-images]
     if: >-
-      !cancelled() && needs.resolve-images.result == 'success' && inputs.environment == 'production' && needs.resolve-images.outputs.cms_digest == ''
+      !cancelled() && needs.resolve-images.result == 'success' && needs.resolve-images.outputs.cms_digest == ''
     permissions:
       contents: read
       packages: write
     uses: ./.github/workflows/_build.yml
     with:
       service: cms
-      environment: production
+      environment: ${{ inputs.environment || 'development' }}
       source_commit: ${{ needs.source.outputs.sha }}
       version: ${{ needs.source.outputs.version }}
       no_cache: ${{ inputs.no_cache || false }}
@@ -193,7 +192,7 @@ jobs:
     if: >-
       !cancelled() && needs.resolve-images.result == 'success' &&
       (needs.build-web.result == 'success' || needs.resolve-images.outputs.web_digest != '') &&
-      (inputs.environment != 'production' || needs.build-cms.result == 'success' || needs.resolve-images.outputs.cms_digest != '')
+      (needs.build-cms.result == 'success' || needs.resolve-images.outputs.cms_digest != '')
     permissions:
       contents: read
       packages: read

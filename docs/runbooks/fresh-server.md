@@ -108,7 +108,7 @@ Run each workflow from the Actions tab and wait for it to finish before the next
 2. **Host Sync** (`host-sync.yml`). Deploy runs it too; alone first, it surfaces missing secrets early.
 3. **Deploy Monitoring** (Umami; runs from `main`). Initialize it as in step 7.
 4. **Deploy** with `environment` `production`. Builds web and CMS images, dumps any existing CMS database, starts Postgres, CMS and web. First deployment may skip the dump only when neither a database container nor volume exists.
-5. **Deploy** with `environment` `development`. Web only; it reads the production CMS over `portfolio-cms-network`, so production must exist first.
+5. **Deploy** with `environment` `development`. Web, CMS and Postgres of its own; fill its database from production as in [Development CMS](development-cms.md).
 
 Public health URLs (`https://jankominek.com/` and `/robots.txt`) must answer when production activates. If DNS cannot route yet, run `operation` `stage` instead and activate through [Rollback](rollback-and-recovery.md#activate-a-staged-release) after step 8.
 
@@ -149,7 +149,7 @@ docker ps --format '{{.Names}}' | grep '^portfolio-' | xargs -r docker stop
 ## Verify
 
 - Actions: Deploy Ingress (standalone), Host Sync, Deploy production and development all green.
-- **VPS as deploy user:** `deployment/toolkit doctor` reports no `fail`; `docker ps` shows `portfolio-web-1`, `portfolio-cms-1`, `portfolio-postgres-1`, `portfolio-dev-web-1` healthy, plus `traefik`, `crowdsec`, `socket-proxy` when standalone.
+- **VPS as deploy user:** `deployment/toolkit doctor` reports no `fail`; `docker ps` shows `portfolio-web-1`, `portfolio-cms-1`, `portfolio-postgres-1`, `portfolio-dev-web-1`, `portfolio-dev-cms-1`, `portfolio-dev-postgres-1` healthy, plus `traefik`, `crowdsec`, `socket-proxy` when standalone.
 - `https://jankominek.com/` loads, `/stats/stats.js` is served, a CMS edit appears on the site after a refresh.
 - Backup Verify (freshness, then drill) is green in Actions.
 - Reboot rehearsal: `sudo reboot`, then `systemctl status toolkit-portfolio-reconcile.service` is `active (exited)` and all containers are back.

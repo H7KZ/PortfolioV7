@@ -2,6 +2,8 @@
 
 Use this once per environment after the V7 redesign is merged, to write the V7 copy and images into the CMS. [`apps/cms/scripts/seed-v7.ts`](../../apps/cms/scripts/seed-v7.ts) reads `docs/redesign/content/copy.{en,cs}.json` and `docs/redesign/assets/`, compares every document with what is stored and writes only the differences, so it is safe to rerun. It renames `corac_sith` to `deeptrace` and `iont_info` to `iont_platform`, creates `intedat`, hides every other project card, and adds the 301 redirects from the old project URLs.
 
+Seed the [development CMS](development-cms.md) first; production only at V7 launch, because the migration and the seed break the V6 site.
+
 The deploy applies the V7 schema migration when the CMS starts. Until the seed runs, V7 pages render with the V6 text in the fields that already existed and leave the new ones empty, so seed right after the deploy.
 
 ## Prepare

@@ -1,14 +1,23 @@
 # ==============================================================================
 # Docker Compose: Development Environment (portfolio-dev)
-# Description: dev.jankominek.com, the web only. It reads the production CMS
-#              (portfolio-cms on portfolio-cms-network) with the read-only key,
-#              is noindex, loads no analytics and sits behind Cloudflare Access.
-#              It has no contact key, so its contact form cannot create inquiries.
+# Description: dev.jankominek.com (web), cms-dev.jankominek.com (Payload) and their
+#              own database. The V7 schema migration drops V6 fields, so development
+#              runs its own CMS and never touches the production one. Its database
+#              starts as a copy of production (docs/runbooks/development-cms.md).
+#              The web is noindex, loads no analytics and sits behind Cloudflare
+#              Access, like the CMS. It has no contact key, so its contact form
+#              cannot create inquiries.
+#
+# Router names carry the ${PROJECT} suffix so production and development never
+# collide on the one shared Infrastructure Traefik. Aliases carry the dev prefix so
+# nothing here answers to a production name.
 #
 # Required Environment Variables (from the deploy-time .env):
-#   WEB_IMAGE_REFERENCE (full digest reference)
-#   PROJECT (must differ from production), DOMAIN
-#   CMS_READ_API_KEY, PREVIEW_SECRET, REVALIDATE_SECRET (same value as production)
+#   WEB_IMAGE_REFERENCE, CMS_IMAGE_REFERENCE (full digest references)
+#   PROJECT (must differ from production), DOMAIN, CMS_DOMAIN
+#   POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
+#   PAYLOAD_SECRET (same value as production: the copied API keys are hashed with it)
+#   CMS_READ_API_KEY, PREVIEW_SECRET, REVALIDATE_SECRET
 # ==============================================================================
 
 services:
@@ -16,7 +25,7 @@ services:
     image: ${WEB_IMAGE_REFERENCE:?A web digest reference is required}
     restart: unless-stopped
     environment:
-      - NUXT_CMS_INTERNAL_URL=http://portfolio-cms:3000
+      - NUXT_CMS_INTERNAL_URL=http://portfolio-dev-cms:3000
       - NUXT_CMS_READ_API_KEY=${CMS_READ_API_KEY}
       - NUXT_PREVIEW_SECRET=${PREVIEW_SECRET}
       - NUXT_REVALIDATE_SECRET=${REVALIDATE_SECRET}
@@ -26,8 +35,7 @@ services:
       - NUXT_PUBLIC_NOINDEX=true
     networks:
       public-network:
-      # The CMS revalidates this site through the alias.
-      portfolio-cms-network:
+      portfolio-dev-cms-network:
         aliases: [portfolio-dev-web]
     labels:
       - traefik.enable=true
@@ -56,4 +64,85 @@ services:
       resources:
         limits:
           cpus: '1'
+          memory: 256M
+
+  cms:
+    image: ${CMS_IMAGE_REFERENCE:?A CMS digest reference is required}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@portfolio-dev-postgres:5432/${POSTGRES_DB}
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+      - CMS_URL=https://${CMS_DOMAIN}
+      - SITE_URL=https://${DOMAIN}
+      - PREVIEW_SECRET=${PREVIEW_SECRET}
+      - REVALIDATE_SECRET=${REVALIDATE_SECRET}
+      - REVALIDATE_URLS=http://portfolio-dev-web:3000/_internal/revalidate
+      - MEDIA_DIR=/data/media
+    volumes:
+      - portfolio-dev-uploads-volume:/data/media
+    networks:
+      public-network:
+      portfolio-dev-cms-network:
+        aliases: [portfolio-dev-cms]
+      portfolio-dev-internal-network:
+        aliases: [portfolio-dev-cms]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=public-network
+      - traefik.http.routers.portfolio-cms-${PROJECT}.rule=Host(`${CMS_DOMAIN}`)
+      - traefik.http.routers.portfolio-cms-${PROJECT}.entrypoints=websecure
+      - traefik.http.routers.portfolio-cms-${PROJECT}.tls=true
+      - traefik.http.routers.portfolio-cms-${PROJECT}.tls.certresolver=letsencrypt
+      - traefik.http.routers.portfolio-cms-${PROJECT}.service=portfolio-cms-${PROJECT}
+      - traefik.http.services.portfolio-cms-${PROJECT}.loadbalancer.server.port=3000
+    healthcheck:
+      test: ['CMD', 'wget', '-qO', '/dev/null', 'http://127.0.0.1:3000/api/users/me']
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      # First boot runs migrations.
+      start_period: 120s
+      start_interval: 5s
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 768M
+
+  postgres:
+    image: postgres:18.6-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - portfolio-dev-postgres-volume:/var/lib/postgresql
+    networks:
+      portfolio-dev-internal-network:
+        aliases: [portfolio-dev-postgres]
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 60s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+      start_interval: 3s
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
           memory: 256M

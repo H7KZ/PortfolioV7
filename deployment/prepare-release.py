@@ -63,14 +63,13 @@ def main():
             config[name] = value(name)
         health_urls = [f"https://{config['SITE_DOMAIN']}/stats/stats.js"]
     else:
-        for name in ("PROJECT", "DOMAIN", "PREVIEW_SECRET", "REVALIDATE_SECRET", "CMS_READ_API_KEY"):
+        for name in ("PROJECT", "DOMAIN", "CMS_DOMAIN", "POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "PAYLOAD_SECRET", "PREVIEW_SECRET", "REVALIDATE_SECRET", "CMS_READ_API_KEY"):
             config[name] = value(name)
         expected_project = "prod" if environment == "production" else "dev"
         if config["PROJECT"] != expected_project:
             fail(f"PROJECT must be {expected_project}")
         if environment == "production":
-            for name in ("CMS_DOMAIN", "POSTGRES_DB", "POSTGRES_USER", "POSTGRES_PASSWORD", "PAYLOAD_SECRET", "CMS_CONTACT_API_KEY"):
-                config[name] = value(name)
+            config["CMS_CONTACT_API_KEY"] = value("CMS_CONTACT_API_KEY")
             for name in ("UMAMI_WEBSITE_ID", "DISCORD_WEBHOOK_URL"):
                 config[name] = value(name, required=False)
             health_urls = [f"https://{config['DOMAIN']}/", f"https://{config['DOMAIN']}/robots.txt"]
@@ -78,7 +77,7 @@ def main():
         if prefix != "h7kz/portfoliov7":
             fail("Unexpected image repository")
         variables.update(IMAGE_REGISTRY="ghcr.io", IMAGE_PREFIX=prefix)
-        for service in (["web", "cms"] if environment == "production" else ["web"]):
+        for service in ("web", "cms"):
             digest = value(f"{service.upper()}_DIGEST")
             if not re.fullmatch(r"sha256:[a-f0-9]{64}", digest):
                 fail(f"Invalid {service} image digest")

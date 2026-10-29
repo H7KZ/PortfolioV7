@@ -17,6 +17,7 @@ Start at the root [README](../README.md) for what the project is and how to run 
 | diagnose a failure                                           | [Troubleshooting](runbooks/troubleshooting.md)             |
 | import V6 content into a new, empty CMS (one time)           | [V6 content import](runbooks/content-import.md)            |
 | write the V7 redesign copy and images into the CMS           | [V7 content seed](runbooks/v7-content-seed.md)             |
+| fill or refresh the development CMS from production          | [Development CMS](runbooks/development-cms.md)             |
 
 ## Redesign
 
