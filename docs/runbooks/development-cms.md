@@ -6,7 +6,7 @@ Development (`portfolio-dev`) runs its own web, CMS (`cms-dev.jankominek.com`) a
 
 1. Cloudflare DNS: `cms-dev` proxied, pointing where `cms` points.
 2. Cloudflare Access: an application for `cms-dev.jankominek.com` with the same policy as `cms.jankominek.com`.
-3. GitHub Environment `development` ([Secrets and config](secrets-and-config.md#environments)): variable `CMS_DOMAIN=cms-dev.jankominek.com`; secrets `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` (new values), and `PAYLOAD_SECRET` and `CMS_READ_API_KEY` with the production values. The copied database holds the production API key users, whose key index is hashed with `PAYLOAD_SECRET`; a different secret locks the development web out.
+3. GitHub Environment `development` ([Secrets and config](secrets-and-config.md#environments)): variable `CMS_DOMAIN=cms-dev.jankominek.com`; secrets `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `PAYLOAD_SECRET` (the production value, so copied logins and sessions keep working), and `CMS_READ_API_KEY` and `CMS_CONTACT_API_KEY` with development's own keys. A copy from production brings production's keys, so set development's again after every copy (below).
 
 ## Deploy
 
@@ -34,6 +34,12 @@ docker logs -f "$dev_cms"
 
 The CMS log shows the V7 migration running, then the server listening. `cms-dev.jankominek.com/admin` accepts the production admin login.
 
+Then, with the tunnel below open, give the copied users development's keys:
+
+```bash
+API_KEYS='{"reader@jankominek.com":"<dev CMS_READ_API_KEY>","contact@jankominek.com":"<dev CMS_CONTACT_API_KEY>"}' DATABASE_URI=postgres://<dev user>:<dev password>@127.0.0.1:45433/<dev db> PAYLOAD_SECRET=<secret> REVALIDATE_URLS=" " PAYLOAD_DISABLE_JOBS=1 pnpm --filter @portfolio/cms run api-keys:set
+```
+
 ## Seed V7 (local, against the development database)
 
 Follow [V7 content seed](v7-content-seed.md#dry-run-then-seed-local-with-the-tunnel-open) with these changes:
@@ -44,7 +50,7 @@ Follow [V7 content seed](v7-content-seed.md#dry-run-then-seed-local-with-the-tun
 ssh -N -L 45433:$(ssh <vps> "docker inspect -f '{{(index .NetworkSettings.Networks \"portfolio-dev-internal-network\").IPAddress}}' \$(docker ps -q --filter label=com.docker.compose.project=portfolio-dev --filter label=com.docker.compose.service=postgres)"):5432 <vps>
 ```
 
-- `DATABASE_URI` uses the development `POSTGRES_*` values; `PAYLOAD_SECRET` is the shared production value.
+- `DATABASE_URI` uses the development `POSTGRES_*` values (`docker exec <dev postgres> printenv POSTGRES_PASSWORD`); `PAYLOAD_SECRET` is the shared production value.
 - Copy the uploaded images into the development CMS and restart the development web:
 
 ```bash

@@ -5,8 +5,7 @@
 #              runs its own CMS and never touches the production one. Its database
 #              starts as a copy of production (docs/runbooks/development-cms.md).
 #              The web is noindex, loads no analytics and sits behind Cloudflare
-#              Access, like the CMS. It has no contact key, so its contact form
-#              cannot create inquiries.
+#              Access, like the CMS. Its contact form writes to the development CMS.
 #
 # Router names carry the ${PROJECT} suffix so production and development never
 # collide on the one shared Infrastructure Traefik. Aliases carry the dev prefix so
@@ -16,8 +15,7 @@
 #   WEB_IMAGE_REFERENCE, CMS_IMAGE_REFERENCE (full digest references)
 #   PROJECT (must differ from production), DOMAIN, CMS_DOMAIN
 #   POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
-#   PAYLOAD_SECRET (same value as production: the copied API keys are hashed with it)
-#   CMS_READ_API_KEY, PREVIEW_SECRET, REVALIDATE_SECRET
+#   PAYLOAD_SECRET, CMS_READ_API_KEY, CMS_CONTACT_API_KEY, PREVIEW_SECRET, REVALIDATE_SECRET
 # ==============================================================================
 
 services:
@@ -27,6 +25,7 @@ services:
     environment:
       - NUXT_CMS_INTERNAL_URL=http://portfolio-dev-cms:3000
       - NUXT_CMS_READ_API_KEY=${CMS_READ_API_KEY}
+      - NUXT_CMS_CONTACT_API_KEY=${CMS_CONTACT_API_KEY}
       - NUXT_PREVIEW_SECRET=${PREVIEW_SECRET}
       - NUXT_REVALIDATE_SECRET=${REVALIDATE_SECRET}
       - NUXT_PUBLIC_SITE_URL=https://${DOMAIN}
