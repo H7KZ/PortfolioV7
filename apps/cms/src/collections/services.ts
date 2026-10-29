@@ -18,5 +18,12 @@ export const Services: CollectionConfig = {
 		afterChange: [revalidateCollectionAfterChange],
 		afterDelete: [revalidateCollectionAfterDelete]
 	},
-	fields: [order, text('number', { required: true }), text('title', { required: true }), textarea('description', { required: true }), chips]
+	fields: [
+		order,
+		text('label', { admin: { description: 'Status label on the card, e.g. "From scratch".' } }),
+		text('number', { required: true, admin: { description: 'V6 only, not shown since V7.' } }),
+		text('title', { required: true }),
+		textarea('description', { required: true }),
+		chips
+	]
 }

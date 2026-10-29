@@ -4,6 +4,9 @@ import type { ContactForm } from './payload-types'
 export const SINGLE_SELECTS = ['projectType', 'hosting', 'support', 'priority'] as const
 export const MULTI_SELECTS = ['features', 'technologies', 'assets', 'audiences', 'legals'] as const
 
+export const MESSAGE_MIN_LENGTH = 20
+export const MESSAGE_MAX_LENGTH = 5000
+
 export type SingleSelect = (typeof SINGLE_SELECTS)[number]
 export type MultiSelect = (typeof MULTI_SELECTS)[number]
 
@@ -12,7 +15,7 @@ export interface ContactFormValues {
 	email: string
 	company: string
 	message: string
-	budget: number
+	budget: string
 	projectType: string
 	features: string[]
 	technologies: string[]
@@ -29,13 +32,13 @@ export type ContactFormErrors = Partial<Record<keyof ContactFormValues, string>>
 
 export type ContactFormConfig = Omit<ContactForm, 'id' | 'updatedAt' | 'createdAt'>
 
-export function initialContactValues(config: Pick<ContactFormConfig, 'budget'>): ContactFormValues {
+export function initialContactValues(): ContactFormValues {
 	return {
 		fullName: '',
 		email: '',
 		company: '',
 		message: '',
-		budget: config.budget.default,
+		budget: '',
 		projectType: '',
 		features: [],
 		technologies: [],
@@ -55,23 +58,32 @@ function optionKeys(config: ContactFormConfig, field: SingleSelect | MultiSelect
 
 export function buildContactSchema(config: ContactFormConfig) {
 	const messages = config.validation
+	const tooLong = (max: number) => messages.tooLong.replace('{max}', String(max))
 	const single = (field: SingleSelect) =>
 		z
 			.string()
-			.max(50, messages.tooLong)
+			.max(50, tooLong(50))
 			.refine(value => value === '' || optionKeys(config, field).includes(value), messages.invalidOption)
 	const multi = (field: MultiSelect) =>
 		z
-			.array(z.string().max(50, messages.tooLong))
-			.max(20, messages.tooLong)
+			.array(z.string().max(50, tooLong(50)))
+			.max(20, tooLong(20))
 			.refine(values => values.every(value => optionKeys(config, field).includes(value)), messages.invalidOption)
 
 	return z.object({
-		fullName: z.string().trim().min(1, messages.required).max(100, messages.tooLong),
-		email: z.string().trim().min(1, messages.required).max(254, messages.tooLong).pipe(z.email(messages.invalidEmail)),
-		company: z.string().trim().max(100, messages.tooLong),
-		message: z.string().trim().min(1, messages.required).max(5000, messages.tooLong),
-		budget: z.number(messages.budgetRange).min(config.budget.min, messages.budgetRange).max(config.budget.max, messages.budgetRange),
+		fullName: z.string().trim().min(1, messages.required).max(100, tooLong(100)),
+		email: z.string().trim().min(1, messages.required).max(254, tooLong(254)).pipe(z.email(messages.invalidEmail)),
+		company: z.string().trim().max(100, tooLong(100)),
+		message: z
+			.string()
+			.trim()
+			.min(1, messages.required)
+			.min(MESSAGE_MIN_LENGTH, messages.tooShort ?? messages.required)
+			.max(MESSAGE_MAX_LENGTH, tooLong(MESSAGE_MAX_LENGTH)),
+		budget: z
+			.string()
+			.max(50, tooLong(50))
+			.refine(value => value === '' || (config.budget.options ?? []).some(option => option.key === value), messages.invalidOption),
 		projectType: single('projectType'),
 		features: multi('features'),
 		technologies: multi('technologies'),
