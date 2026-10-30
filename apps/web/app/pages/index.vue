@@ -4,10 +4,15 @@ import type { HomeData } from '#shared/types/content'
 const data = await useContent<HomeData>('home')
 const { data: layout } = useLayoutContent()
 const href = useHref()
-const { track } = useAnalytics()
+const { track, trackLink } = useAnalytics()
 
 const page = computed(() => data.value.page)
 const portrait = computed(() => asMedia(page.value.portrait))
+const recommendations = computed(() => {
+	const label = page.value.allRecommendationsLabel
+	if (!label || !layout.value?.site.linkedinUrl) return null
+	return { href: layout.value.site.linkedinUrl, text: label.replace('{count}', String(data.value.testimonialCount)) }
+})
 const caption = computed(() => page.value.portraitCaption)
 const headlineLines = computed(() => {
 	const lines = (page.value.headline ?? '').split('\n')
@@ -50,8 +55,12 @@ useHead(() => {
 			class="site-container grid grid-cols-1 gap-y-[22px] pt-12 pb-10 md:grid-cols-[minmax(0,1fr)_300px] md:grid-rows-[auto_auto_auto_auto_auto_1fr] md:gap-x-8 md:gap-y-0 md:pt-18 md:pb-14 lg:grid-cols-[minmax(0,1fr)_380px] lg:grid-rows-none lg:items-center lg:gap-x-12 lg:gap-y-0 lg:pt-24 lg:pb-16"
 		>
 			<div class="contents lg:flex lg:flex-col lg:items-start lg:gap-7">
-				<p v-if="page.eyebrowCommand" class="type-mono-s break-words text-mute md:col-span-2 md:mb-[26px] lg:col-auto lg:mb-0">
-					<span class="text-accent" aria-hidden="true">$ </span>{{ page.eyebrowCommand }}
+				<p v-if="page.eyebrowCommand" class="type-mono-s break-words whitespace-pre-wrap text-mute md:col-span-2 md:mb-[26px] lg:col-auto lg:mb-0">
+					<span class="text-accent" aria-hidden="true">$ </span
+					><template v-if="page.eyebrowCommandShort"
+						><span class="md:hidden">{{ page.eyebrowCommandShort }}</span
+						><span class="hidden md:inline">{{ page.eyebrowCommand }}</span></template
+					><template v-else>{{ page.eyebrowCommand }}</template>
 				</p>
 				<h1 class="type-display-xl md:col-span-2 md:mb-[26px] lg:col-auto lg:mb-0">
 					<template v-for="line in headlineLines.lines" :key="line">{{ line }}<br /></template>{{ headlineLines.lead
@@ -146,6 +155,15 @@ useHead(() => {
 					<TestimonialCard :testimonial="testimonial" :limit="page.quoteLimit ?? 160" :read-more-label="page.readMoreLabel" />
 				</li>
 			</ul>
+			<a
+				v-if="recommendations"
+				:href="recommendations.href"
+				target="_blank"
+				rel="noopener"
+				class="-mt-[15px] inline-flex min-h-11 items-center self-start type-mono-s text-accent underline underline-offset-[3px] transition-colors duration-150 ease-(--ease) hover:text-accent-hover md:-mt-[23px] lg:hidden [&>span[aria-hidden]]:inline-block"
+				@click="trackLink(recommendations.href)"
+				><GlyphLabel :text="recommendations.text" new-tab
+			/></a>
 		</section>
 	</div>
 </template>

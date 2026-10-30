@@ -11,7 +11,8 @@ import type {
 	ProjectCard,
 	ProjectData,
 	Resolved,
-	ResumeData
+	ResumeData,
+	TocItem
 } from '#shared/types/content'
 import type {
 	Blog,
@@ -33,6 +34,43 @@ import type {
 	Term,
 	Testimonial
 } from '@portfolio/content'
+
+const HEADING = /<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/g
+
+function slugify(text: string): string {
+	return text
+		.normalize('NFKD')
+		.replace(/\p{M}/gu, '')
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '')
+}
+
+/** Gives every h2 a stable id and lists them, so the contents box and the in-page links need nothing at render time. */
+function withHeadingIds(html: string | null | undefined): { html: string; toc: TocItem[] } {
+	const toc: TocItem[] = []
+	const used = new Set<string>()
+	const body = (html ?? '').replace(HEADING, (match, attributes: string | undefined, inner: string) => {
+		const text = inner
+			.replace(/<[^>]*>/g, '')
+			.replace(/&amp;/g, '&')
+			.replace(/&lt;/g, '<')
+			.replace(/&gt;/g, '>')
+			.replace(/&quot;/g, '"')
+			.replace(/&#0?39;/g, "'")
+			.replace(/\s+/g, ' ')
+			.trim()
+		if (!text) return match
+		const existing = /\sid="([^"]+)"/.exec(attributes ?? '')?.[1]
+		const base = existing ?? (slugify(text) || 'section')
+		let id = base
+		for (let n = 2; used.has(id); n++) id = `${base}-${n}`
+		used.add(id)
+		toc.push({ id, text })
+		return existing ? match : `<h2 id="${id}"${attributes ?? ''}>${inner}</h2>`
+	})
+	return { html: body, toc }
+}
 
 interface ListResponse<T> {
 	docs: T[]
@@ -112,6 +150,7 @@ const loaders = {
 			page: homePage,
 			projects: cards,
 			projectCount: projects.totalDocs,
+			testimonialCount: testimonials.totalDocs,
 			services: services.docs,
 			testimonials: testimonials.docs.filter(testimonial => testimonial.show !== false)
 		}
@@ -146,7 +185,9 @@ const loaders = {
 			list<Post>('posts', { locale, draft, where: { slug: { equals: slug } }, limit: 1 }, true)
 		])
 		const post = posts.docs[0]
-		return post ? { page, post } : null
+		if (!post) return null
+		const { html, toc } = withHeadingIds(post.contentHtml)
+		return { page, post: { ...post, contentHtml: html }, toc }
 	},
 
 	async project(slug: string, locale: Locale, draft: boolean): Promise<ProjectData | null> {
@@ -171,7 +212,9 @@ const loaders = {
 	},
 
 	async legal(slug: 'privacy' | 'terms', locale: Locale, draft: boolean): Promise<LegalPage> {
-		return slug === 'privacy' ? global<Privacy>('privacy', { locale, draft }) : global<Term>('terms', { locale, draft })
+		const page = slug === 'privacy' ? await global<Privacy>('privacy', { locale, draft }) : await global<Term>('terms', { locale, draft })
+		const { html, toc } = withHeadingIds(page.contentHtml)
+		return { ...page, contentHtml: html, toc }
 	},
 
 	async errors(locale: Locale, draft: boolean): Promise<ErrorsData> {

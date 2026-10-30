@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { Privacy } from '@portfolio/content'
 
-import type { Resolved } from '#shared/types/content'
+import type { Resolved, TocItem } from '#shared/types/content'
 
 definePageMeta({ contactCta: false })
 
-const page = await useContent<Resolved<Privacy>>('legal/privacy')
+const page = await useContent<Resolved<Privacy> & { toc: TocItem[] }>('legal/privacy')
 
 useSeo(() => ({
 	title: page.value.meta?.title ?? page.value.title,

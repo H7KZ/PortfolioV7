@@ -9,46 +9,52 @@ const dateLocale = computed(() => (locale.value === 'en' ? 'en-GB' : locale.valu
 const title = computed(() => (page.title.endsWith('.') ? { plain: page.title.slice(0, -1), accent: '.' } : { plain: page.title, accent: '' }))
 
 /** A section made of nothing but a bullet list is the short summary; the design lifts it into a callout above the text. */
-const SUMMARY = /<h2>([^<]*)<\/h2>\s*(<ul class="list-bullet">(?:(?!<h2)[\s\S])*?<\/ul>)\s*(?=<h2|$)/
+const SUMMARY = /<h2(?:\s[^>]*)?>([^<]*)<\/h2>\s*(<ul class="list-bullet">(?:(?!<h2)[\s\S])*?<\/ul>)\s*(?=<h2|$)/
 const split = computed(() => {
 	const html = demoteHeadings(page.contentHtml)
 	const match = SUMMARY.exec(html)
 	if (!match) return { summary: null, body: html }
 	return { summary: { label: match[1], list: match[2] }, body: html.replace(match[0], '') }
 })
+const toc = computed(() => page.toc.filter(item => split.value.body.includes(`id="${item.id}"`)))
 </script>
 
 <template>
 	<article class="site-container pt-9 pb-[72px] md:pt-14 md:pb-24 lg:pt-16 lg:pb-36">
-		<div class="flex max-w-[800px] min-w-0 flex-col gap-4 lg:gap-[22px]">
-			<p class="type-mono-s text-mute"><span class="text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
-			<h1 class="type-display-l">
-				{{ title.plain }}<span class="text-accent">{{ title.accent }}</span>
-			</h1>
-			<div class="flex flex-col items-start gap-4 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-2 lg:gap-y-2">
-				<span
-					class="inline-flex items-center gap-[7px] rounded-full border border-line bg-surface-2 py-[5px] pr-2.5 pl-[9px] type-mono-label text-mute"
-				>
-					<span class="size-1.5 shrink-0 rounded-full bg-faint" aria-hidden="true"></span>
+		<div class="lg:flex lg:items-start lg:gap-[120px]">
+			<div class="flex max-w-[800px] min-w-0 flex-col gap-4 lg:flex-1 lg:gap-[22px]">
+				<p class="type-mono-s text-mute"><span class="text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
+				<h1 class="type-display-l">
+					{{ title.plain }}<span class="text-accent">{{ title.accent }}</span>
+				</h1>
+				<div class="flex flex-col items-start gap-4 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-2 lg:gap-y-2">
 					<span
-						>{{ page.updatedLabel }}
-						<time :datetime="page.updatedAt">{{
-							formatDate(page.updatedAt, dateLocale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
-						}}</time></span
+						class="inline-flex items-center gap-[7px] rounded-full border border-line bg-surface-2 py-[5px] pr-2.5 pl-[9px] type-mono-label text-mute"
 					>
-				</span>
-				<p v-if="page.bindingNote" class="type-mono-s text-mute">{{ page.bindingNote }}</p>
-			</div>
+						<span class="size-1.5 shrink-0 rounded-full bg-faint" aria-hidden="true"></span>
+						<span
+							>{{ page.updatedLabel }}
+							<time :datetime="page.updatedAt">{{
+								formatDate(page.updatedAt, dateLocale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+							}}</time></span
+						>
+					</span>
+					<p v-if="page.bindingNote" class="type-mono-s text-mute">{{ page.bindingNote }}</p>
+				</div>
 
-			<section v-if="split.summary" class="flex flex-col gap-2.5 rounded-md border border-accent bg-accent-soft px-5 py-[18px] lg:px-6 lg:py-[22px]">
-				<p class="type-mono-label text-accent">{{ split.summary.label }}</p>
+				<section v-if="split.summary" class="flex flex-col gap-2.5 rounded-md border border-accent bg-accent-soft px-5 py-[18px] lg:px-6 lg:py-[22px]">
+					<p class="type-mono-label text-accent">{{ split.summary.label }}</p>
+					<!-- eslint-disable-next-line vue/no-v-html -->
+					<div class="legal-body" v-html="split.summary.list"></div>
+				</section>
+
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div class="legal-body" v-html="split.summary.list"></div>
-			</section>
-
-			<!-- eslint-disable-next-line vue/no-v-html -->
-			<div class="legal-body" v-html="split.body"></div>
-			<slot />
+				<div class="legal-body" v-html="split.body"></div>
+				<slot />
+			</div>
+			<div v-if="page.tocLabel && toc.length" class="sticky top-24 hidden shrink-0 lg:block">
+				<TocBox :label="page.tocLabel" :items="toc" />
+			</div>
 		</div>
 	</article>
 </template>
@@ -70,6 +76,7 @@ const split = computed(() => {
 }
 
 .legal-body :deep(h2) {
+	scroll-margin-top: 96px;
 	margin-top: 28px;
 	font-size: 20px;
 	font-weight: 500;

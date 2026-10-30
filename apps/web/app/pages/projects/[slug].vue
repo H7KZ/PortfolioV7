@@ -35,6 +35,8 @@ const HERO_RATIO = 'aspect-[348/245] md:aspect-[686/413] lg:aspect-[1198/680]'
 const HERO_PLACEHOLDER_RATIO = 'aspect-[348/271] md:aspect-[1198/671]'
 const SHOT_PLACEHOLDER_RATIO = 'aspect-[348/271] md:aspect-16/10'
 const SHOT_RATIO = 'aspect-[348/203] md:aspect-[686/399] lg:aspect-[1198/640]'
+/** Only the desktop frame crops a strip shot; tablet and phone keep the default ratio. */
+const STRIP_RATIO = 'aspect-[348/203] md:aspect-[686/399] lg:aspect-[1198/400]'
 const hasArchitecture = computed(() => (project.value.architecture?.nodes?.length ?? 0) > 0)
 
 useSeo(() => ({
@@ -162,7 +164,7 @@ useHead(() => {
 				:key="screen.id ?? screen.path ?? ''"
 				:path="screen.path"
 				:image="screen.media"
-				:ratio="screen.media ? SHOT_RATIO : SHOT_PLACEHOLDER_RATIO"
+				:ratio="screen.media ? (screen.crop === 'strip' ? STRIP_RATIO : SHOT_RATIO) : SHOT_PLACEHOLDER_RATIO"
 				sizes="(min-width: 1280px) 1200px, 100vw"
 				:placeholder-kicker="labels.placeholderLabel"
 				:placeholder-label="screen.placeholderLabel"

@@ -260,7 +260,7 @@
       "heading": "Blog.",
       "lead": "Write-ups on DevOps, SvelteKit and TypeScript, from setups I run in production.",
       "minutesLong": "min read",
-      "backLabel": "All posts",
+      "backLabel": "← All posts",
       "tocLabel": "On this page",
       "shareLabel": "Found this useful?",
       "shareText": "Share it with someone who'd benefit, or follow new posts via RSS.",

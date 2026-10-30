@@ -59,6 +59,8 @@ export interface HomeData {
 	page: Omit<Resolved<Home>, 'geoSummary'>
 	projects: ProjectCard[]
 	projectCount: number
+	/** Every published testimonial, including those the home page hides. */
+	testimonialCount: number
 	services: Resolved<Service>[]
 	testimonials: Resolved<Testimonial>[]
 }
@@ -75,9 +77,15 @@ export interface BlogData {
 	posts: PostSummary[]
 }
 
+export interface TocItem {
+	id: string
+	text: string
+}
+
 export interface PostData {
 	page: Resolved<Blog>
 	post: Resolved<Post>
+	toc: TocItem[]
 }
 
 export interface ProjectData {
@@ -91,6 +99,6 @@ export interface ContactData {
 	form: Resolved<ContactForm>
 }
 
-export type LegalPage = Resolved<Privacy> | Resolved<Term>
+export type LegalPage = (Resolved<Privacy> | Resolved<Term>) & { toc: TocItem[] }
 
 export type ErrorsData = Resolved<ErrorPage>

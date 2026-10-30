@@ -13,6 +13,12 @@ const post = computed(() => data.value.post)
 const page = computed(() => data.value.page)
 const site = computed(() => layout.value?.site)
 
+const href = useHref()
+const body = computed(() => {
+	const html = demoteHeadings(post.value.contentHtml)
+	const lead = /^[\s\S]*?<\/p>/.exec(html)?.[0] ?? html
+	return { lead, rest: html.slice(lead.length) }
+})
 const postUrl = computed(() => absoluteUrl(`/blog/${post.value.slug}`))
 const tags = computed(() => (post.value.tags ?? []).filter(tag => tag !== 'EN'))
 const description = computed(() => post.value.meta?.description ?? post.value.description ?? tags.value.join(', '))
@@ -59,34 +65,47 @@ useHead(() => ({
 </script>
 
 <template>
-	<article class="site-container pt-[74px] pb-[72px] md:pt-24 md:pb-24 lg:pt-[106px] lg:pb-36">
-		<div class="flex max-w-[800px] min-w-0 flex-col gap-[18px] lg:gap-[22px]">
-			<div class="flex flex-wrap items-center gap-x-2 gap-y-2.5">
-				<p class="type-mono-s text-mute">
-					<time :datetime="publishedIso">{{
-						formatDate(post.date, dateLocale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
-					}}</time
-					><template v-if="post.readingTime"> · {{ post.readingTime }} {{ page.minutesLong }}</template>
-				</p>
-				<UiTags :tags="tags" />
+	<article class="site-container pt-9 pb-[72px] md:pt-14 md:pb-24 lg:pt-16 lg:pb-36">
+		<div class="lg:flex lg:items-start lg:gap-[120px]">
+			<div class="flex max-w-[800px] min-w-0 flex-col gap-[18px] lg:flex-1 lg:gap-[22px]">
+				<NuxtLink
+					:to="href('/blog')"
+					class="-my-3 inline-flex min-h-11 items-center self-start type-mono-s text-ink-soft no-underline transition-colors duration-150 ease-(--ease) hover:text-ink [&>span[aria-hidden]]:mr-[0.6em] [&>span[aria-hidden]]:text-accent"
+					><GlyphLabel :text="page.backLabel"
+				/></NuxtLink>
+				<div class="flex flex-wrap items-center gap-x-2 gap-y-2.5">
+					<p class="type-mono-s text-mute">
+						<time :datetime="publishedIso">{{
+							formatDate(post.date, dateLocale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+						}}</time
+						><template v-if="post.readingTime"> · {{ post.readingTime }} {{ page.minutesLong }}</template>
+					</p>
+					<UiTags :tags="tags" />
+				</div>
+				<h1 class="type-display-l">{{ post.title }}</h1>
+
+				<!-- eslint-disable-next-line vue/no-v-html -->
+				<div class="post-body" v-html="body.lead"></div>
+				<TocBox v-if="page.tocLabel" class="lg:hidden" variant="inline" :label="page.tocLabel" :items="data.toc" />
+				<!-- eslint-disable-next-line vue/no-v-html -->
+				<div v-if="body.rest" class="post-body" v-html="body.rest"></div>
+
+				<aside class="flex flex-col gap-4 rounded-md border border-line bg-surface p-[21px] sm:flex-row sm:items-center sm:p-6">
+					<div class="flex min-w-0 flex-1 flex-col gap-1">
+						<h2 class="type-h4 text-ink">{{ shareTitle }}</h2>
+						<p class="type-body-s text-mute">{{ page.shareText }}</p>
+					</div>
+					<div class="flex flex-wrap gap-2.5 sm:flex-nowrap">
+						<UiButton kind="secondary" :href="shareUrl" external>
+							{{ shareOnX }}<span v-if="site?.newTabLabel" class="sr-only"> {{ site.newTabLabel }}</span>
+						</UiButton>
+						<UiButton kind="secondary" href="/feed.xml">{{ rss }}</UiButton>
+					</div>
+				</aside>
 			</div>
-			<h1 class="type-display-l">{{ post.title }}</h1>
-
-			<!-- eslint-disable-next-line vue/no-v-html -->
-			<div class="post-body" v-html="demoteHeadings(post.contentHtml)"></div>
-
-			<aside class="flex flex-col gap-4 rounded-md border border-line bg-surface p-[21px] sm:flex-row sm:items-center sm:p-6">
-				<div class="flex min-w-0 flex-1 flex-col gap-1">
-					<h2 class="type-h4 text-ink">{{ shareTitle }}</h2>
-					<p class="type-body-s text-mute">{{ page.shareText }}</p>
-				</div>
-				<div class="flex flex-wrap gap-2.5 sm:flex-nowrap">
-					<UiButton kind="secondary" :href="shareUrl" external>
-						{{ shareOnX }}<span v-if="site?.newTabLabel" class="sr-only"> {{ site.newTabLabel }}</span>
-					</UiButton>
-					<UiButton kind="secondary" href="/feed.xml">{{ rss }}</UiButton>
-				</div>
-			</aside>
+			<div v-if="page.tocLabel && data.toc.length" class="sticky top-24 hidden shrink-0 lg:block">
+				<TocBox :label="page.tocLabel" :items="data.toc" />
+			</div>
 		</div>
 	</article>
 </template>
@@ -119,6 +138,7 @@ useHead(() => ({
 }
 
 .post-body :deep(h2) {
+	scroll-margin-top: 96px;
 	font-size: 20px;
 	font-weight: 500;
 	line-height: 1.25;
