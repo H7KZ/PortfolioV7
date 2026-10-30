@@ -19,7 +19,6 @@ const image = computed(() => asMedia(project.thumbnail))
 				alt=""
 				:priority="priority"
 				class="absolute inset-0"
-				img-class="object-top"
 				sizes="(min-width: 1440px) 588px, (min-width: 768px) 50vw, 100vw"
 			/>
 			<div
@@ -31,16 +30,16 @@ const image = computed(() => asMedia(project.thumbnail))
 			<UiStatus v-if="project.card?.year" class="relative bg-bg!">{{ project.card.year }}</UiStatus>
 		</div>
 		<div class="flex flex-1 flex-col gap-3 px-6 pt-6 pb-[22px]">
-			<p class="type-mono-label whitespace-nowrap text-mute">{{ project.card?.meta }}</p>
-			<h3 class="font-sans text-[22px] leading-[1.22] font-medium tracking-[-0.4px] text-wrap text-ink">
+			<p class="type-mono-label text-mute min-[400px]:whitespace-nowrap">{{ project.card?.meta }}</p>
+			<h3 class="type-h3-desktop text-ink">
 				<NuxtLink
 					:to="href(`/projects/${project.slug}`)"
 					class="text-ink no-underline after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
 					@click="emit('open')"
-					>{{ project.title }}</NuxtLink
+					>{{ project.title.replace(/\.$/, '') }}</NuxtLink
 				>
 			</h3>
-			<p class="type-body text-wrap text-ink-soft md:type-body-s">{{ project.card?.description }}</p>
+			<p class="type-body text-ink-soft md:type-body-s">{{ project.card?.description }}</p>
 			<UiTags :tags="project.card?.chips" />
 			<div class="min-h-0 flex-1" aria-hidden="true"></div>
 			<p class="flex items-start justify-between border-t border-line pt-4 type-mono-s" aria-hidden="true">

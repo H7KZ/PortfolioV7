@@ -53,13 +53,11 @@ useHead(() => {
 				<p v-if="page.eyebrowCommand" class="type-mono-s break-words text-mute md:col-span-2 md:mb-[26px] lg:col-auto lg:mb-0">
 					<span class="text-accent" aria-hidden="true">$ </span>{{ page.eyebrowCommand }}
 				</p>
-				<h1
-					class="font-sans text-[40px] leading-[0.98] font-bold tracking-[-1.6px] md:col-span-2 md:mb-[26px] md:text-[52px] md:leading-none md:tracking-[-1.9px] lg:col-auto lg:mb-0 lg:text-[64px] lg:leading-[0.94] lg:tracking-[-3.4px]"
-				>
+				<h1 class="type-display-xl md:col-span-2 md:mb-[26px] lg:col-auto lg:mb-0">
 					<template v-for="line in headlineLines.lines" :key="line">{{ line }}<br /></template>{{ headlineLines.lead
 					}}<span :class="headlineLines.lines.length ? 'text-accent' : undefined">{{ headlineLines.accent }}</span>
 				</h1>
-				<p class="max-w-[600px] type-body-l text-ink-soft md:col-start-1 md:mb-7 md:text-[18px] lg:col-auto lg:mb-0">{{ page.valueProp }}</p>
+				<p class="max-w-[600px] type-body-l text-ink-soft md:col-start-1 md:mb-7 lg:col-auto lg:mb-0">{{ page.valueProp }}</p>
 				<div class="flex flex-col gap-3 md:col-start-1 md:mb-7 lg:col-auto lg:mb-0 lg:flex-row">
 					<UiButton block class="lg:w-auto" :to="href(page.primaryCta.href)">{{ page.primaryCta.label }}</UiButton>
 					<UiButton block kind="secondary" class="lg:w-auto" :to="href(page.secondaryCta.href)">{{ page.secondaryCta.label }}</UiButton>

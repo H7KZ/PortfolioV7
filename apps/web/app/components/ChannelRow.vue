@@ -25,7 +25,7 @@ const NuxtLink = resolveComponent('NuxtLink')
 		:href="to ? undefined : href"
 		:target="external ? '_blank' : undefined"
 		:rel="external ? 'noopener' : undefined"
-		class="group flex items-center gap-4 rounded-md border border-line bg-surface py-4 pr-5 pl-4 no-underline transition-colors duration-150 ease-(--ease) hover:border-line-strong"
+		class="group flex items-center gap-3.5 rounded-md border border-line bg-surface py-3.5 pr-[18px] pl-3.5 no-underline transition-colors duration-150 ease-(--ease) hover:border-line-strong lg:gap-4 lg:py-4 lg:pr-5 lg:pl-4"
 		@click="emit('select')"
 	>
 		<span class="grid h-11 w-11 shrink-0 place-items-center rounded-sm border border-line-strong bg-bg type-mono-s text-accent" aria-hidden="true"

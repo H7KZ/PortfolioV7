@@ -13,6 +13,7 @@ export const Privacy = defineGlobal({
 		{ name: 'updatedAt', type: 'date', required: true, admin: { date: { pickerAppearance: 'dayOnly' } } },
 		text('updatedLabel', { required: true }),
 		text('bindingNote'),
+		text('tocLabel', { admin: { description: 'Heading of the contents box beside the text, e.g. On this page.' } }),
 		...richTextWithHtml('content', { required: true }),
 		{
 			type: 'collapsible',
@@ -39,6 +40,7 @@ export const Terms = defineGlobal({
 		{ name: 'updatedAt', type: 'date', required: true, admin: { date: { pickerAppearance: 'dayOnly' } } },
 		text('updatedLabel', { required: true }),
 		text('bindingNote'),
+		text('tocLabel', { admin: { description: 'Heading of the contents box beside the text, e.g. On this page.' } }),
 		...richTextWithHtml('content', { required: true })
 	]
 })

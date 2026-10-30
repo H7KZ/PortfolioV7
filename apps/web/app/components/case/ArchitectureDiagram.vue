@@ -242,9 +242,9 @@ function labelClass(edge: DrawnEdge): string {
 						{{ architecture.legend[kind] }}
 					</li>
 				</ul>
-				<p v-if="architecture.observability" class="m-0 type-mono-label text-wrap text-mute">{{ architecture.observability }}</p>
+				<p v-if="architecture.observability" class="m-0 type-mono-label text-mute">{{ architecture.observability }}</p>
 			</div>
 		</div>
-		<figcaption v-if="architecture.caption" class="max-w-[680px] type-body text-wrap text-ink-soft">{{ architecture.caption }}</figcaption>
+		<figcaption v-if="architecture.caption" class="max-w-[680px] type-body text-ink-soft">{{ architecture.caption }}</figcaption>
 	</figure>
 </template>

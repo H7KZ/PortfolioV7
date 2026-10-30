@@ -13,7 +13,7 @@ const quoteLang = computed(() => (testimonial.quoteLanguage && testimonial.quote
 <template>
 	<figure class="m-0 flex h-full flex-col gap-5 rounded-md border border-line bg-surface px-7 pt-7 pb-6">
 		<span class="font-sans text-[64px] leading-9 font-bold tracking-[-1.9px] text-faint" aria-hidden="true">“</span>
-		<blockquote class="m-0 type-quote text-wrap text-ink-soft" :lang="quoteLang">
+		<blockquote class="m-0 type-quote text-ink-soft" :lang="quoteLang">
 			<p>
 				{{ quote.text }}
 				<a

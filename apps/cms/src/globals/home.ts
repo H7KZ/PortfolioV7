@@ -14,6 +14,12 @@ export const Home = defineGlobal({
 					label: 'Hero',
 					fields: [
 						text('eyebrowCommand', { admin: { description: 'Monospace command line above the headline. The $ prompt is drawn by the site.' } }),
+						text('eyebrowCommandShort', {
+							admin: {
+								description:
+									'Shorter command line for phones, e.g. whoami  # Prague, CZ. Two spaces before the #. Falls back to the main command line when empty.'
+							}
+						}),
 						textarea('headline', { admin: { description: 'A line break in the text becomes a line break on the page.' } }),
 						{
 							name: 'taglines',
@@ -100,6 +106,12 @@ export const Home = defineGlobal({
 							type: 'row',
 							fields: [
 								text('readMoreLabel', { required: true }),
+								text('allRecommendationsLabel', {
+									admin: {
+										description:
+											'Link under the quotes to all LinkedIn recommendations. {count} becomes the number of testimonials, e.g. "See all {count} recommendations on LinkedIn ↗".'
+									}
+								}),
 								{
 									name: 'quoteLimit',
 									type: 'number',

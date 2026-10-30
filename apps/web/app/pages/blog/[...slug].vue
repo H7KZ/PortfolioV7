@@ -70,7 +70,7 @@ useHead(() => ({
 				</p>
 				<UiTags :tags="tags" />
 			</div>
-			<h1 class="type-display-l [text-wrap:wrap] md:text-[52px] md:leading-none md:tracking-[-1.9px]">{{ post.title }}</h1>
+			<h1 class="type-display-l">{{ post.title }}</h1>
 
 			<!-- eslint-disable-next-line vue/no-v-html -->
 			<div class="post-body" v-html="demoteHeadings(post.contentHtml)"></div>
@@ -116,11 +116,6 @@ useHead(() => ({
 	height: 12px;
 	border: 0;
 	background: none;
-}
-
-.post-body :deep(h2),
-.post-body :deep(h3) {
-	text-wrap: wrap;
 }
 
 .post-body :deep(h2) {

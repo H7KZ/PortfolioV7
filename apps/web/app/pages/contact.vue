@@ -29,12 +29,12 @@ const headingFlat = computed(() => headingPlain.value.replace(/\s*\n\s*/g, ' '))
 		<div class="flex flex-col pb-6 lg:min-w-0 lg:flex-1 lg:gap-6 lg:pb-0">
 			<div class="flex flex-col gap-4 pt-9 pb-6 md:gap-5 md:pt-14 md:pb-8 lg:gap-6 lg:pt-0 lg:pb-0">
 				<p class="type-mono-s text-mute"><span class="text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
-				<h1 class="type-display-l text-[34px] tracking-[-1px] md:text-[52px] md:tracking-[-1.9px]">
+				<h1 class="type-display-l">
 					<span class="whitespace-pre-line max-lg:hidden">{{ headingPlain }}</span
 					><span class="lg:hidden">{{ headingFlat }}</span
 					><span v-if="headingPeriod" class="text-accent">.</span>
 				</h1>
-				<p class="type-body-l [text-wrap:wrap] text-ink-soft md:text-[18px]">{{ page.intro }}</p>
+				<p class="type-body-l text-ink-soft">{{ page.intro }}</p>
 			</div>
 
 			<ul class="flex list-none flex-col gap-2.5 p-0 lg:gap-3">

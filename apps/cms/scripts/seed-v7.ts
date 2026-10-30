@@ -400,6 +400,7 @@ async function importGlobals(): Promise<void> {
 			const testimonials = home.testimonials as Json
 			return {
 				eyebrowCommand: hero.eyebrowCommand,
+				eyebrowCommandShort: hero.eyebrowCommandShort,
 				headline: hero.headline,
 				valueProp: hero.valueProp,
 				primaryCta: hero.primaryCta,
@@ -425,6 +426,7 @@ async function importGlobals(): Promise<void> {
 				services: { heading: services.heading, sub: services.sub },
 				testimonials: { heading: testimonials.heading, sub: testimonials.sub },
 				readMoreLabel: testimonials.readMoreLabel,
+				allRecommendationsLabel: testimonials.allRecommendationsLabel,
 				quoteLimit: testimonials.quoteLimit,
 				meta: { description: hero.valueProp }
 			}
@@ -527,6 +529,24 @@ async function importGlobals(): Promise<void> {
 		const blog = pick<Json>(locale, 'globals.blog')
 		return { ...blog, meta: { title: navLabel(locale, '/blog'), description: blog.lead } }
 	})
+
+	// updatedAt is the real date of the last edit and stays as it is; only the wording around it is seeded.
+	for (const slug of ['privacy', 'terms'] as const) {
+		await writeGlobal(
+			slug,
+			locale => {
+				const page = pick<Json>(locale, `globals.${slug}`)
+				return {
+					label: page.label,
+					title: page.title,
+					updatedLabel: page.updatedLabel,
+					bindingNote: page.bindingNote,
+					tocLabel: page.tocLabel
+				}
+			},
+			true
+		)
+	}
 
 	const siteUrl = String(((await payload.findGlobal({ slug: 'site', depth: 0 })) as unknown as Json).siteUrl ?? 'https://jankominek.com').replace(/\/$/, '')
 	const texts = llmsTexts(siteUrl)
@@ -721,7 +741,7 @@ interface CopyProject {
 	stack: string[]
 	architecture?: Json
 	hero: { path: string; image?: string; placeholder?: { label: string; spec: string } }
-	gallery: { path: string; image?: string; placeholder?: { label: string; spec: string } }[]
+	gallery: { path: string; image?: string; crop?: 'default' | 'strip'; placeholder?: { label: string; spec: string } }[]
 }
 
 const NEW_PROJECT_DATES: Record<string, string> = { intedat: '2024-09-01T00:00:00.000Z' }
@@ -787,6 +807,7 @@ function projectData(project: CopyProject): Json {
 		screens: project.gallery.map(row => ({
 			image: image(row.image),
 			path: row.path,
+			crop: row.crop ?? 'default',
 			placeholderLabel: row.placeholder?.label ?? null,
 			placeholderSpec: row.placeholder?.spec ?? null
 		})),
@@ -832,6 +853,68 @@ async function importPostCover(): Promise<void> {
 	await writeDocument('posts', post.slug, Number(post.id), () => ({ thumbnail: cover, _status: 'published' }))
 }
 
+/** Em dashes in the Traefik post, replaced by the punctuation an editor would pick. Exact fragments, so a second run finds nothing to change. */
+const TRAEFIK_FIXES: [string | RegExp, string][] = [
+	["wildcard TLS \u2014 even behind Cloudflare's proxy \u2014 with zero", "wildcard TLS, even behind Cloudflare's proxy, with zero"],
+	[' \u2014 a single cert covering every subdomain \u2014 requires', ', a single cert covering every subdomain, requires'],
+	["doesn't care \u2014 it reads", "doesn't care: it reads"],
+	[/^Step (\d) \u2014 /, 'Step $1: '],
+	[/^Token (\d) \u2014 /, 'Token $1: '],
+	['zone ID \u2014 required to know', 'zone ID, required to know'],
+	[' \u2014 Docker Compose interpolates', '. Docker Compose interpolates'],
+	['gets a route \u2014 usually not what you want', 'gets a route, which is usually not what you want'],
+	[' \u2014 5 failed validations', ': 5 failed validations'],
+	[
+		"security improvement \u2014 Traefik reads events but can't control containers",
+		"security improvement, since Traefik reads events but can't control containers"
+	],
+	[' is just a unique identifier \u2014 it needs', ' is just a unique identifier: it needs'],
+	[" \u2014 you'll see the challenge", ": you'll see the challenge"],
+	['as the prefix \u2014 ', 'as the prefix: '],
+	['within seconds \u2014 cert included', 'within seconds, cert included'],
+	['# Read-only \u2014 Traefik only needs', '# Read-only. Traefik only needs'],
+	["# Persisted cert storage \u2014 don't delete between restarts", "# Persisted cert storage. Don't delete between restarts"],
+	['# Dashboard \u2014 routed to its own subdomain', '# Dashboard, routed to its own subdomain'],
+	['wildcard TLS \u2014 all inside Docker Compose', 'wildcard TLS, all inside Docker Compose']
+]
+
+function fixDashes(value: string): string {
+	let out = value.replace(/◆\s*/g, '')
+	for (const [from, to] of TRAEFIK_FIXES) out = typeof from === 'string' ? out.split(from).join(to) : out.replace(from, to)
+	return out
+}
+
+function cleanTree(node: unknown): unknown {
+	if (Array.isArray(node)) return node.map(cleanTree)
+	if (typeof node === 'string') return fixDashes(node)
+	if (!isObject(node)) return node
+	return Object.fromEntries(
+		Object.entries(node).map(([key, value]) => [key, ['id', 'type', 'format', 'tag', 'blockType'].includes(key) ? value : cleanTree(value)])
+	)
+}
+
+async function importPostText(): Promise<void> {
+	const found = await payload.find({ collection: 'posts', where: { slug: { like: 'traefik' } }, limit: 1, depth: 0, draft: false, locale: 'en' })
+	const post = found.docs[0]
+	if (!post) return
+	const content = cleanTree(post.content)
+	const description = fixDashes(post.description ?? '')
+	if (JSON.stringify([content, description]).includes('\u2014'))
+		throw new Error(
+			'Em dashes are left in the Traefik post, add them to TRAEFIK_FIXES: ' +
+				JSON.stringify([content, description])
+					.match(/.{0,40}\u2014.{0,40}/g)
+					?.join(' / ')
+		)
+	const diff = [
+		...(JSON.stringify(content) === JSON.stringify(post.content) ? [] : ['content (em dashes)']),
+		...(description === (post.description ?? '') ? [] : ['description (em dash)'])
+	]
+	if (!report(`posts/${post.slug} text [en]`, diff) || DRY_RUN) return
+	// Only English is written: the post has no Czech copy and the site falls back to English for it.
+	await payload.update({ collection: 'posts', id: post.id, locale: 'en', data: { content: content as never, description, _status: 'published' }, depth: 0 })
+}
+
 async function importRedirects(): Promise<void> {
 	const projects = pick<CopyProject[]>('en', 'collections.projects')
 	const rows = projects.flatMap(project =>
@@ -860,6 +943,7 @@ await importTestimonials()
 await importExperience()
 await importProjects()
 await importPostCover()
+await importPostText()
 await importRedirects()
 log(`done · ${changed} ${DRY_RUN ? 'would change' : 'changed'} · ${unchanged} unchanged`)
 process.exit(0)

@@ -251,6 +251,10 @@ export interface Project {
     | {
         image?: (number | null) | Media;
         path?: string | null;
+        /**
+         * How the image is framed in its window. Strip suits wide, short crops of phone or admin screens.
+         */
+        crop?: ('default' | 'strip') | null;
         placeholderLabel?: string | null;
         placeholderSpec?: string | null;
         id?: string | null;
@@ -848,6 +852,7 @@ export interface ProjectsSelect<T extends boolean = true> {
     | {
         image?: T;
         path?: T;
+        crop?: T;
         placeholderLabel?: T;
         placeholderSpec?: T;
         id?: T;
@@ -1160,6 +1165,10 @@ export interface Home {
    */
   eyebrowCommand?: string | null;
   /**
+   * Shorter command line for phones, e.g. whoami  # Prague, CZ. Two spaces before the #. Falls back to the main command line when empty.
+   */
+  eyebrowCommandShort?: string | null;
+  /**
    * A line break in the text becomes a line break on the page.
    */
   headline?: string | null;
@@ -1272,6 +1281,10 @@ export interface Home {
     sub?: string | null;
   };
   readMoreLabel: string;
+  /**
+   * Link under the quotes to all LinkedIn recommendations. {count} becomes the number of testimonials, e.g. "See all {count} recommendations on LinkedIn ↗".
+   */
+  allRecommendationsLabel?: string | null;
   /**
    * Longer quotes are cut and link to LinkedIn.
    */
@@ -1393,6 +1406,14 @@ export interface Blog {
    */
   minutesShort: string;
   /**
+   * Link above the post title that returns to the blog list, e.g. All posts.
+   */
+  backLabel?: string | null;
+  /**
+   * Heading of the contents box beside a post, e.g. On this page.
+   */
+  tocLabel?: string | null;
+  /**
    * After the reading time on a post, e.g. min read
    */
   minutesLong: string;
@@ -1488,6 +1509,10 @@ export interface Privacy {
   updatedAt: string;
   updatedLabel: string;
   bindingNote?: string | null;
+  /**
+   * Heading of the contents box beside the text, e.g. On this page.
+   */
+  tocLabel?: string | null;
   content: {
     root: {
       type: string;
@@ -1537,6 +1562,10 @@ export interface Term {
   updatedAt: string;
   updatedLabel: string;
   bindingNote?: string | null;
+  /**
+   * Heading of the contents box beside the text, e.g. On this page.
+   */
+  tocLabel?: string | null;
   content: {
     root: {
       type: string;
@@ -2109,6 +2138,7 @@ export interface PayloadJobsStat {
  */
 export interface HomeSelect<T extends boolean = true> {
   eyebrowCommand?: T;
+  eyebrowCommandShort?: T;
   headline?: T;
   taglines?:
     | T
@@ -2210,6 +2240,7 @@ export interface HomeSelect<T extends boolean = true> {
         sub?: T;
       };
   readMoreLabel?: T;
+  allRecommendationsLabel?: T;
   quoteLimit?: T;
   meta?:
     | T
@@ -2322,6 +2353,8 @@ export interface BlogSelect<T extends boolean = true> {
   draftingLabel?: T;
   nextUpText?: T;
   minutesShort?: T;
+  backLabel?: T;
+  tocLabel?: T;
   minutesLong?: T;
   shareLabel?: T;
   shareText?: T;
@@ -2405,6 +2438,7 @@ export interface PrivacySelect<T extends boolean = true> {
   updatedAt?: T;
   updatedLabel?: T;
   bindingNote?: T;
+  tocLabel?: T;
   content?: T;
   contentHtml?: T;
   optOutTitle?: T;
@@ -2433,6 +2467,7 @@ export interface TermsSelect<T extends boolean = true> {
   updatedAt?: T;
   updatedLabel?: T;
   bindingNote?: T;
+  tocLabel?: T;
   content?: T;
   contentHtml?: T;
   meta?:

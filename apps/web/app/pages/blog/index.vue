@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TablerArrowRight from '~icons/tabler/arrow-right'
 
-import type { BlogData, Relation } from '#shared/types/content'
+import type { BlogData } from '#shared/types/content'
 
 const data = await useContent<BlogData>('blog')
 const href = useHref()
@@ -9,8 +9,7 @@ const locale = useLocaleCode()
 const dateLocale = computed(() => (locale.value === 'en' ? 'en-GB' : locale.value))
 
 const page = computed(() => data.value.page)
-// The list payload carries the resolved thumbnail even though PostSummary does not list it yet.
-const cards = computed(() => data.value.posts.map(post => ({ post, image: asMedia((post as { thumbnail?: Relation }).thumbnail ?? null) })))
+const cards = computed(() => data.value.posts.map(post => ({ post, image: asMedia(post.thumbnail ?? null) })))
 const heading = computed(() => {
 	const text = page.value.heading
 	return text.endsWith('.') ? { plain: text.slice(0, -1), accent: '.' } : { plain: text, accent: '' }
@@ -41,10 +40,10 @@ useHead(() => ({
 	<div class="site-container pb-[72px] md:pb-24 lg:pb-36">
 		<header class="flex flex-col gap-4 pt-9 pb-7 md:pt-14 md:pb-9 lg:gap-5 lg:pt-[72px] lg:pb-12">
 			<p class="type-mono-s text-mute"><span class="text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
-			<h1 class="type-display-l whitespace-pre-line md:text-[52px] md:leading-none md:tracking-[-1.9px]">
+			<h1 class="type-display-l whitespace-pre-line">
 				{{ heading.plain }}<span class="text-accent">{{ heading.accent }}</span>
 			</h1>
-			<p v-if="page.lead" class="type-body-l text-ink-soft max-md:text-[17px]">{{ page.lead }}</p>
+			<p v-if="page.lead" class="type-body-l text-ink-soft">{{ page.lead }}</p>
 		</header>
 
 		<ul class="flex list-none flex-col gap-5 p-0 lg:gap-0 lg:border-t lg:border-line">
@@ -72,9 +71,7 @@ useHead(() => ({
 							}}</time
 							><template v-if="post.readingTime"> · {{ post.readingTime }} {{ page.minutesLong }}</template>
 						</p>
-						<h2
-							class="text-[26px] leading-[1.12] font-bold tracking-[-0.7px] text-wrap text-ink md:text-[36px] md:leading-[1.08] md:tracking-[-1.1px]"
-						>
+						<h2 class="type-h2 text-ink">
 							<NuxtLink
 								:to="href(`/blog/${post.slug}`)"
 								class="text-ink no-underline after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
@@ -100,7 +97,7 @@ useHead(() => ({
 			>
 				<span class="size-1.5 shrink-0 rounded-full bg-faint lg:bg-accent" aria-hidden="true"></span>{{ page.draftingLabel }}
 			</span>
-			<p class="min-w-0 flex-1 type-mono-s text-mute">{{ page.nextUpText }}</p>
+			<p class="min-w-0 flex-1 type-mono-s break-words text-mute">{{ page.nextUpText }}</p>
 		</div>
 	</div>
 </template>

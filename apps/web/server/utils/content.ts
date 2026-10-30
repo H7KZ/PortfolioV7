@@ -127,14 +127,15 @@ const loaders = {
 
 	async blog(locale: Locale, draft: boolean): Promise<BlogData> {
 		const [page, posts] = await Promise.all([global<Blog>('blog', { locale, draft }), list<Post>('posts', { locale, draft, sort: '-date' }, true)])
-		const summaries: PostSummary[] = posts.docs.map(({ id, slug, title, date, description, tags, readingTime }) => ({
+		const summaries: PostSummary[] = posts.docs.map(({ id, slug, title, date, description, tags, readingTime, thumbnail }) => ({
 			id,
 			slug,
 			title,
 			date,
 			description,
 			tags,
-			readingTime
+			readingTime,
+			thumbnail
 		}))
 		return { page, posts: summaries }
 	},

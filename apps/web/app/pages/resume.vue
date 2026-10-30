@@ -42,11 +42,9 @@ useSeo(() => ({
 			</div>
 			<div class="flex min-w-0 flex-1 flex-col items-start gap-4 md:gap-5">
 				<p class="type-mono-s text-mute"><span class="whitespace-pre text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
-				<h1 class="font-sans text-[34px] leading-[1.04] font-bold tracking-[-1px] text-ink md:text-[52px] md:leading-none md:tracking-[-1.9px]">
-					{{ name }}<span v-if="namePeriod" class="text-accent">.</span>
-				</h1>
+				<h1 class="type-display-l text-ink">{{ name }}<span v-if="namePeriod" class="text-accent">.</span></h1>
 				<p class="type-mono-s text-mute lg:type-mono-m">{{ page.subtitle }}</p>
-				<p class="max-w-[680px] font-sans text-[17px] leading-[1.52] text-ink-soft md:text-[18px]">{{ page.bio }}</p>
+				<p class="max-w-[680px] type-body-l text-ink-soft">{{ page.bio }}</p>
 				<div class="flex w-full flex-col gap-3 md:w-auto md:flex-row">
 					<UiButton v-if="page.cv" href="/cv.pdf" download @click="track('cv-download')"><GlyphLabel :text="page.downloadLabel" /></UiButton>
 					<UiButton kind="secondary" :to="href(page.hireCta.href)">{{ page.hireCta.label }}</UiButton>
@@ -59,7 +57,7 @@ useSeo(() => ({
 				<StatTile
 					v-for="item in page.impact"
 					:key="item.id ?? item.label"
-					class="max-lg:gap-2 max-lg:p-5 lg:min-h-[158px]"
+					layout="resume"
 					:label="item.label"
 					:value="item.value"
 					:sub="item.sub"
@@ -76,12 +74,12 @@ useSeo(() => ({
 			:aria-labelledby="`${section.id}-heading`"
 		>
 			<SectionHeader :id="`${section.id}-heading`" :heading="page[section.header].heading" :sub="sub(section.header)" />
-			<ol class="m-0 list-none p-0 pt-7 pb-12 md:pt-9 lg:pt-12 lg:pl-[30%]">
+			<ol class="m-0 list-none p-0 pt-7 md:pt-9 lg:pt-12 lg:pl-[30%]">
 				<TimelineItem v-for="entry in entries(section.kind)" :key="entry.id" :entry="entry" :show-tags="section.kind !== 'education'" />
 			</ol>
 		</section>
 
-		<section class="site-container pb-(--section-gap)" aria-labelledby="skills-heading">
+		<section class="site-container pb-(--section-gap) lg:pb-36" aria-labelledby="skills-heading">
 			<SectionHeader id="skills-heading" :heading="page.skills.heading" :sub="page.skills.sub" />
 			<div class="grid grid-cols-2 gap-x-4 gap-y-6 pt-7 md:gap-x-4 md:pt-9 lg:grid-cols-4 lg:gap-x-6 lg:pt-12">
 				<div v-for="(group, index) in page.skillGroups ?? []" :key="group.id ?? index" class="flex min-w-0 flex-col gap-2 lg:gap-2.5">

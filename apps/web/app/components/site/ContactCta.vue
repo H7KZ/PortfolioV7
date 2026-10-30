@@ -20,10 +20,10 @@ const title = computed(() => {
 			class="flex flex-col gap-8 rounded-lg border border-line bg-surface px-6 pt-8 pb-7 md:px-10 md:py-12 lg:flex-row lg:items-center lg:gap-16 lg:px-16 lg:py-[72px]"
 		>
 			<div class="flex flex-col gap-6 lg:min-w-0 lg:flex-1">
-				<h2 id="contact-cta-title" class="type-display-l whitespace-pre-line max-lg:text-[34px] max-lg:tracking-[-1px]">
+				<h2 id="contact-cta-title" class="type-display-l-lg whitespace-pre-line">
 					{{ title.plain }}<span class="text-accent">{{ title.accent }}</span>
 				</h2>
-				<p v-if="cta.body" class="type-body-l [text-wrap:wrap] text-ink-soft max-lg:text-[17px] lg:max-w-[560px]">{{ cta.body }}</p>
+				<p v-if="cta.body" class="type-body-l-lg text-ink-soft lg:max-w-[560px]">{{ cta.body }}</p>
 				<div class="flex flex-col gap-3 lg:flex-row">
 					<UiButton v-if="cta.primaryCta?.href" :to="href(cta.primaryCta.href)" class="max-lg:w-full">{{ cta.primaryCta.label }}</UiButton>
 					<UiButton
@@ -46,7 +46,10 @@ const title = computed(() => {
 				<dl class="m-0 flex flex-col gap-2.5">
 					<div v-for="row in cta.terminalRows ?? []" :key="row.id ?? row.key" class="flex items-start">
 						<dt class="h-5 w-20 shrink-0 text-faint lg:w-22">{{ row.key }}</dt>
-						<dd class="m-0 flex min-h-5 min-w-0 items-start gap-2 break-words" :class="row.live || row.href ? 'text-accent' : 'text-ink-soft'">
+						<dd
+							class="m-0 flex min-h-5 min-w-0 items-start gap-2 [overflow-wrap:anywhere]"
+							:class="row.live || row.href ? 'text-accent' : 'text-ink-soft'"
+						>
 							<span v-if="row.live" class="live-dot mt-[7px]" aria-hidden="true"></span>
 							<a
 								v-if="row.href"

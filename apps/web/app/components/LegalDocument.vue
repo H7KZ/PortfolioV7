@@ -22,7 +22,7 @@ const split = computed(() => {
 	<article class="site-container pt-9 pb-[72px] md:pt-14 md:pb-24 lg:pt-16 lg:pb-36">
 		<div class="flex max-w-[800px] min-w-0 flex-col gap-4 lg:gap-[22px]">
 			<p class="type-mono-s text-mute"><span class="text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
-			<h1 class="type-display-l [text-wrap:wrap] md:text-[52px] md:leading-none md:tracking-[-1.9px]">
+			<h1 class="type-display-l">
 				{{ title.plain }}<span class="text-accent">{{ title.accent }}</span>
 			</h1>
 			<div class="flex flex-col items-start gap-4 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-2 lg:gap-y-2">
@@ -75,7 +75,6 @@ const split = computed(() => {
 	font-weight: 500;
 	line-height: 1.25;
 	letter-spacing: -0.3px;
-	text-wrap: wrap;
 	color: var(--color-ink);
 }
 

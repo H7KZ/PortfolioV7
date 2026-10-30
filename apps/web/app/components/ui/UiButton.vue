@@ -23,8 +23,9 @@ const {
 	size?: 'default' | 'small'
 }>()
 
+// The slot sits in a span so label and trailing glyph stay one inline run (a space apart, as in Figma) instead of two flex items a full gap apart.
 const classes = computed(() => [
-	'type-button inline-flex shrink-0 items-center justify-center gap-2.5 rounded-sm whitespace-nowrap no-underline transition-colors duration-150 ease-(--ease) disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:opacity-40',
+	'[--glyph-gap:0.3em] type-button inline-flex shrink-0 items-center justify-center gap-2.5 rounded-sm whitespace-nowrap no-underline transition-colors duration-150 ease-(--ease) disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:opacity-40',
 	size === 'small' ? 'min-h-11 px-4 py-3' : 'min-h-12 px-[22px] py-3.5',
 	block ? 'w-full' : '',
 	kind === 'primary'
@@ -37,14 +38,14 @@ const dotClass = computed(() => ['size-[7px] shrink-0 rounded-full', kind === 'p
 <template>
 	<NuxtLink v-if="to" :to="to" :class="classes">
 		<span v-if="dot" :class="dotClass" aria-hidden="true"></span>
-		<slot />
+		<span><slot /></span>
 	</NuxtLink>
 	<a v-else-if="href" :href="href" :class="classes" :target="external ? '_blank' : undefined" :rel="external ? 'noopener' : undefined">
 		<span v-if="dot" :class="dotClass" aria-hidden="true"></span>
-		<slot />
+		<span><slot /></span>
 	</a>
 	<button v-else :type="type" :class="classes" :disabled="disabled || busy" :aria-busy="busy || undefined">
 		<span v-if="dot" :class="dotClass" aria-hidden="true"></span>
-		<slot />
+		<span><slot /></span>
 	</button>
 </template>

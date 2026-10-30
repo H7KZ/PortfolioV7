@@ -120,6 +120,7 @@
     "home": {
       "hero": {
         "eyebrowCommand": "whoami  # Jan Komínek · fullstack engineer na volné noze · Praha, CZ",
+        "eyebrowCommandShort": "whoami  # Praha, CZ",
         "headline": "Od prázdného repa\naž do produkce.",
         "valueProp": "Zero-trust platforma pro ověřování původu dat, síť nabíjecích stanic s ostrými platbami a rozvrhovač předmětů, který dodnes provozuju. Postavené celé, od infrastruktury po UI. Od roku 2022 sedm firem a přes 12 dodaných projektů.",
         "primaryCta": {
@@ -213,6 +214,7 @@
         "heading": "Skutečná zpětná vazba\nod kolegů a vedoucích.",
         "sub": "Převzato přímo z doporučení na LinkedInu, bez úprav. Citace jsou v původní angličtině.",
         "readMoreLabel": "Číst dál ↗",
+        "allRecommendationsLabel": "Zobrazit všech {count} doporučení na LinkedInu ↗",
         "quoteLimit": 160
       }
     },
@@ -427,9 +429,27 @@
       "heading": "Blog.",
       "lead": "Články o DevOps, SvelteKitu a TypeScriptu z nastavení, která provozuju v produkci.",
       "minutesLong": "min čtení",
+      "backLabel": "Všechny články",
+      "tocLabel": "Na této stránce",
+      "shareLabel": "Bylo to užitečné?",
+      "shareText": "Pošlete to někomu, komu to pomůže, nebo sledujte nové články přes RSS.",
       "readLabel": "Číst návod",
       "draftingLabel": "Rozpracováno",
       "nextUpText": "Další články se píšou. Sledujte je přes RSS na jankominek.com/feed.xml."
+    },
+    "privacy": {
+      "label": "cat ./ochrana-udaju.md",
+      "title": "Ochrana osobních údajů.",
+      "updatedLabel": "Aktualizováno",
+      "bindingNote": "K dispozici i v angličtině. Při rozdílech mezi verzemi platí česká.",
+      "tocLabel": "Na této stránce"
+    },
+    "terms": {
+      "label": "cat ./podminky.md",
+      "title": "Podmínky užívání.",
+      "updatedLabel": "Aktualizováno",
+      "bindingNote": "K dispozici i v angličtině. Při rozdílech mezi verzemi platí česká.",
+      "tocLabel": "Na této stránce"
     }
   },
   "collections": {
@@ -614,19 +634,23 @@
         "gallery": [
           {
             "path": "~/projects/iont_info/landing",
-            "image": "iont-landing"
+            "image": "iont-landing",
+            "crop": "strip"
           },
           {
             "path": "~/projects/iont_info/mobile",
-            "image": "iont-phones"
+            "image": "iont-phones",
+            "crop": "strip"
           },
           {
             "path": "~/projects/iont_charge",
-            "image": "iont-charge"
+            "image": "iont-charge",
+            "crop": "strip"
           },
           {
             "path": "~/projects/iont_admin",
-            "image": "iont-admin"
+            "image": "iont-admin",
+            "crop": "strip"
           },
           {
             "path": "~/projects/iont_platform/driver-app",

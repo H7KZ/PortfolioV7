@@ -68,7 +68,7 @@ export interface ResumeData {
 	experience: Resolved<Experience>[]
 }
 
-export type PostSummary = Pick<Resolved<Post>, 'id' | 'slug' | 'title' | 'date' | 'description' | 'tags' | 'readingTime'>
+export type PostSummary = Pick<Resolved<Post>, 'id' | 'slug' | 'title' | 'date' | 'description' | 'tags' | 'readingTime' | 'thumbnail'>
 
 export interface BlogData {
 	page: Resolved<Blog>

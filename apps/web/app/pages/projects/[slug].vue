@@ -29,12 +29,12 @@ const title = computed(() => {
 	return raw.endsWith('.') ? { text: raw.slice(0, -1), dot: true } : { text: raw, dot: false }
 })
 const SECTION = 'site-container grid lg:grid-cols-[minmax(0,360fr)_minmax(0,840fr)] lg:gap-0'
-const HEADING = 'm-0 type-h3 text-ink md:text-[22px] md:leading-[1.22] md:tracking-[-0.4px]'
-/** Figma crops each screenshot per breakpoint; WindowFrame only knows 16:10, so the page sets the ratio on its image area. */
-const HERO_RATIO = '[&>div:nth-child(2)]:aspect-[348/245] md:[&>div:nth-child(2)]:aspect-[686/413] lg:[&>div:nth-child(2)]:aspect-[1198/680]'
-const HERO_PLACEHOLDER_RATIO = '[&>div:nth-child(2)]:aspect-[348/271] md:[&>div:nth-child(2)]:aspect-[1198/671]'
-const SHOT_PLACEHOLDER_RATIO = '[&>div:nth-child(2)]:aspect-[348/271] md:[&>div:nth-child(2)]:aspect-[16/10]'
-const SHOT_RATIO = '[&>div:nth-child(2)]:aspect-[348/203] md:[&>div:nth-child(2)]:aspect-[686/399] lg:[&>div:nth-child(2)]:aspect-[1198/640]'
+const HEADING = 'm-0 type-h3 text-ink'
+/** Figma crops each screenshot per breakpoint. */
+const HERO_RATIO = 'aspect-[348/245] md:aspect-[686/413] lg:aspect-[1198/680]'
+const HERO_PLACEHOLDER_RATIO = 'aspect-[348/271] md:aspect-[1198/671]'
+const SHOT_PLACEHOLDER_RATIO = 'aspect-[348/271] md:aspect-16/10'
+const SHOT_RATIO = 'aspect-[348/203] md:aspect-[686/399] lg:aspect-[1198/640]'
 const hasArchitecture = computed(() => (project.value.architecture?.nodes?.length ?? 0) > 0)
 
 useSeo(() => ({
@@ -89,15 +89,13 @@ useHead(() => {
 						><GlyphLabel :text="labels.backLabel"
 					/></NuxtLink>
 					<p v-if="project.kicker" class="type-mono-label text-mute">{{ project.kicker }}</p>
-					<h1 class="text-[34px] leading-[1.04] font-bold tracking-[-1px] text-ink md:text-[52px] md:leading-none md:tracking-[-1.9px]">
-						{{ title.text }}<span v-if="title.dot" class="text-accent">.</span>
-					</h1>
-					<p v-if="project.lede" class="max-w-[700px] type-body-l text-wrap text-ink-soft md:text-[18px]">{{ project.lede }}</p>
+					<h1 class="type-display-l text-ink">{{ title.text }}<span v-if="title.dot" class="text-accent">.</span></h1>
+					<p v-if="project.lede" class="max-w-[700px] type-body-l text-ink-soft">{{ project.lede }}</p>
 				</div>
 				<dl v-if="facts.length" class="m-0 grid w-full md:grid-cols-3 md:gap-6 lg:w-[340px] lg:shrink-0 lg:grid-cols-1 lg:gap-0">
 					<div v-for="fact in facts" :key="fact.label" class="flex flex-col gap-1 border-t border-line py-3 lg:py-3.5">
 						<dt class="type-mono-label text-faint">{{ fact.label }}</dt>
-						<dd class="m-0 type-body text-wrap text-ink">{{ fact.value }}</dd>
+						<dd class="m-0 type-body text-ink">{{ fact.value }}</dd>
 					</div>
 				</dl>
 			</div>
@@ -108,7 +106,7 @@ useHead(() => {
 				:path="project.heroPath"
 				:image="hero"
 				priority
-				:class="hero ? HERO_RATIO : HERO_PLACEHOLDER_RATIO"
+				:ratio="hero ? HERO_RATIO : HERO_PLACEHOLDER_RATIO"
 				sizes="(min-width: 1280px) 1200px, 100vw"
 				:placeholder-kicker="labels.placeholderLabel"
 				:placeholder-label="project.heroPlaceholderLabel"
@@ -129,7 +127,7 @@ useHead(() => {
 			<h2 id="challenge" :class="HEADING">{{ labels.challengeLabel }}</h2>
 			<!-- eslint-disable-next-line vue/no-v-html -->
 			<div
-				class="prose-site prose max-w-[760px]! [&>p]:m-0 [&>p]:text-[17px] [&>p]:leading-[1.52] [&>p]:text-wrap md:[&>p]:text-[18px] lg:[&>p]:leading-[1.5] [&>p+p]:mt-4 lg:[&>p+p]:mt-5"
+				class="prose-site prose max-w-[760px]! [&>p]:m-0 [&>p]:type-body-l [&>p+p]:mt-4 lg:[&>p+p]:mt-5"
 				v-html="demoteHeadings(project.contentHtml)"
 			></div>
 		</section>
@@ -140,10 +138,10 @@ useHead(() => {
 				<li
 					v-for="item in project.contributions"
 					:key="item.id ?? item.title"
-					class="flex flex-col gap-2.5 rounded-md border border-line bg-surface p-5 md:pb-12 lg:min-h-[218px] lg:p-6 lg:pb-[54px]"
+					class="flex flex-col gap-2 rounded-md border border-line bg-surface p-5 md:pb-12 lg:min-h-[218px] lg:gap-2.5 lg:p-6 lg:pb-[54px]"
 				>
 					<h3 class="m-0 type-h4 text-ink">{{ item.title }}</h3>
-					<p class="m-0 type-body text-wrap text-ink-soft">{{ item.body }}</p>
+					<p class="m-0 type-body text-ink-soft">{{ item.body }}</p>
 				</li>
 			</ul>
 		</section>
@@ -164,7 +162,7 @@ useHead(() => {
 				:key="screen.id ?? screen.path ?? ''"
 				:path="screen.path"
 				:image="screen.media"
-				:class="screen.media ? SHOT_RATIO : SHOT_PLACEHOLDER_RATIO"
+				:ratio="screen.media ? SHOT_RATIO : SHOT_PLACEHOLDER_RATIO"
 				sizes="(min-width: 1280px) 1200px, 100vw"
 				:placeholder-kicker="labels.placeholderLabel"
 				:placeholder-label="screen.placeholderLabel"
@@ -178,10 +176,7 @@ useHead(() => {
 				class="group grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1.5 rounded-md border border-line-strong bg-surface p-5 no-underline md:p-7 lg:gap-y-2 lg:rounded-lg lg:px-9 lg:py-8"
 			>
 				<span class="type-mono-label text-accent">{{ labels.nextLabel }}</span>
-				<span
-					class="col-start-1 row-start-2 text-[20px] leading-[1.25] font-medium tracking-[-0.3px] text-ink md:text-[22px] md:leading-[1.22] md:tracking-[-0.4px]"
-					>{{ data.next.title.replace(/\.$/, '') }}</span
-				>
+				<span class="col-start-1 row-start-2 type-h3 text-ink">{{ data.next.title.replace(/\.$/, '') }}</span>
 				<svg
 					class="col-start-2 row-start-2 my-[5.5px] h-4 w-5 shrink-0 text-accent transition-transform duration-200 ease-(--ease) group-hover:translate-x-1 md:my-2 md:h-[19px] md:w-[26px] lg:row-span-2 lg:row-start-1 lg:my-0"
 					viewBox="0 0 26 19"

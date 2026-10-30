@@ -55,6 +55,7 @@
     "home": {
       "hero": {
         "eyebrowCommand": "whoami  # Jan Komínek · freelance fullstack engineer · Prague, CZ",
+        "eyebrowCommandShort": "whoami  # Prague, CZ",
         "headline": "From empty repo\nto production.",
         "valueProp": "A zero-trust data provenance platform, an EV charging network with live payments, and a course scheduler I still run today. Built end to end, from infrastructure to UI. Seven companies and 12+ shipped projects since 2022.",
         "primaryCta": { "label": "Start a project", "href": "/contact" },
@@ -126,6 +127,7 @@
         "heading": "Real feedback from\nteammates and managers.",
         "sub": "Pulled directly from LinkedIn recommendations, unedited.",
         "readMoreLabel": "Read more ↗",
+        "allRecommendationsLabel": "See all {count} recommendations on LinkedIn ↗",
         "quoteLimit": 160
       }
     },
@@ -258,9 +260,27 @@
       "heading": "Blog.",
       "lead": "Write-ups on DevOps, SvelteKit and TypeScript, from setups I run in production.",
       "minutesLong": "min read",
+      "backLabel": "All posts",
+      "tocLabel": "On this page",
+      "shareLabel": "Found this useful?",
+      "shareText": "Share it with someone who'd benefit, or follow new posts via RSS.",
       "readLabel": "Read the guide",
       "draftingLabel": "Drafting",
       "nextUpText": "More posts are in progress. Follow along via RSS at jankominek.com/feed.xml."
+    },
+    "privacy": {
+      "label": "cat ./privacy.md",
+      "title": "Privacy policy.",
+      "updatedLabel": "Updated",
+      "bindingNote": "Also available in Czech. If the versions differ, the Czech one prevails.",
+      "tocLabel": "On this page"
+    },
+    "terms": {
+      "label": "cat ./terms.md",
+      "title": "Terms of use.",
+      "updatedLabel": "Updated",
+      "bindingNote": "Also available in Czech. If the versions differ, the Czech one prevails.",
+      "tocLabel": "On this page"
     }
   },
   "collections": {
@@ -416,10 +436,10 @@
         "stack": ["SvelteKit", "Svelte", "Fastify", "Node.js", "MongoDB", "Docker Swarm", "Raspberry Pi", "CI/CD", "Linux"],
         "hero": { "path": "~/projects/iont_info", "image": "iont-thumbnail" },
         "gallery": [
-          { "path": "~/projects/iont_info/landing", "image": "iont-landing" },
-          { "path": "~/projects/iont_info/mobile", "image": "iont-phones" },
-          { "path": "~/projects/iont_charge", "image": "iont-charge" },
-          { "path": "~/projects/iont_admin", "image": "iont-admin" },
+          { "path": "~/projects/iont_info/landing", "image": "iont-landing", "crop": "strip" },
+          { "path": "~/projects/iont_info/mobile", "image": "iont-phones", "crop": "strip" },
+          { "path": "~/projects/iont_charge", "image": "iont-charge", "crop": "strip" },
+          { "path": "~/projects/iont_admin", "image": "iont-admin", "crop": "strip" },
           {
             "path": "~/projects/iont_platform/driver-app",
             "placeholder": { "label": "Driver app on a phone: find a charger, pay, charge", "spec": "Capture 390 × 844 at 3× · demo data only" }

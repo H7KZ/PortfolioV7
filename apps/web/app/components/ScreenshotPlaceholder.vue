@@ -4,7 +4,7 @@ const { kicker, label, spec, fill = false } = defineProps<{ kicker?: string | nu
 
 <template>
 	<div
-		:class="fill ? 'h-full' : 'aspect-16/10'"
+		:class="fill ? 'h-full' : 'aspect-[348/271] md:aspect-16/10'"
 		class="flex w-full flex-col items-center justify-center gap-3 border-[1.5px] border-dashed border-line-strong bg-surface-2 bg-[radial-gradient(circle,rgb(255_255_255/0.05)_1px,transparent_1.5px)] bg-size-[20px_20px] bg-top-left p-6 text-center"
 	>
 		<svg class="h-9 w-12 shrink-0" viewBox="0 0 48 36" fill="none" aria-hidden="true">
@@ -12,7 +12,7 @@ const { kicker, label, spec, fill = false } = defineProps<{ kicker?: string | nu
 			<circle cx="24" cy="18" r="6.25" class="stroke-accent" stroke-width="1.5" />
 		</svg>
 		<p v-if="kicker" class="type-mono-label text-mute">{{ kicker }}</p>
-		<p class="max-w-[40ch] font-sans text-[18px] leading-[1.32] font-medium tracking-[-0.2px] text-ink">{{ label }}</p>
-		<p v-if="spec" class="max-w-[48ch] type-mono-s text-mute">{{ spec }}</p>
+		<p class="max-w-[40ch] type-h4 text-ink">{{ label }}</p>
+		<p v-if="spec" class="max-w-[52ch] type-mono-s text-mute">{{ spec }}</p>
 	</div>
 </template>

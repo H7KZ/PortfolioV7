@@ -84,6 +84,8 @@ const summaryParts = computed(() => {
 function validate(): boolean {
 	const parsed = schema.value.safeParse(form.value)
 	errors.value = parsed.success ? {} : contactFieldErrors(parsed.error)
+	// Figma shows the too-short text for an empty message; the shared schema reports it as required.
+	if (errors.value.message && config.validation.tooShort && form.value.message.trim() === '') errors.value.message = config.validation.tooShort
 	return parsed.success
 }
 
