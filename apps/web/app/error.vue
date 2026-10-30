@@ -29,13 +29,11 @@ useHead(() => ({ title: title.value, meta: [{ key: 'robots', name: 'robots', con
 
 <template>
 	<NuxtLayout :contact-cta="false">
-		<div class="site-container flex flex-col gap-(--block-gap) pt-10 pb-(--section-gap) md:pt-14 lg:pt-20">
-			<header class="flex max-w-[840px] flex-col gap-6">
-				<h1 class="type-display-l">{{ title }}</h1>
-				<p class="max-w-[60ch] type-body-l text-ink-soft">{{ message }}</p>
-			</header>
+		<div class="site-container flex flex-col items-start gap-6 pt-16 pb-[72px] md:pt-24 md:pb-24 lg:pt-30 lg:pb-36">
+			<h1 class="type-display-l [text-wrap:wrap] md:text-[52px] md:leading-none md:tracking-[-1.9px]">{{ title }}</h1>
+			<p class="max-w-[640px] type-body-l text-ink-soft max-md:text-[17px]">{{ message }}</p>
 
-			<ul v-if="suggestions.length" class="flex max-w-[640px] list-none flex-col gap-3 p-0">
+			<ul v-if="suggestions.length" class="flex w-full max-w-[592px] list-none flex-col gap-2.5 p-0 lg:gap-3">
 				<li v-for="suggestion in suggestions" :key="suggestion.id ?? suggestion.href">
 					<ChannelRow
 						:icon="suggestion.icon"
@@ -46,7 +44,7 @@ useHead(() => ({ title: title.value, meta: [{ key: 'robots', name: 'robots', con
 					/>
 				</li>
 			</ul>
-			<UiButton v-else kind="secondary" class="self-start" :href="href('/')" @click.prevent="leave(href('/'))">{{ content?.backLabel }}</UiButton>
+			<UiButton v-else kind="secondary" :href="href('/')" @click.prevent="leave(href('/'))">{{ content?.backLabel }}</UiButton>
 
 			<p v-if="codeLabel" class="type-mono-s text-faint">{{ codeLabel }}</p>
 		</div>

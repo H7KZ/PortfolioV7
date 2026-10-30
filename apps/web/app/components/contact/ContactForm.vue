@@ -10,7 +10,6 @@ import {
 	type MultiSelect,
 	type SingleSelect
 } from '@portfolio/content/contact-form'
-import TablerChevronDown from '~icons/tabler/chevron-down'
 
 const { config, title, step, sentLabel } = defineProps<{
 	config: ContactFormConfig
@@ -175,31 +174,35 @@ onMounted(() => {
 </script>
 
 <template>
-	<section class="rounded-lg border border-line bg-surface" aria-labelledby="brief-title">
-		<div class="flex items-baseline justify-between gap-4 border-b border-line px-6 py-5">
+	<section class="flex flex-col gap-4.5 rounded-lg border border-line bg-surface p-5 md:p-7 lg:gap-5" aria-labelledby="brief-title">
+		<div class="flex items-center justify-between gap-4">
 			<h2 id="brief-title" class="type-h3">{{ title }}</h2>
-			<p class="type-mono-label" :class="sentName !== null ? 'text-accent' : 'text-mute'">{{ sentName !== null ? sentLabel : step }}</p>
+			<p class="type-mono-s" :class="sentName !== null ? 'text-accent' : 'text-mute'">{{ sentName !== null ? sentLabel : step }}</p>
 		</div>
 
-		<div aria-live="polite" class="p-6">
-			<div v-if="sentName !== null" class="flex flex-col items-start gap-5">
-				<span class="grid h-12 w-12 place-items-center rounded-full bg-accent-soft text-accent" aria-hidden="true">✓</span>
-				<h3 ref="successTitle" tabindex="-1" class="type-h3 outline-none">{{ successHeading }}</h3>
-				<p v-if="config.success?.body" class="max-w-[52ch] type-body text-ink-soft">{{ config.success.body }}</p>
-				<UiButton kind="secondary" @click="reset">{{ config.success?.sendAnotherLabel }}</UiButton>
+		<div aria-live="polite">
+			<div v-if="sentName !== null" class="flex flex-col gap-4.5 lg:gap-5">
+				<div class="flex flex-col items-start gap-4 pt-2">
+					<span class="grid h-12 w-12 place-items-center rounded-full bg-accent-soft type-mono-m text-accent" aria-hidden="true">✓</span>
+					<h3 ref="successTitle" tabindex="-1" class="type-h3 outline-none">{{ successHeading }}</h3>
+					<p v-if="config.success?.body" class="type-body text-ink-soft">{{ config.success.body }}</p>
+				</div>
+				<div>
+					<UiButton kind="secondary" @click="reset">{{ config.success?.sendAnotherLabel }}</UiButton>
+				</div>
 			</div>
 
-			<form v-else novalidate class="flex flex-col gap-6" @submit.prevent="submit">
+			<form v-else novalidate class="flex flex-col gap-4.5 lg:gap-5" @submit.prevent="submit">
 				<div
 					v-if="serverError || broken.length"
 					ref="summary"
 					tabindex="-1"
 					role="alert"
-					class="flex gap-3 rounded-md border border-danger bg-danger-soft p-4 type-body-s text-ink"
+					class="flex items-start gap-2.5 rounded-[8px] border border-danger bg-danger-soft px-4 py-3.5 type-body-s text-ink"
 				>
-					<span aria-hidden="true" class="font-mono font-medium text-danger">!</span>
-					<p v-if="serverError">{{ config.errorMessage }}</p>
-					<p v-else>
+					<span aria-hidden="true" class="type-mono-s text-danger">!</span>
+					<p v-if="serverError" class="min-w-0 flex-1">{{ config.errorMessage }}</p>
+					<p v-else class="min-w-0 flex-1">
 						<template v-for="(part, index) in summaryParts" :key="index">
 							<a
 								v-if="'field' in part && part.field"
@@ -212,7 +215,7 @@ onMounted(() => {
 					</p>
 				</div>
 
-				<div class="grid gap-6 md:grid-cols-2">
+				<div class="grid items-start gap-4 md:grid-cols-2">
 					<UiField
 						:id="fieldId('fullName')"
 						v-model="form.fullName"
@@ -248,25 +251,24 @@ onMounted(() => {
 				/>
 
 				<div v-if="budgetOptions.length" :id="fieldId('budget')" class="flex flex-col gap-3">
-					<p id="contact-budget-label" class="type-body-s font-medium text-ink">
+					<p id="contact-budget-label" class="flex items-start justify-between gap-4 type-body-s text-ink-soft">
 						{{ config.budget.label }}
-						<span v-if="config.budget.hint" class="font-normal text-mute">· {{ config.budget.hint }}</span>
+						<span v-if="config.budget.hint" class="type-mono-s text-faint">{{ config.budget.hint }}</span>
 					</p>
 					<ChoiceChips v-model="form.budget" name="contact-budget" labelled-by="contact-budget-label" :options="budgetOptions" />
 				</div>
 
-				<details ref="advanced" class="group rounded-md border border-line" :open="advancedHasError || undefined">
-					<summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 [&::-webkit-details-marker]:hidden">
-						<span class="flex flex-col">
-							<span class="type-body-s font-medium text-ink">{{ config.advancedLabel }}</span>
-							<span v-if="config.advancedHint" class="type-mono-s text-mute">{{ config.advancedHint }}</span>
-						</span>
-						<TablerChevronDown
-							class="h-4 w-4 shrink-0 text-ink-soft transition-transform duration-200 ease-(--ease) group-open:rotate-180"
-							aria-hidden="true"
-						/>
+				<details ref="advanced" class="group border-y border-line" :open="advancedHasError || undefined">
+					<summary
+						class="flex min-h-11 cursor-pointer list-none items-center gap-2.5 py-3.5 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-focus [&::-webkit-details-marker]:hidden"
+					>
+						<span class="type-mono-m text-accent" aria-hidden="true"
+							><span class="group-open:hidden">+</span><span class="hidden group-open:inline">−</span></span
+						>
+						<span class="type-body text-ink">{{ config.advancedLabel }}</span>
+						<span v-if="config.advancedHint" class="type-mono-s text-faint max-lg:hidden">{{ config.advancedHint }}</span>
 					</summary>
-					<div class="flex flex-col gap-6 border-t border-line p-4">
+					<div class="flex flex-col gap-6 pt-2 pb-5">
 						<UiField
 							:id="fieldId('company')"
 							v-model="form.company"
@@ -301,9 +303,9 @@ onMounted(() => {
 					</div>
 				</details>
 
-				<div class="flex flex-col-reverse gap-4 border-t border-line pt-6 md:flex-row md:items-center md:justify-between">
-					<p v-if="config.privacyNote" class="type-body-s text-mute">{{ config.privacyNote }}</p>
-					<UiButton type="submit" :busy="sending">{{ sending ? config.sendingLabel : config.sendLabel }}</UiButton>
+				<div class="flex flex-col-reverse gap-4.5 lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+					<p v-if="config.privacyNote" class="type-mono-s text-faint lg:min-w-0 lg:flex-1">{{ config.privacyNote }}</p>
+					<UiButton type="submit" :busy="sending" class="max-lg:w-full">{{ sending ? config.sendingLabel : config.sendLabel }}</UiButton>
 				</div>
 			</form>
 		</div>
