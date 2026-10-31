@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { data: layout } = useLayoutContent()
-const { items, isActive, otherLocale, languageNames, localePath, trackSwitch } = useNavigation(layout)
+const { items, currentOf, otherLocale, languageNames, localePath, trackSwitch } = useNavigation(layout)
 const href = useHref()
 const route = useRoute()
 
@@ -43,7 +43,7 @@ watch(
 				<nav :aria-label="navigation.navLabel ?? undefined" class="max-md:hidden">
 					<ul class="flex list-none items-center gap-7 p-0">
 						<li v-for="item in items" :key="item.id ?? item.href">
-							<UiLink :to="href(item.href)" :current="isActive(item)">{{ item.label }}</UiLink>
+							<UiLink :to="href(item.href)" :current="currentOf(item)">{{ item.label }}</UiLink>
 						</li>
 					</ul>
 				</nav>
@@ -105,7 +105,7 @@ watch(
 		<nav :aria-label="navigation.navLabel ?? undefined" class="nojs-only site-container border-t border-line md:hidden">
 			<ul class="flex list-none flex-wrap gap-x-6 p-0">
 				<li v-for="item in items" :key="item.id ?? item.href">
-					<UiLink :to="href(item.href)" :current="isActive(item)">{{ item.label }}</UiLink>
+					<UiLink :to="href(item.href)" :current="currentOf(item)">{{ item.label }}</UiLink>
 				</li>
 				<li>
 					<UiLink :to="localePath(otherLocale)">{{ navigation.toggleLanguageLabel }}</UiLink>

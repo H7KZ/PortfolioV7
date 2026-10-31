@@ -228,7 +228,8 @@
       "architectureLabel": "Architektura",
       "stackLabel": "Technologie",
       "nextLabel": "Další případová studie",
-      "placeholderLabel": "Místo pro snímek obrazovky"
+      "placeholderLabel": "Místo pro snímek obrazovky",
+      "placeholderSuffix": "ukázka"
     },
     "resume": {
       "label": "cat ./zivotopis.md  # aktualizováno 10/2026",
@@ -979,12 +980,12 @@
         "stack": ["Vue.js", "Shadcn UI", "Vite", "pnpm", "Node.js", "ESLint", "Prettier"],
         "hero": {
           "path": "~/projects/corac_scorecard",
-          "image": "scorecard-thumbnail"
+          "image": "scorecard-main"
         },
         "gallery": [
           {
             "path": "~/projects/corac_scorecard/report",
-            "image": "scorecard-main"
+            "image": "scorecard-thumbnail"
           },
           {
             "path": "~/projects/corac_scorecard/report",

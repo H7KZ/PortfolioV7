@@ -1491,6 +1491,7 @@ export interface ProjectPage {
   architectureLabel?: string | null;
   nextLabel?: string | null;
   placeholderLabel?: string | null;
+  placeholderSuffix?: string | null;
   /**
    * Appended to meta descriptions, e.g. "A project by Jan Komínek, Fullstack Engineer."
    */
@@ -2423,6 +2424,7 @@ export interface ProjectPageSelect<T extends boolean = true> {
   architectureLabel?: T;
   nextLabel?: T;
   placeholderLabel?: T;
+  placeholderSuffix?: T;
   metaSuffix?: T;
   updatedAt?: T;
   createdAt?: T;

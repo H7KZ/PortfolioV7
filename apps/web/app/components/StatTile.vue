@@ -18,7 +18,7 @@ const valueClass = computed(() => {
 	const tone = variant === 'accent' ? 'text-accent' : 'text-ink'
 	if (layout === 'resume') return variant === 'number' || !variant ? `type-h3 lg:type-stat ${tone}` : `type-h3 ${tone}`
 	const base = variant === 'text' || variant === 'accent' ? 'md:type-h3' : 'md:type-h3 lg:type-stat'
-	return `${base} text-[20px] leading-[22px] font-bold tracking-[-0.7px] ${tone} max-md:col-start-2 max-md:row-span-2 max-md:row-start-1 max-md:self-center max-md:text-right`
+	return `${base} text-[20px] leading-[22px] font-bold tracking-[-0.7px] ${tone} max-md:col-start-2 max-md:row-span-2 max-md:row-start-1 max-md:self-start max-md:text-right`
 })
 </script>
 
@@ -35,6 +35,6 @@ const valueClass = computed(() => {
 			<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-line-strong" aria-hidden="true"></span>{{ label }}
 		</dt>
 		<dd class="m-0" :class="valueClass">{{ value }}</dd>
-		<dd v-if="sub" class="m-0 type-body-s text-mute" :class="layout === 'case' && 'max-md:col-start-1 max-md:row-start-2'">{{ sub }}</dd>
+		<dd v-if="sub" class="m-0 type-body-s text-mute" :class="layout === 'case' && 'max-md:col-start-1 max-md:row-start-2 max-md:min-h-9'">{{ sub }}</dd>
 	</div>
 </template>

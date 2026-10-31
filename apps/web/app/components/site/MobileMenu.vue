@@ -5,7 +5,7 @@ const { layout, menuButton } = defineProps<{ layout: LayoutData; menuButton: HTM
 const emit = defineEmits<{ close: [] }>()
 
 const layoutRef = computed(() => layout)
-const { items, isActive, currentLocale, languageNames, localePath, trackSwitch } = useNavigation(layoutRef)
+const { items, currentOf, currentLocale, languageNames, localePath, trackSwitch } = useNavigation(layoutRef)
 const href = useHref()
 const { trackLink } = useAnalytics()
 
@@ -64,13 +64,13 @@ onBeforeUnmount(() => {
 				<li v-for="item in links" :key="item.id ?? item.href" class="h-16 border-b border-line">
 					<NuxtLink
 						:to="href(item.href)"
-						:aria-current="isActive(item) ? 'page' : undefined"
+						:aria-current="currentOf(item)"
 						class="flex h-full items-center gap-3 type-h2 no-underline"
-						:class="isActive(item) ? 'text-ink' : 'text-ink-soft'"
+						:class="currentOf(item) ? 'text-ink' : 'text-ink-soft'"
 						@click="emit('close')"
 					>
 						{{ item.label }}
-						<span v-if="isActive(item)" class="type-mono-s text-accent">{{ navigation.currentLabel }}</span>
+						<span v-if="currentOf(item)" class="type-mono-s text-accent">{{ navigation.currentLabel }}</span>
 					</NuxtLink>
 				</li>
 			</ul>

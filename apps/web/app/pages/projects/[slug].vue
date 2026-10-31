@@ -111,6 +111,7 @@ useHead(() => {
 				:ratio="hero ? HERO_RATIO : HERO_PLACEHOLDER_RATIO"
 				sizes="(min-width: 1280px) 1200px, 100vw"
 				:placeholder-kicker="labels.placeholderLabel"
+				:placeholder-suffix="labels.placeholderSuffix"
 				:placeholder-label="project.heroPlaceholderLabel"
 				:placeholder-spec="project.heroPlaceholderSpec"
 			/>
@@ -155,7 +156,7 @@ useHead(() => {
 
 		<section v-if="project.stack?.length" :class="[SECTION, 'gap-3.5 pb-(--block-gap)']" aria-labelledby="stack">
 			<h2 id="stack" :class="HEADING">{{ labels.stackLabel }}</h2>
-			<UiTags :tags="project.stack" />
+			<UiTags :tags="project.stack" class="lg:gap-2" />
 		</section>
 
 		<div v-if="screens.length" class="site-container flex flex-col gap-4 pb-(--section-gap) lg:gap-6">
@@ -167,6 +168,7 @@ useHead(() => {
 				:ratio="screen.media ? (screen.crop === 'strip' ? STRIP_RATIO : SHOT_RATIO) : SHOT_PLACEHOLDER_RATIO"
 				sizes="(min-width: 1280px) 1200px, 100vw"
 				:placeholder-kicker="labels.placeholderLabel"
+				:placeholder-suffix="labels.placeholderSuffix"
 				:placeholder-label="screen.placeholderLabel"
 				:placeholder-spec="screen.placeholderSpec"
 			/>

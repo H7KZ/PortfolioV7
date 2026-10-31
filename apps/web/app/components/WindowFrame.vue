@@ -7,6 +7,7 @@ const {
 	placeholderKicker,
 	placeholderLabel,
 	placeholderSpec,
+	placeholderSuffix,
 	priority = false,
 	ratio = 'aspect-16/10',
 	sizes = '(min-width: 1024px) 840px, 100vw'
@@ -16,6 +17,8 @@ const {
 	placeholderKicker?: string | null
 	placeholderLabel?: string | null
 	placeholderSpec?: string | null
+	/** Appended to the path while the window shows a placeholder, e.g. "placeholder". */
+	placeholderSuffix?: string | null
 	priority?: boolean
 	/** Tailwind aspect-ratio classes for the image area, per breakpoint when the Figma crop changes. */
 	ratio?: string
@@ -24,6 +27,8 @@ const {
 
 /** Figma drops the projects/ segment from the path on a phone. */
 const compactPath = computed(() => path?.replace(/^~\/projects\//, '~/'))
+/** Figma shows the suffix from tablet up; on a phone the path stays short. */
+const suffix = computed(() => (!image && placeholderSuffix ? ` · ${placeholderSuffix}` : ''))
 </script>
 
 <template>
@@ -33,7 +38,9 @@ const compactPath = computed(() => path?.replace(/^~\/projects\//, '~/'))
 			<span class="hidden h-px w-2 shrink-0 lg:block"></span>
 			<template v-if="path">
 				<span v-if="compactPath !== path" class="truncate type-mono-s text-faint md:hidden">{{ compactPath }}</span>
-				<span class="truncate type-mono-s text-faint" :class="{ 'hidden md:inline': compactPath !== path }">{{ path }}</span>
+				<span class="truncate type-mono-s text-faint" :class="{ 'hidden md:inline': compactPath !== path }"
+					>{{ path }}<span v-if="suffix" class="max-md:hidden">{{ suffix }}</span></span
+				>
 			</template>
 		</div>
 		<div class="bg-surface-2" :class="ratio">

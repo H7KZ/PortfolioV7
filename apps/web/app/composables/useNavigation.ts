@@ -22,6 +22,14 @@ export function useNavigation(layout: Ref<LayoutData | undefined>) {
 		return item.match === 'prefix' ? barePath.value.startsWith(path) : barePath.value === path
 	}
 
+	/** Case studies belong to the work section, so its link is current there without being the page itself. */
+	function currentOf(item: NavItem): 'page' | 'true' | undefined {
+		if (isActive(item)) return 'page'
+		const [path, hash] = item.href.split('#')
+		if ((path || '/') === '/' && hash === 'work' && barePath.value.startsWith('/projects/')) return 'true'
+		return undefined
+	}
+
 	function localePath(target: Locale): string {
 		return switchLocalePath(target) || (target === 'cs' ? '/cs' : '/')
 	}
@@ -30,5 +38,5 @@ export function useNavigation(layout: Ref<LayoutData | undefined>) {
 		track('locale-switch', { to: target })
 	}
 
-	return { items, isActive, currentLocale: locale, otherLocale, languageNames, localePath, trackSwitch }
+	return { items, isActive, currentOf, currentLocale: locale, otherLocale, languageNames, localePath, trackSwitch }
 }

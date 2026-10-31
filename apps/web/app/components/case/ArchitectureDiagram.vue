@@ -34,6 +34,12 @@ const ANCHORS: Record<string, { from: number; to: number; labelSide: 'left' | 'r
 	'scraper>insis': { from: 0, to: 0, labelSide: 'above' }
 }
 
+/** Keeps the separator dot at the end of a line instead of the start of the next one. */
+const trailDots = (text: string) => text.replaceAll(' · ', ' · ')
+
+/** The mono font has no arrow, so the fallback's long glyph is swapped for the drawn one. */
+const observability = computed(() => architecture.observability?.split('→') ?? [])
+
 const nodes = computed(() =>
 	[...(architecture.nodes ?? [])].sort((a, b) => {
 		const ia = FLOW.indexOf(a.key)
@@ -167,11 +173,11 @@ function labelClass(edge: DrawnEdge): string {
 						:key="node.key"
 						:data-node="node.key"
 						:style="cellStyle(node.key)"
-						class="flex flex-col gap-1 rounded-[8px] border px-3.5 py-3"
+						class="flex flex-col gap-1 rounded-[8px] border py-3 pr-[13px] pl-3.5"
 						:class="node.external ? 'border-dashed border-control' : 'border-line-strong bg-surface-2'"
 					>
 						<span class="type-body-medium text-ink">{{ node.name }}</span>
-						<span v-if="node.tech" class="type-mono-s text-mute">{{ node.tech }}</span>
+						<span v-if="node.tech" class="type-mono-s text-mute">{{ trailDots(node.tech) }}</span>
 					</li>
 				</ol>
 				<svg
@@ -242,7 +248,9 @@ function labelClass(edge: DrawnEdge): string {
 						{{ architecture.legend[kind] }}
 					</li>
 				</ul>
-				<p v-if="architecture.observability" class="m-0 type-mono-label text-mute">{{ architecture.observability }}</p>
+				<p v-if="architecture.observability" class="m-0 type-mono-label text-mute">
+					<template v-for="(part, index) in observability" :key="index"><ArrowGlyph v-if="index" />{{ part }}</template>
+				</p>
 			</div>
 		</div>
 		<figcaption v-if="architecture.caption" class="max-w-[680px] type-body text-ink-soft">{{ architecture.caption }}</figcaption>

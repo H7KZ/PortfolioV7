@@ -70,12 +70,12 @@ const ALT: Record<string, Record<Locale, string>> = {
 		cs: 'Kreditožrouti v telefonu s denním pohledem na rozvrh'
 	},
 	'scorecard-thumbnail': {
-		en: 'Scorecard audit table with risk ratings per control',
-		cs: 'Auditní tabulka Scorecard s hodnocením rizik pro jednotlivá opatření'
-	},
-	'scorecard-main': {
 		en: 'Scorecard report view, ready to export as a branded PDF',
 		cs: 'Náhled reportu Scorecard připravený k exportu do PDF s logem klienta'
+	},
+	'scorecard-main': {
+		en: 'Scorecard audit table with risk ratings per control',
+		cs: 'Auditní tabulka Scorecard s hodnocením rizik pro jednotlivá opatření'
 	},
 	'disenchantment-thumbnail-crop': {
 		en: 'Minecraft anvil with an enchanted item and the Disenchantment result slot',

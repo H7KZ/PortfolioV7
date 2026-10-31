@@ -141,7 +141,8 @@
       "architectureLabel": "Architecture",
       "stackLabel": "Stack",
       "nextLabel": "Next case study",
-      "placeholderLabel": "Screenshot placeholder"
+      "placeholderLabel": "Screenshot placeholder",
+      "placeholderSuffix": "placeholder"
     },
     "resume": {
       "label": "cat ./resume.md  # updated Oct 2026",
@@ -617,9 +618,9 @@
           }
         ],
         "stack": ["Vue.js", "Shadcn UI", "Vite", "pnpm", "Node.js", "ESLint", "Prettier"],
-        "hero": { "path": "~/projects/corac_scorecard", "image": "scorecard-thumbnail" },
+        "hero": { "path": "~/projects/corac_scorecard", "image": "scorecard-main" },
         "gallery": [
-          { "path": "~/projects/corac_scorecard/report", "image": "scorecard-main" },
+          { "path": "~/projects/corac_scorecard/report", "image": "scorecard-thumbnail" },
           {
             "path": "~/projects/corac_scorecard/report",
             "placeholder": { "label": "Report builder next to an exported PDF page", "spec": "Capture 1440 × 900 at 2× · demo data only" }
