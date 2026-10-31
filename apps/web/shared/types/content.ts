@@ -29,7 +29,7 @@ export interface MediaView {
 	width: number | null
 	height: number | null
 	/** Other encodings uploaded next to the file, as site URLs. */
-	formats: { avif: string | null; avif800: string | null; webp800: string | null }
+	formats: { avif: string | null; avif800: string | null; webp800: string | null; avif1600: string | null; webp1600: string | null }
 }
 
 type IsMedia<T> = [T] extends [Media] ? ([Media] extends [T] ? true : false) : false

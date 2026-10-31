@@ -38,69 +38,69 @@ const ALT: Record<string, Record<Locale, string>> = {
 		en: 'DeepTrace hash-chain view listing each link of a file’s history with its SHA-256 hash and verification state',
 		cs: 'Pohled DeepTrace na řetězec hashů: každý článek historie souboru s hashem SHA-256 a stavem ověření'
 	},
-	'iont-thumbnail': {
-		en: 'IONT driver app on a phone, showing a charger on the map and the start charging button',
-		cs: 'Aplikace IONT pro řidiče v telefonu s nabíječkou na mapě a tlačítkem pro spuštění nabíjení'
-	},
-	'iont-landing': {
+	'iont-landing-hd': {
 		en: 'IONT landing page introducing the public EV charging network',
 		cs: 'Úvodní stránka IONT představující veřejnou síť nabíječek pro elektromobily'
 	},
-	'iont-phones': {
+	'iont-phones-hd': {
 		en: 'Three phones with the IONT driver app: finding a charger, paying and following a live charging session',
 		cs: 'Tři telefony s aplikací IONT: hledání nabíječky, platba a průběh nabíjení v reálném čase'
 	},
-	'iont-charge': {
+	'iont-charge-hd': {
 		en: 'IONT charge screen with the live session: energy delivered, time and price',
 		cs: 'Obrazovka nabíjení IONT s probíhající relací: dodaná energie, čas a cena'
 	},
-	'iont-admin': {
+	'iont-admin-hd': {
 		en: 'IONT admin panel running on the charger, with configuration and diagnostics',
 		cs: 'Administrace IONT běžící přímo v nabíječce, s nastavením a diagnostikou'
 	},
-	'iont-hero': {
+	'iont-hero-hd': {
 		en: 'Three phones with the IONT app: the profile menu, a charger device card and its settings',
 		cs: 'Tři telefony s aplikací IONT: nabídka profilu, karta nabíječky a její nastavení'
 	},
-	'iont-driver': {
+	'iont-driver-hd': {
 		en: 'Four phone screens of the IONT charger app: a live charging session, two connectors at once, RFID cards and timers',
 		cs: 'Čtyři obrazovky aplikace IONT pro nabíječku: probíhající nabíjení, dvě zásuvky najednou, karty RFID a časovače'
 	},
-	'iont-panel': {
-		en: 'IONT admin panel: the charger sign-in screen next to two phone screens with charger status and settings',
-		cs: 'Administrace IONT: přihlášení do nabíječky a dvě obrazovky telefonu se stavem a nastavením nabíječky'
+	'iont-panel-hd': {
+		en: 'IONT admin panel: the charger pairing screen with its code next to two phone screens with charger status and settings',
+		cs: 'Administrace IONT: párování nabíječky s kódem vedle dvou obrazovek telefonu se stavem a nastavením nabíječky'
 	},
-	'iont-hardware': {
+	'iont-hardware-hd': {
 		en: 'Product renders of IONT chargers: two charging posts and a wall-mounted unit with its cable',
 		cs: 'Produktové vizualizace nabíječek IONT: dva nabíjecí stojany a nástěnná jednotka s kabelem'
 	},
-	'kreditozrouti-timetable': {
+	'kreditozrouti-timetable-hd': {
 		en: 'Kreditožrouti week timetable with seven courses and one conflict, lecturer names hidden',
 		cs: 'Týdenní rozvrh v Kreditožroutech se sedmi předměty a jednou kolizí, jména vyučujících jsou skrytá'
 	},
-	'kreditozrouti-search': {
+	'kreditozrouti-search-hd': {
 		en: 'Kreditožrouti course list with faculty, ECTS and schedule columns next to the filters',
 		cs: 'Seznam předmětů v Kreditožroutech se sloupci fakulta, ECTS a rozvrh vedle filtrů'
 	},
-	'kreditozrouti-dark': {
-		en: 'Kreditožrouti in dark mode: a weekly timetable with courses placed by day and hour',
-		cs: 'Kreditožrouti v tmavém režimu: týdenní rozvrh s předměty rozmístěnými podle dnů a hodin'
+	'disenchantment-repo-hd': {
+		en: 'GitHub repository of Disenchantment with its files, stars, forks and releases',
+		cs: 'Repozitář Disenchantment na GitHubu se soubory, hvězdičkami, forky a vydáními'
 	},
-	'kreditozrouti-desktop': {
-		en: 'Kreditožrouti in light mode on a desktop: course search next to the timetable',
-		cs: 'Kreditožrouti ve světlém režimu na počítači: vyhledávání předmětů vedle rozvrhu'
+	'kreditozrouti-dark-hd': {
+		en: 'Kreditožrouti in dark mode: the first step of the study plan wizard, choosing a faculty',
+		cs: 'Kreditožrouti v tmavém režimu: první krok průvodce studijním plánem, výběr fakulty'
+	},
+	'kreditozrouti-desktop-hd': {
+		en: 'Kreditožrouti in light mode: the first step of the study plan wizard, choosing a faculty',
+		cs: 'Kreditožrouti ve světlém režimu: první krok průvodce studijním plánem, výběr fakulty'
 	},
 	'kreditozrouti-mobile': {
 		en: 'Kreditožrouti on a phone, showing the day view of a timetable',
 		cs: 'Kreditožrouti v telefonu s denním pohledem na rozvrh'
 	},
-	'scorecard-thumbnail': {
-		en: 'Scorecard report view, ready to export as a branded PDF',
-		cs: 'Náhled reportu Scorecard připravený k exportu do PDF s logem klienta'
+	'scorecard-thumbnail-hd': {
+		en: 'Scorecard table of risk treatments with deadline, function status, scope status and owner, filled with demo data',
+		cs: 'Tabulka opatření ve Scorecard s termínem, stavem funkce, stavem rozsahu a vlastníkem, vyplněná ukázkovými daty'
 	},
-	'scorecard-main': {
-		en: 'Scorecard audit table with risk ratings per control',
-		cs: 'Auditní tabulka Scorecard s hodnocením rizik pro jednotlivá opatření'
+	'scorecard-main-hd': {
+		en: 'Scorecard dashboard: overall compliance, compliance by treatment parameter and treatments planned by deadline, above the treatment table',
+		cs: 'Přehled Scorecard: celková shoda, shoda podle parametrů opatření a opatření plánovaná podle termínu nad tabulkou opatření'
 	},
 	'disenchantment-thumbnail-crop': {
 		en: 'Minecraft anvil with an enchanted item and the Disenchantment result slot',
@@ -332,7 +332,9 @@ async function importMedia(): Promise<void> {
 		const formats = {
 			avif: has(`${asset.name}.avif`) ? `${asset.name}.avif` : null,
 			avif800: has(`${asset.name}-800.avif`) ? `${asset.name}-800.avif` : null,
-			webp800: has(`${asset.name}-800.webp`) ? `${asset.name}-800.webp` : null
+			webp800: has(`${asset.name}-800.webp`) ? `${asset.name}-800.webp` : null,
+			avif1600: has(`${asset.name}-1600.avif`) ? `${asset.name}-1600.avif` : null,
+			webp1600: has(`${asset.name}-1600.webp`) ? `${asset.name}-1600.webp` : null
 		}
 		if (id) {
 			await writeDocument('media', primary, id, locale => ({ alt: alt[locale], formats }))
