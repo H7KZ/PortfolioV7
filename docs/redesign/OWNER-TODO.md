@@ -40,7 +40,7 @@ These stay exactly as written until you confirm them.
 | "Seven companies", "12+ shipped projects"                           | Home page > Hero > `valueProp`; Résumé > `bio`, Impact                                   |
 | "500+ connections · 6 recommendations"                              | Globals > Contact > `linkedinSub`. Typed text, update it by hand when the numbers change |
 | "Right now" rows: VEROC Group, Ohlídáme, 200+ students, teaching C# | Home page > Now > `items`                                                                |
-| Kreditožrouti: "588 visitors", "204 finished setup", "35%"          | Projects > Kreditožrouti > Case study > `impact`                                         |
+| Kreditožrouti: "589 visitors", "204 finished setup", "35%"          | Projects > Kreditožrouti > Case study > `impact`                                         |
 
 ## 4. Home
 
@@ -56,13 +56,7 @@ Each row is one window on the case study. Field: Projects > project > Case study
 
 ### IONT platform (flagship)
 
-| Row | Window                                 | Show                                               | Capture                     |
-| --- | -------------------------------------- | -------------------------------------------------- | --------------------------- |
-| 5   | `~/projects/iont_platform/driver-app`  | Driver app on a phone: find a charger, pay, charge | 390 × 844 at 3×, demo data  |
-| 6   | `~/projects/iont_platform/admin-panel` | On-device admin panel on the charger screen        | 1440 × 900 at 2×, demo data |
-| 7   | `~/projects/iont_platform/hardware`    | A real charger with the app in hand                | Photo, landscape, well lit  |
-
-Rows 1 to 4 and the hero already have images. Row 5 repeats what the `iont-phones` image on row 2 shows, so deleting it is also fine.
+Done with your go-ahead to use the IONT material: the hero and rows 5, 6 and 7 now have images, and the seed carries them to production. Rows 5 and 6 are built from the design mockups, row 6 also uses the charger sign-in screen, and row 7 shows product renders, because no photo of a real charger exists on your PC. Replace row 7 if you take one.
 
 ### DeepTrace
 
@@ -71,15 +65,17 @@ Rows 1 to 4 and the hero already have images. Row 5 repeats what the `iont-phone
 | 2   | `~/projects/deeptrace/lineage-graph` | Lineage graph, full screen                          | 1440 × 900 at 2×, demo data |
 | 3   | `~/projects/deeptrace/verification`  | Verification passed vs. tampered link, side by side | 1440 × 900 at 2×, demo data |
 
-No metrics yet. Case study > `impact` is empty, so the section is hidden. Add three rows (label, value, sub) if you can publish numbers.
+No metrics yet. Case study > `impact` is empty, so the section is hidden. Add three rows (label, value, sub) if you can publish numbers. The files in `gui/.data` are random test bytes, not a PDF or an image, so they add nothing here or on Scorecard.
 
 ### Kreditožrouti
 
-| Row | Window                               | Show                                          | Capture                     |
-| --- | ------------------------------------ | --------------------------------------------- | --------------------------- |
-| 2   | `~/projects/kreditozrouti/timetable` | Timetable builder with a real schedule        | 1440 × 900 at 2×, demo data |
-| 3   | `~/projects/kreditozrouti/search`    | Course search with filters                    | 1440 × 900 at 2×, demo data |
-| 4   | `~/projects/kreditozrouti/usage`     | Usage chart: 588 visitors, 204 finished setup | 1440 × 900 at 2×, demo data |
+Rows 2 and 3 are done. Lecturer names on the timetable are painted over with flat bars, not blurred, so they cannot be recovered, and the published files carry no metadata.
+
+| Row | Window                           | Show                                          | Capture                         |
+| --- | -------------------------------- | --------------------------------------------- | ------------------------------- |
+| 4   | `~/projects/kreditozrouti/usage` | Usage chart: 589 visitors, 204 finished setup | Crop of the umami dashboard, 2× |
+
+The umami share link sits behind Cloudflare Access, so it could not be captured from here. Take the screenshot yourself, or exclude the share path from Access. The site's numbers now follow your figures for Jun 16 to Oct 31, 2026: 35% is 204 of 589 visitors. Umami's 40% is the rate from `wizard_start`, a different definition.
 
 ### Intedat
 
@@ -91,7 +87,7 @@ The only project with no image at all. Its home card shows a dotted empty panel,
 | Gallery row 1                   | `~/projects/intedat/search` | Search results             | 1440 × 900 at 2×, demo data |
 | Gallery row 2                   | `~/projects/intedat/detail` | A detail or editing screen | 1440 × 900 at 2×, demo data |
 
-No metrics yet: Case study > `impact` is empty. Check that Intedat allows showing any of this.
+No metrics yet: Case study > `impact` is empty, and nothing was published from the internal docs. `docs/elasticsearch.md` holds commands and limits, no results. The harvester benchmark reports 241 successes against 12 failures (95%) on one run, but it does not say what a success means and the case study does not mention the harvester. Tell me if you want it on the page and how to word it. Check that Intedat allows showing any of the screenshots.
 
 ### Scorecard
 

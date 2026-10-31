@@ -565,7 +565,7 @@
         "stack": ["SvelteKit", "Svelte", "Fastify", "Node.js", "MongoDB", "Docker Swarm", "Raspberry Pi", "CI/CD", "Linux"],
         "hero": {
           "path": "~/projects/iont_info",
-          "image": "iont-thumbnail"
+          "image": "iont-hero"
         },
         "gallery": [
           {
@@ -590,24 +590,15 @@
           },
           {
             "path": "~/projects/iont_platform/driver-app",
-            "placeholder": {
-              "label": "Aplikace pro řidiče v telefonu: najít nabíječku, zaplatit, nabít",
-              "spec": "Snímek 390 × 844 ve 3× · jen ukázková data"
-            }
+            "image": "iont-driver"
           },
           {
             "path": "~/projects/iont_platform/admin-panel",
-            "placeholder": {
-              "label": "Administrace na displeji nabíječky",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
+            "image": "iont-panel"
           },
           {
             "path": "~/projects/iont_platform/hardware",
-            "placeholder": {
-              "label": "Skutečná nabíječka s aplikací v ruce",
-              "spec": "Fotka · na šířku, dobře nasvícená"
-            }
+            "image": "iont-hardware"
           }
         ],
         "factsToConfirm": ["ČSOB certification wording", "five months to launch"]
@@ -707,7 +698,7 @@
           {
             "label": "Onboarding",
             "value": "35%",
-            "sub": "Z 588 návštěvníků dokončí nastavení"
+            "sub": "Z 589 návštěvníků dokončí nastavení"
           },
           {
             "label": "Stav",
@@ -860,22 +851,16 @@
           },
           {
             "path": "~/projects/kreditozrouti/timetable",
-            "placeholder": {
-              "label": "Sestavování rozvrhu se skutečným rozvrhem",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
+            "image": "kreditozrouti-timetable"
           },
           {
             "path": "~/projects/kreditozrouti/search",
-            "placeholder": {
-              "label": "Hledání předmětů s filtry",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
+            "image": "kreditozrouti-search"
           },
           {
             "path": "~/projects/kreditozrouti/usage",
             "placeholder": {
-              "label": "Graf používání: 588 návštěvníků, 204 dokončilo nastavení",
+              "label": "Graf používání: 589 návštěvníků, 204 dokončilo nastavení",
               "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
             }
           }
