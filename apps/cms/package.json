@@ -17,6 +17,7 @@
     "migrate:v6": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/migrate-v6.ts",
     "seed:v7": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-v7.ts",
     "api-keys:set": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/set-api-keys.ts",
+    "password:set": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/set-password.ts",
     "admin:create": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/create-local-admin.ts"
   },
   "dependencies": {
