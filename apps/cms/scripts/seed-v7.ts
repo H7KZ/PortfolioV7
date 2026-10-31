@@ -38,7 +38,7 @@ const ALT: Record<string, Record<Locale, string>> = {
 		en: 'DeepTrace hash-chain view: a file trace verified from block 407 up to reference block 412 against its SHA-512 hash, every link marked as passed, demo data',
 		cs: 'Pohled DeepTrace na řetězec hashů: záznam souboru ověřený od bloku 407 po referenční blok 412 proti hashi SHA-512, každý článek označený jako ověřený, ukázková data'
 	},
-	'deeptrace-trusted-hd': {
+	'deeptrace-sources-hd': {
 		en: 'DeepTrace table of trusted data sources: organizations with the options trust as origin and require signed ancestors, demo data',
 		cs: 'Tabulka důvěryhodných zdrojů dat v DeepTrace: organizace s volbami důvěry jako původce a vyžadování podepsaných předků, ukázková data'
 	},
@@ -110,15 +110,15 @@ const ALT: Record<string, Record<Locale, string>> = {
 		en: 'Kreditožrouti on a phone, showing the day view of a timetable',
 		cs: 'Kreditožrouti v telefonu s denním pohledem na rozvrh'
 	},
-	'intedat-main-hd': {
+	'intedat-tasks-hd': {
 		en: 'Intedat task list: companies with status, contact person and next contact date, next to filters for status, date and location, demo data',
 		cs: 'Seznam úkolů v Intedatu: firmy se stavem, kontaktní osobou a termínem dalšího kontaktu vedle filtrů podle stavu, data a lokality, ukázková data'
 	},
-	'intedat-search-hd': {
+	'intedat-global-search-hd': {
 		en: 'Intedat global search for logistics: matching companies and contact people with the term highlighted in each result, demo data',
 		cs: 'Globální vyhledávání v Intedatu pro výraz logistics: nalezené firmy a kontaktní osoby se zvýrazněným výrazem, ukázková data'
 	},
-	'intedat-detail-hd': {
+	'intedat-company-hd': {
 		en: 'Intedat company detail: contact persons, the next meeting, activity buttons and the history of previous activities, demo data',
 		cs: 'Detail firmy v Intedatu: kontaktní osoby, plánovaná schůzka, tlačítka aktivit a historie předchozích aktivit, ukázková data'
 	},

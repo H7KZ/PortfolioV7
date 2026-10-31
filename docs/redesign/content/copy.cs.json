@@ -656,7 +656,7 @@
           },
           {
             "path": "~/projects/deeptrace/trusted-sources",
-            "image": "deeptrace-trusted-hd"
+            "image": "deeptrace-sources-hd"
           },
           {
             "path": "~/projects/deeptrace/verification",
@@ -900,16 +900,16 @@
         "stack": ["Nuxt", "AdonisJS", "TypeScript", "Node.js", "PostgreSQL", "Redis", "Elasticsearch", "DigitalOcean"],
         "hero": {
           "path": "~/projects/intedat/main",
-          "image": "intedat-main-hd"
+          "image": "intedat-tasks-hd"
         },
         "gallery": [
           {
             "path": "~/projects/intedat/search",
-            "image": "intedat-search-hd"
+            "image": "intedat-global-search-hd"
           },
           {
             "path": "~/projects/intedat/detail",
-            "image": "intedat-detail-hd"
+            "image": "intedat-company-hd"
           }
         ]
       },

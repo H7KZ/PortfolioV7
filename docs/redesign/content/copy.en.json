@@ -450,7 +450,7 @@
           { "path": "~/projects/deeptrace/hashchain", "image": "deeptrace-hashchain-hd" },
           {
             "path": "~/projects/deeptrace/trusted-sources",
-            "image": "deeptrace-trusted-hd"
+            "image": "deeptrace-sources-hd"
           },
           {
             "path": "~/projects/deeptrace/verification",
@@ -582,10 +582,10 @@
           { "title": "Product stakeholders", "body": "The single point of contact for product stakeholders on the platform." }
         ],
         "stack": ["Nuxt", "AdonisJS", "TypeScript", "Node.js", "PostgreSQL", "Redis", "Elasticsearch", "DigitalOcean"],
-        "hero": { "path": "~/projects/intedat/main", "image": "intedat-main-hd" },
+        "hero": { "path": "~/projects/intedat/main", "image": "intedat-tasks-hd" },
         "gallery": [
-          { "path": "~/projects/intedat/search", "image": "intedat-search-hd" },
-          { "path": "~/projects/intedat/detail", "image": "intedat-detail-hd" }
+          { "path": "~/projects/intedat/search", "image": "intedat-global-search-hd" },
+          { "path": "~/projects/intedat/detail", "image": "intedat-company-hd" }
         ]
       },
       {
