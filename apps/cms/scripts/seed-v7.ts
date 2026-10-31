@@ -30,13 +30,33 @@ const ASSETS_DIR = path.resolve(process.env.V7_ASSETS_DIR ?? path.join(REDESIGN,
 
 /** Alt text per image in docs/redesign/assets/manifest.json. It says what the picture shows. */
 const ALT: Record<string, Record<Locale, string>> = {
-	'deeptrace-thumbnail': {
-		en: 'DeepTrace lineage view: a graph of processing steps for an Earth Observation file, each step marked as verified',
-		cs: 'Pohled DeepTrace na původ dat: graf kroků zpracování souboru z pozorování Země, každý krok označený jako ověřený'
+	'deeptrace-hero-hd': {
+		en: 'DeepTrace lineage view: a flood extent product traced back through processing steps to a raw satellite downlink, with a trust mark per organization and one untrusted source flagged, demo data',
+		cs: 'Pohled DeepTrace na původ dat: produkt mapy záplav vysledovaný přes kroky zpracování až k surovým datům ze satelitu, s označením důvěry u každé organizace a jedním nedůvěryhodným zdrojem, ukázková data'
 	},
-	'deeptrace-hashchain': {
-		en: 'DeepTrace hash-chain view listing each link of a file’s history with its SHA-256 hash and verification state',
-		cs: 'Pohled DeepTrace na řetězec hashů: každý článek historie souboru s hashem SHA-256 a stavem ověření'
+	'deeptrace-hashchain-hd': {
+		en: 'DeepTrace hash-chain view: a file trace verified from block 407 up to reference block 412 against its SHA-512 hash, every link marked as passed, demo data',
+		cs: 'Pohled DeepTrace na řetězec hashů: záznam souboru ověřený od bloku 407 po referenční blok 412 proti hashi SHA-512, každý článek označený jako ověřený, ukázková data'
+	},
+	'deeptrace-trusted-hd': {
+		en: 'DeepTrace table of trusted data sources: organizations with the options trust as origin and require signed ancestors, demo data',
+		cs: 'Tabulka důvěryhodných zdrojů dat v DeepTrace: organizace s volbami důvěry jako původce a vyžadování podepsaných předků, ukázková data'
+	},
+	'deeptrace-verify-hd': {
+		en: 'Two DeepTrace hash-chain checks side by side: every block passes on the left, tampered block 411 is flagged on the right, demo data',
+		cs: 'Dvě kontroly řetězce hashů v DeepTrace vedle sebe: vlevo projdou všechny bloky, vpravo je označený pozměněný blok 411, ukázková data'
+	},
+	'iont-photos-hd': {
+		en: 'Three installed IONT chargers: an e:car charging post, a smaller e:car unit in a garden and a wall-mounted e:bike charger',
+		cs: 'Tři nainstalované nabíječky IONT: stojan e:car, menší jednotka e:car v zahradě a nástěnná nabíječka e:bike'
+	},
+	'kreditozrouti-usage-hd': {
+		en: 'Umami dashboard of Kreditožrouti: 589 visitors, 783 visits, 2.14k views, 13% bounce rate and monthly bars from June to October',
+		cs: 'Přehled Umami pro Kreditožrouty: 589 návštěvníků, 783 návštěv, 2,14 tis. zobrazení, 13% míra okamžitého opuštění a měsíční sloupce od června do října'
+	},
+	'scorecard-report-hd': {
+		en: 'Two pages of an exported Scorecard PDF: the compliance overview with charts and the cyber-risk treatment table, demo data',
+		cs: 'Dvě strany PDF exportovaného ze Scorecard: přehled shody s grafy a tabulka opatření proti kybernetickým rizikům, ukázková data'
 	},
 	'iont-landing-hd': {
 		en: 'IONT landing page introducing the public EV charging network',
@@ -66,10 +86,6 @@ const ALT: Record<string, Record<Locale, string>> = {
 		en: 'IONT admin panel: the charger pairing screen with its code next to two phone screens with charger status and settings',
 		cs: 'Administrace IONT: párování nabíječky s kódem vedle dvou obrazovek telefonu se stavem a nastavením nabíječky'
 	},
-	'iont-hardware-hd': {
-		en: 'Product renders of IONT chargers: two charging posts and a wall-mounted unit with its cable',
-		cs: 'Produktové vizualizace nabíječek IONT: dva nabíjecí stojany a nástěnná jednotka s kabelem'
-	},
 	'kreditozrouti-timetable-hd': {
 		en: 'Kreditožrouti week timetable with seven courses and one conflict, lecturer names hidden',
 		cs: 'Týdenní rozvrh v Kreditožroutech se sedmi předměty a jednou kolizí, jména vyučujících jsou skrytá'
@@ -93,6 +109,18 @@ const ALT: Record<string, Record<Locale, string>> = {
 	'kreditozrouti-mobile': {
 		en: 'Kreditožrouti on a phone, showing the day view of a timetable',
 		cs: 'Kreditožrouti v telefonu s denním pohledem na rozvrh'
+	},
+	'intedat-main-hd': {
+		en: 'Intedat task list: companies with status, contact person and next contact date, next to filters for status, date and location, demo data',
+		cs: 'Seznam úkolů v Intedatu: firmy se stavem, kontaktní osobou a termínem dalšího kontaktu vedle filtrů podle stavu, data a lokality, ukázková data'
+	},
+	'intedat-search-hd': {
+		en: 'Intedat global search for logistics: matching companies and contact people with the term highlighted in each result, demo data',
+		cs: 'Globální vyhledávání v Intedatu pro výraz logistics: nalezené firmy a kontaktní osoby se zvýrazněným výrazem, ukázková data'
+	},
+	'intedat-detail-hd': {
+		en: 'Intedat company detail: contact persons, the next meeting, activity buttons and the history of previous activities, demo data',
+		cs: 'Detail firmy v Intedatu: kontaktní osoby, plánovaná schůzka, tlačítka aktivit a historie předchozích aktivit, ukázková data'
 	},
 	'scorecard-thumbnail-hd': {
 		en: 'Scorecard table of risk treatments with deadline, function status, scope status and owner, filled with demo data',

@@ -31,10 +31,12 @@ Production gets its content from the [V7 seed](../runbooks/v7-content-seed.md), 
 
 These stay exactly as written until you confirm them.
 
+The hash in the DeepTrace copy and alt text was corrected from SHA-256 to SHA-512, which is what the app computes (`crypto.subtle.digest`). Nothing needed from you.
+
 | Claim                                                               | Field                                                                                    |
 | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | IONT: "ČSOB-certified", "five months" to launch                     | Projects > IONT platform > Case study > `lede`, `impact`, and Home card > `description`  |
-| DeepTrace: "Supports 1000+ nodes", "SHA-256"                        | Projects > DeepTrace > Case study > `contributions`                                      |
+| DeepTrace: "Supports 1000+ nodes"                                   | Projects > DeepTrace > Case study > `contributions`                                      |
 | Contact: "on-site Thursdays and Fridays"                            | Globals > Contact > `intro`                                                              |
 | Scorecard shown as a case study, not linked on LinkedIn             | Projects > Scorecard; Home page > More work                                              |
 | "Seven companies", "12+ shipped projects"                           | Home page > Hero > `valueProp`; Résumé > `bio`, Impact                                   |
@@ -52,58 +54,38 @@ These stay exactly as written until you confirm them.
 
 ## 5. Screenshots per project
 
-Each row is one window on the case study. Field: Projects > project > Case study > Gallery > row N > `image`. Rows count from 1. An uploaded image replaces the placeholder and its label. No client data in any capture. New images need a new filename, because the seed keeps a file it already has.
+Each row is one window on the case study. Field: Projects > project > Case study > Gallery > row N > `image`. Rows count from 1. No placeholders are left. No client data in any capture. New images need a new filename, because the seed keeps a file it already has.
 
 Every image was rebuilt at 2400 px where a sharp source exists, so it stays crisp on 2× screens. The site also serves 1600 and 800 px sizes.
 
 ### IONT platform (flagship)
 
-All rows and the hero are sharp and come from the original 4K to 9K files. Rows 5 and 6 use the design mockups, row 6 also the real pairing screen. Row 7 shows product renders, which are only 800 px, so it is the softest image here. A photo of a real charger would replace it.
+All rows and the hero are sharp and come from the original 4K to 9K files. Rows 5 and 6 use the design mockups, row 6 also the real pairing screen. Row 7 shows three installed chargers, from the iont.tech photos you approved.
 
 ### DeepTrace
 
-| Row | Window                               | Show                                                | Capture                     |
-| --- | ------------------------------------ | --------------------------------------------------- | --------------------------- |
-| 2   | `~/projects/deeptrace/lineage-graph` | Lineage graph, full screen                          | 1440 × 900 at 2×, demo data |
-| 3   | `~/projects/deeptrace/verification`  | Verification passed vs. tampered link, side by side | 1440 × 900 at 2×, demo data |
-
-The app starts, then redirects to the Cognito login, so only you can capture it. The hero and row 1 are still the 1600 px V6 files, and no sharper source exists; replace them in the same session. Case study > `impact` is empty. Add three rows (label, value, sub) if you can publish numbers.
+The hero and all three rows are fresh 2× captures of the running app on a mock API, filled with made-up data (Demo Analytics, DEMO-SAT 1). The hero is the lineage view, row 1 the verified hash chain, row 2 the trusted sources table, row 3 a passed chain next to a tampered one. Case study > `impact` is empty. Add three rows (label, value, sub) if you can publish numbers.
 
 ### Kreditožrouti
 
 The hero, light mode, timetable and course list are sharp. The hero and light mode are fresh 2× captures of the live site, showing the wizard. Lecturer names on the timetable are painted over, so they cannot be recovered.
 
-| Row | Window                           | Show                                          | Capture                         |
-| --- | -------------------------------- | --------------------------------------------- | ------------------------------- |
-| 4   | `~/projects/kreditozrouti/usage` | Usage chart: 589 visitors, 204 finished setup | Crop of the umami dashboard, 2× |
-
-The umami share link sits behind Cloudflare Access, so take the screenshot yourself or exclude the share path from Access. The numbers follow your figures for Jun 16 to Oct 31, 2026: 35% is 204 of 589 visitors. Umami's 40% counts from `wizard_start`, a different definition.
+Row 4 is your umami screenshot, 1277 px wide, so it is the softest image on this page. A 2× screenshot under a new filename would fix it. The figures follow your numbers for Jun 16 to Oct 31, 2026: 35% is 204 of 589 visitors. Umami's 40% counts from `wizard_start`, a different definition. The 204 appears in the case study text, not in the image.
 
 ### Intedat
 
-The only project with no image at all, and one of the four home cards, so this is the most visible gap on the site. It needs the full Docker and MySQL stack with a database, and there is no demo data, so it was not run. Only you can capture it from a demo instance.
+The hero (task list), row 1 (global search) and row 2 (company detail) are fresh 2× captures of web2 running alone on a mock API. Every company, person and activity is made up, and the search results are mocked, so they do not come from Elasticsearch.
 
-| Slot                            | Window                      | Show                       | Capture                     |
-| ------------------------------- | --------------------------- | -------------------------- | --------------------------- |
-| Case study > `thumbnail` (hero) | `~/projects/intedat/main`   | Main workflow screen       | 1440 × 900 at 2×, demo data |
-| Gallery row 1                   | `~/projects/intedat/search` | Search results             | 1440 × 900 at 2×, demo data |
-| Gallery row 2                   | `~/projects/intedat/detail` | A detail or editing screen | 1440 × 900 at 2×, demo data |
-
-No metrics: Case study > `impact` is empty, and nothing was published from the internal docs. The harvester benchmark reports 241 successes against 12 failures (95%) on one run, but it does not say what a success means and the case study does not mention the harvester. Check that Intedat allows showing any of the screenshots.
+- **Decide:** check that Intedat allows showing these screens. To withdraw them, set the rows back to placeholders in both copy files.
+- No metrics: Case study > `impact` is empty, and nothing was published from the internal docs. The harvester benchmark reports 241 successes against 12 failures (95%) on one run, but it does not say what a success means and the case study does not mention the harvester.
 
 ### Scorecard
 
-The hero and row 1 are fresh 2× captures of the running app, filled with made-up demo rows.
-
-| Row | Window                              | Show                                        | Capture                     |
-| --- | ----------------------------------- | ------------------------------------------- | --------------------------- |
-| 2   | `~/projects/corac_scorecard/report` | Report builder next to an exported PDF page | 1440 × 900 at 2×, demo data |
-
-Export PDF produced no file in the automated browser, so export one by hand. Case study > `impact` is empty.
+The hero and row 1 are fresh 2× captures of the running app, filled with made-up demo rows. Row 2 shows the overview and treatment pages of an exported PDF with the same rows. Case study > `impact` is empty.
 
 ### Disenchantment
 
-Row 2 is a fresh 2× capture of the GitHub repository. The hero (920 px) and the anvil row (from an 800 px GIF) stay as they are, because no sharper source exists. A new in-game capture would fix both.
+**To do:** new in-game captures, yours by hand. Row 2 is a fresh 2× capture of the GitHub repository. The hero (920 px) and the anvil row (from an 800 px GIF) stay as they are until then, because no sharper source exists.
 
 ## 6. Blog
 

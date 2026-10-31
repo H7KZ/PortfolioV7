@@ -398,7 +398,7 @@
           },
           {
             "path": "~/projects/iont_platform/hardware",
-            "image": "iont-hardware-hd"
+            "image": "iont-photos-hd"
           }
         ],
         "factsToConfirm": ["ČSOB certification wording", "five months to launch"]
@@ -433,7 +433,7 @@
           },
           {
             "title": "Client-side hash-chain verifier",
-            "body": "Pure-browser cryptographic integrity check. Walks the chain from leaf to root, validates each SHA-256 hash against a trusted anchor, flags any tampered link with precise diagnostics."
+            "body": "Pure-browser cryptographic integrity check. Walks the chain from leaf to root, validates each SHA-512 hash against a trusted anchor, flags any tampered link with precise diagnostics."
           },
           {
             "title": "Zero-trust auth with Cognito",
@@ -445,19 +445,19 @@
           }
         ],
         "stack": ["Vue 3", "TypeScript", "D3.js", "Vite", "pnpm", "Shadcn UI", "AWS Cognito", "OAuth", "REST API", "SubtleCrypto", "Node.js v22+"],
-        "hero": { "path": "~/projects/deeptrace", "image": "deeptrace-thumbnail" },
+        "hero": { "path": "~/projects/deeptrace", "image": "deeptrace-hero-hd" },
         "gallery": [
-          { "path": "~/projects/deeptrace/hashchain", "image": "deeptrace-hashchain" },
+          { "path": "~/projects/deeptrace/hashchain", "image": "deeptrace-hashchain-hd" },
           {
-            "path": "~/projects/deeptrace/lineage-graph",
-            "placeholder": { "label": "Lineage graph, full screen", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+            "path": "~/projects/deeptrace/trusted-sources",
+            "image": "deeptrace-trusted-hd"
           },
           {
             "path": "~/projects/deeptrace/verification",
-            "placeholder": { "label": "Verification passed vs. tampered link, side by side", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+            "image": "deeptrace-verify-hd"
           }
         ],
-        "factsToConfirm": ["1000+ nodes", "SHA-256"]
+        "factsToConfirm": ["1000+ nodes"]
       },
       {
         "slug": "kreditozrouti",
@@ -546,7 +546,7 @@
           },
           {
             "path": "~/projects/kreditozrouti/usage",
-            "placeholder": { "label": "Usage chart: 589 visitors, 204 finished setup", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+            "image": "kreditozrouti-usage-hd"
           }
         ]
       },
@@ -582,10 +582,10 @@
           { "title": "Product stakeholders", "body": "The single point of contact for product stakeholders on the platform." }
         ],
         "stack": ["Nuxt", "AdonisJS", "TypeScript", "Node.js", "PostgreSQL", "Redis", "Elasticsearch", "DigitalOcean"],
-        "hero": { "path": "~/projects/intedat/main", "placeholder": { "label": "Main workflow screen", "spec": "Capture 1440 × 900 at 2× · demo data only" } },
+        "hero": { "path": "~/projects/intedat/main", "image": "intedat-main-hd" },
         "gallery": [
-          { "path": "~/projects/intedat/search", "placeholder": { "label": "Search results", "spec": "Capture 1440 × 900 at 2× · demo data only" } },
-          { "path": "~/projects/intedat/detail", "placeholder": { "label": "A detail or editing screen", "spec": "Capture 1440 × 900 at 2× · demo data only" } }
+          { "path": "~/projects/intedat/search", "image": "intedat-search-hd" },
+          { "path": "~/projects/intedat/detail", "image": "intedat-detail-hd" }
         ]
       },
       {
@@ -626,7 +626,7 @@
           { "path": "~/projects/corac_scorecard/report", "image": "scorecard-thumbnail-hd" },
           {
             "path": "~/projects/corac_scorecard/report",
-            "placeholder": { "label": "Report builder next to an exported PDF page", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+            "image": "scorecard-report-hd"
           }
         ]
       },
