@@ -5,13 +5,12 @@ const { layout, menuButton } = defineProps<{ layout: LayoutData; menuButton: HTM
 const emit = defineEmits<{ close: [] }>()
 
 const layoutRef = computed(() => layout)
-const { items, currentOf, currentLocale, languageNames, localePath, trackSwitch } = useNavigation(layoutRef)
+const { items, currentOf, locales, currentLocale, languageNames, localePath, trackSwitch } = useNavigation(layoutRef)
 const href = useHref()
 const { trackLink } = useAnalytics()
 
 const navigation = computed(() => layout.navigation)
 const links = computed(() => [...items.value, ...(navigation.value.mobileMenu?.extraItems ?? []).map(item => ({ ...item, match: 'exact' as const }))])
-const LOCALES: Locale[] = ['en', 'cs']
 
 const panel = useTemplateRef<HTMLElement>('panel')
 
@@ -79,7 +78,7 @@ onBeforeUnmount(() => {
 		<div class="mt-auto flex flex-col items-start gap-4 pt-8">
 			<div class="flex gap-2 rounded-[8px] border border-line-strong p-1">
 				<NuxtLink
-					v-for="code in LOCALES"
+					v-for="code in locales"
 					:key="code"
 					:to="localePath(code)"
 					:hreflang="code"

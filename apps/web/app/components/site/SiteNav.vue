@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { data: layout } = useLayoutContent()
-const { items, currentOf, otherLocale, languageNames, localePath, trackSwitch } = useNavigation(layout)
+const { items, currentOf, locales, currentLocale, otherLocale, languageNames, localePath, trackSwitch } = useNavigation(layout)
 const href = useHref()
 const route = useRoute()
 
@@ -11,6 +11,8 @@ const wordmark = computed(() => {
 	const dot = text.lastIndexOf('.')
 	return dot > 0 ? { head: text.slice(0, dot), dot: '.', tail: text.slice(dot + 1) } : { head: text, dot: '', tail: '' }
 })
+/** The toggle label names the locales in order, "EN / CS", so the switcher's segments stay CMS copy. */
+const languageLabels = computed(() => (navigation.value?.toggleLanguageLabel ?? '').split('/').map(label => label.trim()))
 const menuOpen = useState('menu-open', () => false)
 const menuButton = useTemplateRef<HTMLButtonElement>('menuButton')
 
@@ -29,7 +31,11 @@ watch(
 <template>
 	<header v-if="navigation" class="sticky top-0 z-40 border-b border-line bg-bg">
 		<div class="site-container flex items-center justify-between gap-2 py-3.5 md:py-5">
-			<NuxtLink :to="href('/')" class="inline-flex min-h-11 items-center gap-2 rounded-[4px] type-mono-m text-ink no-underline" @click="closeMenu(false)">
+			<NuxtLink
+				:to="href('/')"
+				class="inline-flex min-h-11 items-center gap-2 rounded-[4px] type-mono-m text-ink no-underline transition-colors duration-150 ease-(--ease) hover:text-accent"
+				@click="closeMenu(false)"
+			>
 				<svg class="h-[18px] w-[9px] shrink-0 text-accent" viewBox="0 0 9 18" fill="currentColor" aria-hidden="true">
 					<path d="M0 0H9L4.5 4.5L2.5 9L5.5 11L9 18H0V0Z" />
 				</svg>
@@ -51,15 +57,20 @@ watch(
 				<UiButton kind="secondary" size="small" dot class="max-[359px]:hidden md:min-h-12 md:px-[22px] md:py-3.5" :to="href(navigation.hire.href)">{{
 					navigation.hire.label
 				}}</UiButton>
-				<NuxtLink
-					:to="localePath(otherLocale)"
-					:hreflang="otherLocale"
-					:lang="otherLocale"
-					class="inline-flex min-h-11 min-w-11 items-center rounded-[4px] px-2 py-3 type-mono-s text-ink-soft no-underline transition-colors duration-150 ease-(--ease) hover:text-ink max-md:hidden"
-					@click="trackSwitch(otherLocale)"
-					>{{ navigation.toggleLanguageLabel
-					}}<span v-if="languageNames?.[otherLocale]" class="sr-only"> ({{ languageNames[otherLocale] }})</span></NuxtLink
-				>
+				<div class="flex rounded-[8px] border border-line-strong max-md:hidden">
+					<NuxtLink
+						v-for="(code, index) in locales"
+						:key="code"
+						:to="localePath(code)"
+						:hreflang="code"
+						:lang="code"
+						:aria-current="code === currentLocale ? 'true' : undefined"
+						class="inline-flex min-h-[46px] min-w-11 items-center justify-center rounded-[7px] type-mono-s no-underline transition-colors duration-150 ease-(--ease)"
+						:class="code === currentLocale ? 'bg-surface-2 text-ink' : 'text-mute hover:text-ink'"
+						@click="code !== currentLocale && trackSwitch(code)"
+						>{{ languageLabels[index] ?? code }}<span v-if="languageNames?.[code]" class="sr-only"> ({{ languageNames[code] }})</span></NuxtLink
+					>
+				</div>
 				<button
 					ref="menuButton"
 					type="button"

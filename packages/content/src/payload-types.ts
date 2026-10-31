@@ -1676,6 +1676,9 @@ export interface Navigation {
     label: string;
     href: string;
   };
+  /**
+   * Language switcher labels, English first, separated by a slash: EN / CS.
+   */
   toggleLanguageLabel: string;
   toggleMenuLabel: string;
   closeMenuLabel?: string | null;
