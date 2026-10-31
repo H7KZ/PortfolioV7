@@ -435,8 +435,10 @@
       "shareLabel": "Bylo to užitečné?",
       "shareText": "Pošlete to někomu, komu to pomůže, nebo sledujte nové články přes RSS.",
       "readLabel": "Číst návod",
+      "copyLabel": "kopírovat",
+      "copiedLabel": "zkopírováno",
       "draftingLabel": "Rozpracováno",
-      "nextUpText": "Další články se píšou. Sledujte je přes RSS na jankominek.com/feed.xml."
+      "nextUpText": "Další články se píšou. Sledujte přes RSS: jankominek.com/feed.xml."
     },
     "privacy": {
       "label": "cat ./ochrana-udaju.md",

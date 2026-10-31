@@ -29,7 +29,14 @@ export const Blog = defineGlobal({
 						text('shareLabel', { required: true }),
 						textarea('shareText', { required: true }),
 						text('shareOnXLabel', { required: true }),
-						text('rssLabel', { required: true })
+						text('rssLabel', { required: true }),
+						{
+							type: 'row',
+							fields: [
+								text('copyLabel', { admin: { description: 'Button in the header of each code block, e.g. copy.' } }),
+								text('copiedLabel', { admin: { description: 'Button text for a moment after copying, e.g. copied.' } })
+							]
+						}
 					]
 				},
 				{

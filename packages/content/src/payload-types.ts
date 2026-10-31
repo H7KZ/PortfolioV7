@@ -1421,6 +1421,14 @@ export interface Blog {
   shareText: string;
   shareOnXLabel: string;
   rssLabel: string;
+  /**
+   * Button in the header of each code block, e.g. copy.
+   */
+  copyLabel?: string | null;
+  /**
+   * Button text for a moment after copying, e.g. copied.
+   */
+  copiedLabel?: string | null;
   feedTitle: string;
   feedDescription: string;
   meta?: {
@@ -2361,6 +2369,8 @@ export interface BlogSelect<T extends boolean = true> {
   shareText?: T;
   shareOnXLabel?: T;
   rssLabel?: T;
+  copyLabel?: T;
+  copiedLabel?: T;
   feedTitle?: T;
   feedDescription?: T;
   meta?:

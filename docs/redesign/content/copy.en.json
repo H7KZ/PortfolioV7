@@ -266,8 +266,10 @@
       "shareLabel": "Found this useful?",
       "shareText": "Share it with someone who'd benefit, or follow new posts via RSS.",
       "readLabel": "Read the guide",
+      "copyLabel": "copy",
+      "copiedLabel": "copied",
       "draftingLabel": "Drafting",
-      "nextUpText": "More posts are in progress. Follow along via RSS at jankominek.com/feed.xml."
+      "nextUpText": "More posts in progress. Follow via RSS: jankominek.com/feed.xml."
     },
     "privacy": {
       "label": "cat ./privacy.md",

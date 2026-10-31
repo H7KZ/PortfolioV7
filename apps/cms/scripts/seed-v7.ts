@@ -14,8 +14,9 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { convertMarkdownToLexical, editorConfigFactory } from '@payloadcms/richtext-lexical'
-import { getPayload, type Payload } from 'payload'
+import { createLocalReq, getPayload, type Payload } from 'payload'
 import config from '../src/payload.config'
+import { renderRichText } from '../src/rich-text/render'
 
 type Locale = 'en' | 'cs'
 type Json = Record<string, unknown>
@@ -878,6 +879,25 @@ const TRAEFIK_FIXES: [string | RegExp, string][] = [
 	['wildcard TLS \u2014 all inside Docker Compose', 'wildcard TLS, all inside Docker Compose']
 ]
 
+/** Figma's window label for the Traefik post's code blocks, matched by the first line of the code. Blocks the design does not show keep the language as their label. */
+const TRAEFIK_FILENAMES: [string, string][] = [
+	['CF_API_EMAIL=', '~/traefik/.env'],
+	['docker network create public', 'terminal'],
+	['networks:\n    public:', '~/traefik/docker-compose.yml']
+]
+
+function setFilenames(node: unknown): void {
+	if (Array.isArray(node)) return node.forEach(setFilenames)
+	if (!isObject(node)) return
+	const fields = node.fields
+	if (node.type === 'block' && isObject(fields) && fields.blockType === 'Code' && typeof fields.code === 'string') {
+		const code = fields.code
+		const match = TRAEFIK_FILENAMES.find(([start]) => code.startsWith(start))
+		if (match) fields.filename = match[1]
+	}
+	Object.values(node).forEach(setFilenames)
+}
+
 function fixDashes(value: string): string {
 	let out = value.replace(/◆\s*/g, '')
 	for (const [from, to] of TRAEFIK_FIXES) out = typeof from === 'string' ? out.split(from).join(to) : out.replace(from, to)
@@ -898,6 +918,7 @@ async function importPostText(): Promise<void> {
 	const post = found.docs[0]
 	if (!post) return
 	const content = cleanTree(post.content)
+	setFilenames(content)
 	const description = fixDashes(post.description ?? '')
 	if (JSON.stringify([content, description]).includes('\u2014'))
 		throw new Error(
@@ -907,12 +928,30 @@ async function importPostText(): Promise<void> {
 					?.join(' / ')
 		)
 	const diff = [
-		...(JSON.stringify(content) === JSON.stringify(post.content) ? [] : ['content (em dashes)']),
+		...(JSON.stringify(content) === JSON.stringify(post.content) ? [] : ['content (em dashes, code file names)']),
 		...(description === (post.description ?? '') ? [] : ['description (em dash)'])
 	]
 	if (!report(`posts/${post.slug} text [en]`, diff) || DRY_RUN) return
 	// Only English is written: the post has no Czech copy and the site falls back to English for it.
 	await payload.update({ collection: 'posts', id: post.id, locale: 'en', data: { content: content as never, description, _status: 'published' }, depth: 0 })
+}
+
+/**
+ * The HTML of a post is rendered when it is saved, so a change to the renderer (code block markup, colors) only reaches a post that is saved again.
+ * Saving would also publish drafts, add versions and re-encode link URLs, and reading through the API re-encodes them too, so the stored content is read
+ * and the stored HTML replaced in SQL.
+ */
+async function renderPosts(): Promise<void> {
+	const req = await createLocalReq({}, payload)
+	const pool = (payload.db as unknown as { pool: { query(sql: string, values?: unknown[]): Promise<{ rows: Json[] }> } }).pool
+	const { rows } = await pool.query(
+		"select p.id, p.slug, l.content, l.content_html from posts p join posts_locales l on l._parent_id = p.id where l._locale = 'en' and l.content is not null order by p.id"
+	)
+	for (const row of rows) {
+		const html = await renderRichText(row.content as never, req)
+		if (!report(`posts/${row.slug} html [en]`, html === (row.content_html ?? '') ? [] : ['contentHtml'])) continue
+		if (!DRY_RUN) await pool.query("update posts_locales set content_html = $1 where _parent_id = $2 and _locale = 'en'", [html, row.id])
+	}
 }
 
 async function importRedirects(): Promise<void> {
@@ -944,6 +983,7 @@ await importExperience()
 await importProjects()
 await importPostCover()
 await importPostText()
+await renderPosts()
 await importRedirects()
 log(`done · ${changed} ${DRY_RUN ? 'would change' : 'changed'} · ${unchanged} unchanged`)
 process.exit(0)

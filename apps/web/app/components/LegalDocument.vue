@@ -45,7 +45,7 @@ const toc = computed(() => page.toc.filter(item => split.value.body.includes(`id
 				<section v-if="split.summary" class="flex flex-col gap-2.5 rounded-md border border-accent bg-accent-soft px-5 py-[18px] lg:px-6 lg:py-[22px]">
 					<p class="type-mono-label text-accent">{{ split.summary.label }}</p>
 					<!-- eslint-disable-next-line vue/no-v-html -->
-					<div class="legal-body" v-html="split.summary.list"></div>
+					<div class="legal-body max-w-[701px]" v-html="split.summary.list"></div>
 				</section>
 
 				<!-- eslint-disable-next-line vue/no-v-html -->
@@ -66,7 +66,7 @@ const toc = computed(() => page.toc.filter(item => split.value.body.includes(`id
 	gap: inherit;
 	font-family: var(--font-sans);
 	font-size: 16px;
-	line-height: 1.6;
+	line-height: 26px;
 	color: var(--color-ink-soft);
 }
 
@@ -114,7 +114,7 @@ const toc = computed(() => page.toc.filter(item => split.value.body.includes(`id
 	max-width: none;
 	padding: 0;
 	list-style: none;
-	font-size: 17px;
+	font-size: 16px;
 	line-height: 1.56;
 }
 
@@ -148,15 +148,19 @@ const toc = computed(() => page.toc.filter(item => split.value.body.includes(`id
 
 	.legal-body :deep(h2) {
 		font-size: 22px;
-		line-height: 1.22;
+		line-height: 27px;
 		letter-spacing: -0.4px;
+	}
+
+	.legal-body :deep(ul) {
+		font-size: 17px;
 	}
 }
 
 @media (min-width: 1024px) {
 	.legal-body {
 		font-size: 16px;
-		line-height: 1.6;
+		line-height: 26px;
 	}
 
 	.legal-body :deep(h2) {

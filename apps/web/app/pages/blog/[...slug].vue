@@ -24,6 +24,7 @@ const tags = computed(() => (post.value.tags ?? []).filter(tag => tag !== 'EN'))
 const description = computed(() => post.value.meta?.description ?? post.value.description ?? tags.value.join(', '))
 const publishedIso = computed(() => new Date(post.value.date).toISOString())
 const shareTitle = computed(() => page.value.shareLabel.replace(/^◆\s*/, ''))
+const backLabel = computed(() => splitGlyphs(page.value.backLabel).text)
 const shareOnX = computed(() => splitGlyphs(page.value.shareOnXLabel).text)
 const rss = computed(() => splitGlyphs(page.value.rssLabel).text)
 const shareUrl = computed(() => {
@@ -70,10 +71,10 @@ useHead(() => ({
 			<div class="flex max-w-[800px] min-w-0 flex-col gap-[18px] lg:flex-1 lg:gap-[22px]">
 				<NuxtLink
 					:to="href('/blog')"
-					class="-my-3 inline-flex min-h-11 items-center self-start type-mono-s text-ink-soft no-underline transition-colors duration-150 ease-(--ease) hover:text-ink [&>span[aria-hidden]]:mr-[0.6em] [&>span[aria-hidden]]:text-accent"
-					><GlyphLabel :text="page.backLabel"
-				/></NuxtLink>
-				<div class="flex flex-wrap items-center gap-x-2 gap-y-2.5">
+					class="-my-3 inline-flex min-h-11 items-center gap-[0.6em] self-start type-mono-s text-ink-soft no-underline transition-colors duration-150 ease-(--ease) hover:text-ink"
+					><ArrowGlyph class="-scale-x-100 text-accent" />{{ backLabel }}</NuxtLink
+				>
+				<div class="flex flex-wrap items-center gap-x-2 gap-y-2.5 [&_ul]:contents">
 					<p class="type-mono-s text-mute">
 						<time :datetime="publishedIso">{{
 							formatDate(post.date, dateLocale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
@@ -202,16 +203,83 @@ useHead(() => ({
 	color: var(--color-accent);
 }
 
-.post-body :deep(pre) {
+.post-body :deep(.code-block) {
 	max-width: none;
-	overflow-x: auto;
-	padding: 16px 18px 18px;
+	overflow: hidden;
 	border: 1px solid var(--color-line);
 	border-radius: var(--radius-md);
-	background: var(--color-surface) !important;
+	background: var(--color-surface);
 	font-family: var(--font-mono);
 	font-size: 13px;
-	line-height: 1.5;
+	line-height: 20px;
+}
+
+.post-body :deep(.code-bar) {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 14px;
+	border-bottom: 1px solid var(--color-line);
+}
+
+.post-body :deep(.code-dots) {
+	display: flex;
+	gap: 8px;
+}
+
+.post-body :deep(.code-dots i) {
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	background: var(--color-line-strong);
+}
+
+.post-body :deep(.code-file) {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var(--color-mute);
+}
+
+.post-body :deep(.code-copy) {
+	position: relative;
+	flex-shrink: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	color: var(--color-faint);
+	cursor: pointer;
+	transition: color 150ms var(--ease);
+}
+
+/* The bar is 41 px tall in the design; the hit area grows past it to reach 44 px. */
+.post-body :deep(.code-copy::after) {
+	content: '';
+	position: absolute;
+	inset: -12px -8px;
+}
+
+.post-body :deep(.code-copy:hover) {
+	color: var(--color-ink);
+}
+
+.post-body :deep(.code-copy:focus-visible) {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 4px;
+	border-radius: 4px;
+}
+
+.post-body :deep(pre) {
+	margin: 0;
+	overflow-x: auto;
+	padding: 16px 18px 18px;
+	background: none;
+	font-family: var(--font-mono);
+	font-size: 13px;
+	line-height: 20px;
 	tab-size: 4;
 }
 

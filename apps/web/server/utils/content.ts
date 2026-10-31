@@ -46,6 +46,17 @@ function slugify(text: string): string {
 		.replace(/^-+|-+$/g, '')
 }
 
+/** The CMS renders each code block's copy button with these markers, because the labels live in the blog global, not in the post. */
+function withCodeLabels(html: string, copy: string | null | undefined, copied: string | null | undefined): string {
+	if (!html.includes('%%copy%%')) return html
+	if (!copy) return html.replace(/<button type="button" class="code-copy"[^>]*>%%copy%%<\/button>/g, '')
+	return html.replaceAll('%%copy%%', escapeHtml(copy)).replaceAll('%%copied%%', escapeHtml(copied || copy))
+}
+
+function escapeHtml(value: string): string {
+	return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 /** Gives every h2 a stable id and lists them, so the contents box and the in-page links need nothing at render time. */
 function withHeadingIds(html: string | null | undefined): { html: string; toc: TocItem[] } {
 	const toc: TocItem[] = []
@@ -187,7 +198,7 @@ const loaders = {
 		const post = posts.docs[0]
 		if (!post) return null
 		const { html, toc } = withHeadingIds(post.contentHtml)
-		return { page, post: { ...post, contentHtml: html }, toc }
+		return { page, post: { ...post, contentHtml: withCodeLabels(html, page.copyLabel, page.copiedLabel) }, toc }
 	},
 
 	async project(slug: string, locale: Locale, draft: boolean): Promise<ProjectData | null> {

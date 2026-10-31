@@ -12,6 +12,8 @@ const site = computed(() => layout.value?.site)
 const showContactCta = computed(() => contactCta && route.meta.contactCta !== false)
 // SPEC 11: the Person profile belongs to the pages about Jan, not to every case study and post.
 const barePath = computed(() => route.path.replace(/^\/cs(?=\/|$)/, '') || '/')
+// Figma's desktop frames of posts and legal pages have no glow; their tablet and phone frames do.
+const flatOnDesktop = computed(() => barePath.value.startsWith('/blog/') || ['/privacy', '/terms'].includes(barePath.value))
 const isProfilePage = computed(() => ['/', '/resume'].includes(barePath.value))
 
 useHead(() => {
@@ -96,7 +98,7 @@ useHead(() => {
 			>{{ site?.skipToContent }}</a
 		>
 
-		<div class="page-backdrop" :class="{ 'page-backdrop--home': barePath === '/' }" aria-hidden="true"></div>
+		<div class="page-backdrop" :class="{ 'page-backdrop--home': barePath === '/', 'page-backdrop--flat-lg': flatOnDesktop }" aria-hidden="true"></div>
 
 		<SiteNav />
 		<main id="main" class="relative z-[1] flex-1" tabindex="-1" data-menu-inert>

@@ -389,6 +389,10 @@
 		--backdrop-glow: radial-gradient(ellipse 900px 450px at calc(50% + 360px) 360px, rgb(91 227 143 / 0.1), rgb(91 227 143 / 0) 70%);
 	}
 
+	.page-backdrop--flat-lg {
+		--backdrop-glow: none;
+	}
+
 	.page-backdrop--home {
 		--backdrop-height: 1100px;
 		--backdrop-fade:
