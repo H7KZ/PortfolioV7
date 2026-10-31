@@ -215,6 +215,7 @@
         "sub": "Převzato přímo z doporučení na LinkedInu, bez úprav. Citace jsou v původní angličtině.",
         "readMoreLabel": "Číst dál ↗",
         "allRecommendationsLabel": "Zobrazit všech {count} doporučení na LinkedInu ↗",
+        "allRecommendationsUrl": "https://www.linkedin.com/in/jan-kominek/details/recommendations/",
         "quoteLimit": 152
       }
     },
@@ -505,81 +506,13 @@
     "testimonialsNote": "Quotes are LinkedIn recommendations, quoted verbatim in English in both locales. The home shows three; the cut point and 'Read more' come from home.testimonials.quoteLimit. Marek Vospěl, Petr Krejci and Zdeněk Glazer stay in the CMS with home visibility off.",
     "projects": [
       {
-        "slug": "deeptrace",
-        "redirectFrom": ["/projects/corac_sith"],
+        "slug": "iont_platform",
+        "redirectFrom": ["/projects/iont_info", "/projects/iont_charge", "/projects/iont_admin"],
         "order": 1,
         "card": {
           "show": true,
           "size": "featured",
           "badge": "Vlajková loď",
-          "year": "2025–2026",
-          "meta": "CORAC Engineering / Senior frontend",
-          "description": "Ověřování hash chainu přímo v prohlížeči, grafy dodavatelského řetězce v D3.js a zero-trust přihlašování pro citlivou pipeline dat z pozorování Země. Jediný frontend engineer.",
-          "chips": ["Vue 3", "D3.js", "AWS Cognito", "Vite"]
-        },
-        "kicker": "CORAC Engineering · 2025–2026",
-        "title": "DeepTrace.",
-        "lede": "Zero-trust platforma pro ověřování původu dat z pozorování Země. Původ a integritu souborů ověřuje v prohlížeči, aniž by se citlivé soubory kamkoli přenášely.",
-        "role": "Senior Frontend Engineer",
-        "timeline": "duben 2025 – srpen 2026",
-        "sector": "GovTech · Aerospace",
-        "impact": [],
-        "challenge": [
-          "Data z pozorování Země jsou citlivá a obrovská. Poskytovatelé i odběratelé potřebují ověřit, že s nimi mezi sběrem, zpracováním a doručením nikdo nemanipuloval, jenže samotné soubory často nesmí opustit svou síť.",
-          "DeepTrace to řeší ověřováním na straně klienta: prohlížeč stáhne kryptografický hash chain, sestaví z něj graf původu a každý krok ověří proti důvěryhodným zdrojům, aniž by provozovatel kdy držel surová data."
-        ],
-        "contributions": [
-          {
-            "title": "Vizualizace původu v D3.js",
-            "body": "Interaktivní silově řízený graf původu dat. Každý uzel je krok zpracování, hrany jsou transformace ověřené hashem. Zvládne přes 1000 uzlů se zoomem, posunem a zvýrazněním podle dotazu."
-          },
-          {
-            "title": "Ověřovač hash chainu v prohlížeči",
-            "body": "Kryptografická kontrola integrity čistě v prohlížeči. Projde řetězec od listu ke kořeni, ověří každý SHA-256 hash proti důvěryhodné kotvě a pozměněný článek označí s přesnou diagnostikou."
-          },
-          {
-            "title": "Zero-trust přihlašování přes Cognito",
-            "body": "OAuth flow přes AWS Cognito, přístupové tokeny se nikdy nedostanou na server. Oddělená oprávnění pro poskytovatele a odběratele dat, citlivé operace hlídá ověření hash chainu na úrovni relace."
-          },
-          {
-            "title": "Stack Vue 3 + Vite + Shadcn",
-            "body": "Projekt jsem založil od nuly. Striktní TypeScript, automatický linting, pnpm workspaces, CI s náhledovými nasazeními. Zavedl jsem postupy, které pak převzal zbytek týmu."
-          }
-        ],
-        "stack": ["Vue 3", "TypeScript", "D3.js", "Vite", "pnpm", "Shadcn UI", "AWS Cognito", "OAuth", "REST API", "SubtleCrypto", "Node.js v22+"],
-        "hero": {
-          "path": "~/projects/deeptrace",
-          "image": "deeptrace-thumbnail"
-        },
-        "gallery": [
-          {
-            "path": "~/projects/deeptrace/hashchain",
-            "image": "deeptrace-hashchain"
-          },
-          {
-            "path": "~/projects/deeptrace/lineage-graph",
-            "placeholder": {
-              "label": "Graf původu přes celou obrazovku",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
-          },
-          {
-            "path": "~/projects/deeptrace/verification",
-            "placeholder": {
-              "label": "Úspěšné ověření a pozměněný článek vedle sebe",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
-          }
-        ],
-        "factsToConfirm": ["1000+ nodes", "SHA-256"]
-      },
-      {
-        "slug": "iont_platform",
-        "redirectFrom": ["/projects/iont_info", "/projects/iont_charge", "/projects/iont_admin"],
-        "order": 2,
-        "card": {
-          "show": true,
-          "size": "featured",
           "year": "2023–2024",
           "meta": "IONT tech / Fullstack",
           "description": "Aplikace pro řidiče, platební brána ČSOB a administrace přímo v nabíječce pro veřejnou síť nabíjecích stanic. Od prázdného repozitáře ke spuštění za pět měsíců.",
@@ -678,6 +611,74 @@
           }
         ],
         "factsToConfirm": ["ČSOB certification wording", "five months to launch"]
+      },
+      {
+        "slug": "deeptrace",
+        "redirectFrom": ["/projects/corac_sith"],
+        "order": 2,
+        "card": {
+          "show": true,
+          "size": "featured",
+          "year": "2025–2026",
+          "meta": "CORAC Engineering / Senior frontend",
+          "description": "Ověřování hash chainu přímo v prohlížeči, grafy dodavatelského řetězce v D3.js a zero-trust přihlašování pro citlivou pipeline dat z pozorování Země. Jediný frontend engineer.",
+          "chips": ["Vue 3", "D3.js", "AWS Cognito", "Vite"]
+        },
+        "kicker": "CORAC Engineering · 2025–2026",
+        "title": "DeepTrace.",
+        "lede": "Zero-trust platforma pro ověřování původu dat z pozorování Země. Původ a integritu souborů ověřuje v prohlížeči, aniž by se citlivé soubory kamkoli přenášely.",
+        "role": "Senior Frontend Engineer",
+        "timeline": "duben 2025 – srpen 2026",
+        "sector": "GovTech · Aerospace",
+        "impact": [],
+        "challenge": [
+          "Data z pozorování Země jsou citlivá a obrovská. Poskytovatelé i odběratelé potřebují ověřit, že s nimi mezi sběrem, zpracováním a doručením nikdo nemanipuloval, jenže samotné soubory často nesmí opustit svou síť.",
+          "DeepTrace to řeší ověřováním na straně klienta: prohlížeč stáhne kryptografický hash chain, sestaví z něj graf původu a každý krok ověří proti důvěryhodným zdrojům, aniž by provozovatel kdy držel surová data."
+        ],
+        "contributions": [
+          {
+            "title": "Vizualizace původu v D3.js",
+            "body": "Interaktivní silově řízený graf původu dat. Každý uzel je krok zpracování, hrany jsou transformace ověřené hashem. Zvládne přes 1000 uzlů se zoomem, posunem a zvýrazněním podle dotazu."
+          },
+          {
+            "title": "Ověřovač hash chainu v prohlížeči",
+            "body": "Kryptografická kontrola integrity čistě v prohlížeči. Projde řetězec od listu ke kořeni, ověří každý SHA-256 hash proti důvěryhodné kotvě a pozměněný článek označí s přesnou diagnostikou."
+          },
+          {
+            "title": "Zero-trust přihlašování přes Cognito",
+            "body": "OAuth flow přes AWS Cognito, přístupové tokeny se nikdy nedostanou na server. Oddělená oprávnění pro poskytovatele a odběratele dat, citlivé operace hlídá ověření hash chainu na úrovni relace."
+          },
+          {
+            "title": "Stack Vue 3 + Vite + Shadcn",
+            "body": "Projekt jsem založil od nuly. Striktní TypeScript, automatický linting, pnpm workspaces, CI s náhledovými nasazeními. Zavedl jsem postupy, které pak převzal zbytek týmu."
+          }
+        ],
+        "stack": ["Vue 3", "TypeScript", "D3.js", "Vite", "pnpm", "Shadcn UI", "AWS Cognito", "OAuth", "REST API", "SubtleCrypto", "Node.js v22+"],
+        "hero": {
+          "path": "~/projects/deeptrace",
+          "image": "deeptrace-thumbnail"
+        },
+        "gallery": [
+          {
+            "path": "~/projects/deeptrace/hashchain",
+            "image": "deeptrace-hashchain"
+          },
+          {
+            "path": "~/projects/deeptrace/lineage-graph",
+            "placeholder": {
+              "label": "Graf původu přes celou obrazovku",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          },
+          {
+            "path": "~/projects/deeptrace/verification",
+            "placeholder": {
+              "label": "Úspěšné ověření a pozměněný článek vedle sebe",
+              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
+            }
+          }
+        ],
+        "factsToConfirm": ["1000+ nodes", "SHA-256"]
       },
       {
         "slug": "kreditozrouti",
@@ -1068,7 +1069,7 @@
         ]
       }
     ],
-    "projectsNote": "Next-case-study order follows 'order' and wraps: DeepTrace → IONT platform → Kreditožrouti → Intedat → Scorecard → Disenchantment → DeepTrace. Archived (published, card.show false, never linked): pangolin, noteful. 'iont_charge' and 'iont_admin' redirect to iont_platform.",
+    "projectsNote": "Next-case-study order follows 'order' and wraps: IONT platform → DeepTrace → Kreditožrouti → Intedat → Scorecard → Disenchantment → IONT platform. Archived (published, card.show false, never linked): pangolin, noteful. 'iont_charge' and 'iont_admin' redirect to iont_platform.",
     "experience": {
       "work": [
         {

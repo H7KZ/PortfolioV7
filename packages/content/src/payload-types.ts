@@ -1286,6 +1286,10 @@ export interface Home {
    */
   allRecommendationsLabel?: string | null;
   /**
+   * LinkedIn recommendations page. Falls back to the LinkedIn profile from Site settings.
+   */
+  allRecommendationsUrl?: string | null;
+  /**
    * Longer quotes are cut and link to LinkedIn.
    */
   quoteLimit?: number | null;
@@ -2250,6 +2254,7 @@ export interface HomeSelect<T extends boolean = true> {
       };
   readMoreLabel?: T;
   allRecommendationsLabel?: T;
+  allRecommendationsUrl?: T;
   quoteLimit?: T;
   meta?:
     | T
