@@ -1,5 +1,7 @@
 import type { LayoutData, Locale } from '#shared/types/content'
 
+const LOCALES: Locale[] = ['en', 'cs']
+
 interface NavItem {
 	href: string
 	match?: 'exact' | 'prefix' | null
@@ -38,5 +40,5 @@ export function useNavigation(layout: Ref<LayoutData | undefined>) {
 		track('locale-switch', { to: target })
 	}
 
-	return { items, isActive, currentOf, currentLocale: locale, otherLocale, languageNames, localePath, trackSwitch }
+	return { items, isActive, currentOf, locales: LOCALES, currentLocale: locale, otherLocale, languageNames, localePath, trackSwitch }
 }

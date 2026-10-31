@@ -31,7 +31,8 @@ export default defineNuxtConfig({
 				{ rel: 'icon', type: 'image/svg+xml', href: '/favicon/favicon.svg' },
 				{ rel: 'shortcut icon', href: '/favicon/favicon.ico' },
 				{ rel: 'apple-touch-icon', sizes: '180x180', href: '/favicon/apple-touch-icon.png' },
-				{ rel: 'manifest', href: '/favicon/site.webmanifest' },
+				// Manifest requests omit cookies by default, and on development Cloudflare Access would redirect them to its login.
+				{ rel: 'manifest', href: '/favicon/site.webmanifest', crossorigin: 'use-credentials' },
 				{ rel: 'author', href: '/humans.txt' },
 				{ rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/space-grotesk-latin-wght-normal.woff2', crossorigin: '' }
 			]

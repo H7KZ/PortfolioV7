@@ -34,7 +34,17 @@ export const Navigation = defineGlobal({
 			]
 		},
 		link('hire', 'Hire button'),
-		{ type: 'row', fields: [text('toggleLanguageLabel', { required: true }), text('toggleMenuLabel', { required: true }), text('closeMenuLabel')] },
+		{
+			type: 'row',
+			fields: [
+				text('toggleLanguageLabel', {
+					required: true,
+					admin: { description: 'Language switcher labels, English first, separated by a slash: EN / CS.' }
+				}),
+				text('toggleMenuLabel', { required: true }),
+				text('closeMenuLabel')
+			]
+		},
 		text('currentLabel', { admin: { description: 'Marker next to the current page in the mobile menu.' } }),
 		group('languageNames', [{ type: 'row', fields: [text('en'), text('cs')] }], {
 			admin: { description: 'Names in the language switcher, each written in its own language.' }

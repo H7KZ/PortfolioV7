@@ -20,7 +20,7 @@ export default defineEventHandler(event => {
 		'x-frame-options': 'DENY',
 		'x-xss-protection': '0',
 		'referrer-policy': 'strict-origin-when-cross-origin',
-		'permissions-policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+		'permissions-policy': 'camera=(), microphone=(), geolocation=()',
 		'cross-origin-opener-policy': 'same-origin'
 	})
 	if (useRuntimeConfig().public.noindex) setResponseHeader(event, 'x-robots-tag', 'noindex, nofollow')
