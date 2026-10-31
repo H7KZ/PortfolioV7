@@ -2,22 +2,6 @@
   "note": "Upload the AVIF/WebP pair to the CMS media collection (the web serves /media/<file>). 'name' matches the image keys in content/copy.*.json. Alt text lives in the CMS media 'alt' field; write it in both locales. Dark-treated PNG sources live in the Figma file, not here.",
   "assets": [
     {
-      "name": "deeptrace-thumbnail",
-      "source": "img_dark/projects-corac_sith-thumbnail.png",
-      "width": 1600,
-      "height": 1066,
-      "description": "DeepTrace hero, dark-treated",
-      "files": ["deeptrace-thumbnail-800.avif", "deeptrace-thumbnail-800.webp", "deeptrace-thumbnail.avif", "deeptrace-thumbnail.webp"]
-    },
-    {
-      "name": "deeptrace-hashchain",
-      "source": "img_dark/projects-corac_sith-hashchain.png",
-      "width": 1600,
-      "height": 1066,
-      "description": "DeepTrace hash-chain view",
-      "files": ["deeptrace-hashchain-800.avif", "deeptrace-hashchain-800.webp", "deeptrace-hashchain.avif", "deeptrace-hashchain.webp"]
-    },
-    {
       "name": "kreditozrouti-mobile",
       "source": "img/kz_mobile.jpg",
       "width": 780,
@@ -129,14 +113,6 @@
         "iont-driver-hd-800.avif",
         "iont-driver-hd-800.webp"
       ]
-    },
-    {
-      "name": "iont-hardware-hd",
-      "source": "e-car and E-CC product renders",
-      "width": 1600,
-      "height": 855,
-      "description": "iont-hardware",
-      "files": ["iont-hardware-hd.avif", "iont-hardware-hd.webp", "iont-hardware-hd-800.avif", "iont-hardware-hd-800.webp"]
     },
     {
       "name": "iont-hero-hd",
@@ -279,6 +255,149 @@
         "scorecard-thumbnail-hd-1600.webp",
         "scorecard-thumbnail-hd-800.avif",
         "scorecard-thumbnail-hd-800.webp"
+      ]
+    },
+    {
+      "name": "iont-photos-hd",
+      "source": "Installed charger photos from iont.tech, approved by the owner",
+      "width": 2400,
+      "height": 1282,
+      "description": "iont-photos",
+      "files": [
+        "iont-photos-hd.avif",
+        "iont-photos-hd.webp",
+        "iont-photos-hd-1600.avif",
+        "iont-photos-hd-1600.webp",
+        "iont-photos-hd-800.avif",
+        "iont-photos-hd-800.webp"
+      ]
+    },
+    {
+      "name": "scorecard-report-hd",
+      "source": "Exported PDF, overview and treatment pages, demo rows",
+      "width": 2400,
+      "height": 1282,
+      "description": "scorecard-report",
+      "files": [
+        "scorecard-report-hd.avif",
+        "scorecard-report-hd.webp",
+        "scorecard-report-hd-1600.avif",
+        "scorecard-report-hd-1600.webp",
+        "scorecard-report-hd-800.avif",
+        "scorecard-report-hd-800.webp"
+      ]
+    },
+    {
+      "name": "kreditozrouti-usage-hd",
+      "source": "Owner umami dashboard screenshot, 1277 px",
+      "width": 1277,
+      "height": 692,
+      "description": "kreditozrouti-usage",
+      "files": ["kreditozrouti-usage-hd.avif", "kreditozrouti-usage-hd.webp", "kreditozrouti-usage-hd-800.avif", "kreditozrouti-usage-hd-800.webp"]
+    },
+    {
+      "name": "deeptrace-hero-hd",
+      "source": "Running app at 2x, mock API with demo data",
+      "width": 2400,
+      "height": 1350,
+      "description": "deeptrace-hero",
+      "files": [
+        "deeptrace-hero-hd.avif",
+        "deeptrace-hero-hd.webp",
+        "deeptrace-hero-hd-1600.avif",
+        "deeptrace-hero-hd-1600.webp",
+        "deeptrace-hero-hd-800.avif",
+        "deeptrace-hero-hd-800.webp"
+      ]
+    },
+    {
+      "name": "deeptrace-hashchain-hd",
+      "source": "Running app at 2x, mock API with demo data",
+      "width": 2400,
+      "height": 1283,
+      "description": "deeptrace-hashchain",
+      "files": [
+        "deeptrace-hashchain-hd.avif",
+        "deeptrace-hashchain-hd.webp",
+        "deeptrace-hashchain-hd-1600.avif",
+        "deeptrace-hashchain-hd-1600.webp",
+        "deeptrace-hashchain-hd-800.avif",
+        "deeptrace-hashchain-hd-800.webp"
+      ]
+    },
+    {
+      "name": "deeptrace-trusted-hd",
+      "source": "Running app at 2x, mock API with demo data",
+      "width": 2400,
+      "height": 1350,
+      "description": "deeptrace-trusted",
+      "files": [
+        "deeptrace-trusted-hd.avif",
+        "deeptrace-trusted-hd.webp",
+        "deeptrace-trusted-hd-1600.avif",
+        "deeptrace-trusted-hd-1600.webp",
+        "deeptrace-trusted-hd-800.avif",
+        "deeptrace-trusted-hd-800.webp"
+      ]
+    },
+    {
+      "name": "deeptrace-verify-hd",
+      "source": "Running app at 2x, mock API with demo data, pass next to tamper",
+      "width": 2400,
+      "height": 1282,
+      "description": "deeptrace-verify",
+      "files": [
+        "deeptrace-verify-hd.avif",
+        "deeptrace-verify-hd.webp",
+        "deeptrace-verify-hd-1600.avif",
+        "deeptrace-verify-hd-1600.webp",
+        "deeptrace-verify-hd-800.avif",
+        "deeptrace-verify-hd-800.webp"
+      ]
+    },
+    {
+      "name": "intedat-main-hd",
+      "source": "web2 at 2x on a mock API with made-up demo data",
+      "width": 2400,
+      "height": 1500,
+      "description": "intedat-main",
+      "files": [
+        "intedat-main-hd.avif",
+        "intedat-main-hd.webp",
+        "intedat-main-hd-1600.avif",
+        "intedat-main-hd-1600.webp",
+        "intedat-main-hd-800.avif",
+        "intedat-main-hd-800.webp"
+      ]
+    },
+    {
+      "name": "intedat-search-hd",
+      "source": "web2 at 2x on a mock API with made-up demo data",
+      "width": 2400,
+      "height": 1500,
+      "description": "intedat-search",
+      "files": [
+        "intedat-search-hd.avif",
+        "intedat-search-hd.webp",
+        "intedat-search-hd-1600.avif",
+        "intedat-search-hd-1600.webp",
+        "intedat-search-hd-800.avif",
+        "intedat-search-hd-800.webp"
+      ]
+    },
+    {
+      "name": "intedat-detail-hd",
+      "source": "web2 at 2x on a mock API with made-up demo data",
+      "width": 2400,
+      "height": 1500,
+      "description": "intedat-detail",
+      "files": [
+        "intedat-detail-hd.avif",
+        "intedat-detail-hd.webp",
+        "intedat-detail-hd-1600.avif",
+        "intedat-detail-hd-1600.webp",
+        "intedat-detail-hd-800.avif",
+        "intedat-detail-hd-800.webp"
       ]
     }
   ]

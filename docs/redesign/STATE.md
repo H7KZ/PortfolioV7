@@ -83,8 +83,8 @@ Owner checklist (SPEC 15):
 1. Review and merge to `main` (deploys development).
 2. Seed production with `docs/runbooks/v7-content-seed.md`, dry run first.
 3. Turn off Cloudflare Web Analytics automatic setup for the zone.
-4. Confirm the facts: DeepTrace "1000+ nodes" and "SHA-256"; IONT "ČSOB-certified" and "five months"; contact "on-site Thursdays and Fridays"; Scorecard shown as a case study.
-5. Upload real screenshots for the placeholders (shot list: each placeholder's spec).
+4. Confirm the facts: DeepTrace "1000+ nodes"; IONT "ČSOB-certified" and "five months"; contact "on-site Thursdays and Fridays"; Scorecard shown as a case study.
+5. Replace the Disenchantment hero and anvil row with new in-game captures; no other screenshots remain (see `OWNER-TODO.md`).
 6. Have `/cs` read once by a native speaker.
 7. Deploy production through the Deploy workflow.
 

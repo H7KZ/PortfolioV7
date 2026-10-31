@@ -598,7 +598,7 @@
           },
           {
             "path": "~/projects/iont_platform/hardware",
-            "image": "iont-hardware-hd"
+            "image": "iont-photos-hd"
           }
         ],
         "factsToConfirm": ["ČSOB certification wording", "five months to launch"]
@@ -633,7 +633,7 @@
           },
           {
             "title": "Ověřovač hash chainu v prohlížeči",
-            "body": "Kryptografická kontrola integrity čistě v prohlížeči. Projde řetězec od listu ke kořeni, ověří každý SHA-256 hash proti důvěryhodné kotvě a pozměněný článek označí s přesnou diagnostikou."
+            "body": "Kryptografická kontrola integrity čistě v prohlížeči. Projde řetězec od listu ke kořeni, ověří každý SHA-512 hash proti důvěryhodné kotvě a pozměněný článek označí s přesnou diagnostikou."
           },
           {
             "title": "Zero-trust přihlašování přes Cognito",
@@ -647,29 +647,23 @@
         "stack": ["Vue 3", "TypeScript", "D3.js", "Vite", "pnpm", "Shadcn UI", "AWS Cognito", "OAuth", "REST API", "SubtleCrypto", "Node.js v22+"],
         "hero": {
           "path": "~/projects/deeptrace",
-          "image": "deeptrace-thumbnail"
+          "image": "deeptrace-hero-hd"
         },
         "gallery": [
           {
             "path": "~/projects/deeptrace/hashchain",
-            "image": "deeptrace-hashchain"
+            "image": "deeptrace-hashchain-hd"
           },
           {
-            "path": "~/projects/deeptrace/lineage-graph",
-            "placeholder": {
-              "label": "Graf původu přes celou obrazovku",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
+            "path": "~/projects/deeptrace/trusted-sources",
+            "image": "deeptrace-trusted-hd"
           },
           {
             "path": "~/projects/deeptrace/verification",
-            "placeholder": {
-              "label": "Úspěšné ověření a pozměněný článek vedle sebe",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
+            "image": "deeptrace-verify-hd"
           }
         ],
-        "factsToConfirm": ["1000+ nodes", "SHA-256"]
+        "factsToConfirm": ["1000+ nodes"]
       },
       {
         "slug": "kreditozrouti",
@@ -859,10 +853,7 @@
           },
           {
             "path": "~/projects/kreditozrouti/usage",
-            "placeholder": {
-              "label": "Graf používání: 589 návštěvníků, 204 dokončilo nastavení",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
+            "image": "kreditozrouti-usage-hd"
           }
         ]
       },
@@ -909,25 +900,16 @@
         "stack": ["Nuxt", "AdonisJS", "TypeScript", "Node.js", "PostgreSQL", "Redis", "Elasticsearch", "DigitalOcean"],
         "hero": {
           "path": "~/projects/intedat/main",
-          "placeholder": {
-            "label": "Hlavní pracovní obrazovka",
-            "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-          }
+          "image": "intedat-main-hd"
         },
         "gallery": [
           {
             "path": "~/projects/intedat/search",
-            "placeholder": {
-              "label": "Výsledky vyhledávání",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
+            "image": "intedat-search-hd"
           },
           {
             "path": "~/projects/intedat/detail",
-            "placeholder": {
-              "label": "Obrazovka detailu nebo úprav",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
+            "image": "intedat-detail-hd"
           }
         ]
       },
@@ -977,10 +959,7 @@
           },
           {
             "path": "~/projects/corac_scorecard/report",
-            "placeholder": {
-              "label": "Editor reportu vedle exportované stránky PDF",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
+            "image": "scorecard-report-hd"
           }
         ]
       },

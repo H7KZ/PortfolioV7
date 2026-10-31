@@ -437,7 +437,7 @@ Visual tests: `apps/web/tests/redesign/visual.spec.ts` captures every route at t
 
 Keep these exactly as written in the copy; do not invent stronger claims, do not remove them. They are listed in the PR description for the owner to confirm:
 
-- DeepTrace: "Supports 1000+ nodes", "SHA-256".
+- DeepTrace: "Supports 1000+ nodes".
 - IONT: "ČSOB-certified", "five months" to launch.
 - Contact: "on-site Thursdays and Fridays".
 - Scorecard appears as a case study although it is not linked from LinkedIn yet.
