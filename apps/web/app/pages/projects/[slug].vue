@@ -30,12 +30,9 @@ const title = computed(() => {
 })
 const SECTION = 'site-container grid lg:grid-cols-[minmax(0,360fr)_minmax(0,840fr)] lg:gap-0'
 const HEADING = 'm-0 type-h3 text-ink'
-/** Figma crops each screenshot per breakpoint. */
-const HERO_RATIO = 'aspect-[348/245] md:aspect-[686/413] lg:aspect-[1198/680]'
 const HERO_PLACEHOLDER_RATIO = 'aspect-[348/271] md:aspect-[1198/671]'
 const SHOT_PLACEHOLDER_RATIO = 'aspect-[348/271] md:aspect-16/10'
-const SHOT_RATIO = 'aspect-[348/203] md:aspect-[686/399] lg:aspect-[1198/640]'
-/** Only the desktop frame crops a strip shot; tablet and phone keep the default ratio. */
+/** Screenshots show in full; only a shot marked as a strip is cropped, and only on desktop. */
 const STRIP_RATIO = 'aspect-[348/203] md:aspect-[686/399] lg:aspect-[1198/400]'
 const hasArchitecture = computed(() => (project.value.architecture?.nodes?.length ?? 0) > 0)
 
@@ -108,7 +105,7 @@ useHead(() => {
 				:path="project.heroPath"
 				:image="hero"
 				priority
-				:ratio="hero ? HERO_RATIO : HERO_PLACEHOLDER_RATIO"
+				:ratio="hero ? undefined : HERO_PLACEHOLDER_RATIO"
 				sizes="(min-width: 1280px) 1200px, 100vw"
 				:placeholder-kicker="labels.placeholderLabel"
 				:placeholder-suffix="labels.placeholderSuffix"
@@ -165,7 +162,7 @@ useHead(() => {
 				:key="screen.id ?? screen.path ?? ''"
 				:path="screen.path"
 				:image="screen.media"
-				:ratio="screen.media ? (screen.crop === 'strip' ? STRIP_RATIO : SHOT_RATIO) : SHOT_PLACEHOLDER_RATIO"
+				:ratio="screen.media ? (screen.crop === 'strip' ? STRIP_RATIO : undefined) : SHOT_PLACEHOLDER_RATIO"
 				sizes="(min-width: 1280px) 1200px, 100vw"
 				:placeholder-kicker="labels.placeholderLabel"
 				:placeholder-suffix="labels.placeholderSuffix"

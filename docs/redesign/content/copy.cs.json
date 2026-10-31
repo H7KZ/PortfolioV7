@@ -570,23 +570,19 @@
         "gallery": [
           {
             "path": "~/projects/iont_info/landing",
-            "image": "iont-landing-hd",
-            "crop": "strip"
+            "image": "iont-landing-hd"
           },
           {
             "path": "~/projects/iont_info/mobile",
-            "image": "iont-phones-hd",
-            "crop": "strip"
+            "image": "iont-phones-hd"
           },
           {
             "path": "~/projects/iont_charge",
-            "image": "iont-charge-hd",
-            "crop": "strip"
+            "image": "iont-charge-hd"
           },
           {
             "path": "~/projects/iont_admin",
-            "image": "iont-admin-hd",
-            "crop": "strip"
+            "image": "iont-admin-hd"
           },
           {
             "path": "~/projects/iont_platform/driver-app",

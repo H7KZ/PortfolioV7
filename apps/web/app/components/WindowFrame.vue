@@ -9,7 +9,7 @@ const {
 	placeholderSpec,
 	placeholderSuffix,
 	priority = false,
-	ratio = 'aspect-16/10',
+	ratio,
 	sizes = '(min-width: 1024px) 840px, 100vw'
 } = defineProps<{
 	path?: string | null
@@ -20,7 +20,7 @@ const {
 	/** Appended to the path while the window shows a placeholder, e.g. "placeholder". */
 	placeholderSuffix?: string | null
 	priority?: boolean
-	/** Tailwind aspect-ratio classes for the image area, per breakpoint when the Figma crop changes. */
+	/** Tailwind aspect-ratio classes that crop the image area. Without them the window takes the image's own shape. */
 	ratio?: string
 	sizes?: string
 }>()
@@ -29,6 +29,7 @@ const {
 const compactPath = computed(() => path?.replace(/^~\/projects\//, '~/'))
 /** Figma shows the suffix from tablet up; on a phone the path stays short. */
 const suffix = computed(() => (!image && placeholderSuffix ? ` · ${placeholderSuffix}` : ''))
+const imageShape = computed(() => (!ratio && image?.width && image.height ? `${image.width} / ${image.height}` : undefined))
 </script>
 
 <template>
@@ -43,7 +44,7 @@ const suffix = computed(() => (!image && placeholderSuffix ? ` · ${placeholderS
 				>
 			</template>
 		</div>
-		<div class="bg-surface-2" :class="ratio">
+		<div class="bg-surface-2" :class="ratio ?? (imageShape ? undefined : 'aspect-16/10')" :style="{ aspectRatio: imageShape }">
 			<ResponsiveImage v-if="image" :image="image" :priority="priority" :sizes="sizes" />
 			<ScreenshotPlaceholder v-else fill :kicker="placeholderKicker" :label="placeholderLabel" :spec="placeholderSpec" />
 		</div>
