@@ -326,18 +326,18 @@
       ]
     },
     {
-      "name": "deeptrace-trusted-hd",
+      "name": "deeptrace-sources-hd",
       "source": "Running app at 2x, mock API with demo data",
       "width": 2400,
-      "height": 1350,
-      "description": "deeptrace-trusted",
+      "height": 1282,
+      "description": "deeptrace-sources",
       "files": [
-        "deeptrace-trusted-hd.avif",
-        "deeptrace-trusted-hd.webp",
-        "deeptrace-trusted-hd-1600.avif",
-        "deeptrace-trusted-hd-1600.webp",
-        "deeptrace-trusted-hd-800.avif",
-        "deeptrace-trusted-hd-800.webp"
+        "deeptrace-sources-hd.avif",
+        "deeptrace-sources-hd.webp",
+        "deeptrace-sources-hd-1600.avif",
+        "deeptrace-sources-hd-1600.webp",
+        "deeptrace-sources-hd-800.avif",
+        "deeptrace-sources-hd-800.webp"
       ]
     },
     {
@@ -356,48 +356,48 @@
       ]
     },
     {
-      "name": "intedat-main-hd",
+      "name": "intedat-tasks-hd",
       "source": "web2 at 2x on a mock API with made-up demo data",
       "width": 2400,
-      "height": 1500,
-      "description": "intedat-main",
+      "height": 1362,
+      "description": "intedat-tasks",
       "files": [
-        "intedat-main-hd.avif",
-        "intedat-main-hd.webp",
-        "intedat-main-hd-1600.avif",
-        "intedat-main-hd-1600.webp",
-        "intedat-main-hd-800.avif",
-        "intedat-main-hd-800.webp"
+        "intedat-tasks-hd.avif",
+        "intedat-tasks-hd.webp",
+        "intedat-tasks-hd-1600.avif",
+        "intedat-tasks-hd-1600.webp",
+        "intedat-tasks-hd-800.avif",
+        "intedat-tasks-hd-800.webp"
       ]
     },
     {
-      "name": "intedat-search-hd",
+      "name": "intedat-global-search-hd",
       "source": "web2 at 2x on a mock API with made-up demo data",
       "width": 2400,
-      "height": 1500,
-      "description": "intedat-search",
+      "height": 1282,
+      "description": "intedat-global-search",
       "files": [
-        "intedat-search-hd.avif",
-        "intedat-search-hd.webp",
-        "intedat-search-hd-1600.avif",
-        "intedat-search-hd-1600.webp",
-        "intedat-search-hd-800.avif",
-        "intedat-search-hd-800.webp"
+        "intedat-global-search-hd.avif",
+        "intedat-global-search-hd.webp",
+        "intedat-global-search-hd-1600.avif",
+        "intedat-global-search-hd-1600.webp",
+        "intedat-global-search-hd-800.avif",
+        "intedat-global-search-hd-800.webp"
       ]
     },
     {
-      "name": "intedat-detail-hd",
+      "name": "intedat-company-hd",
       "source": "web2 at 2x on a mock API with made-up demo data",
       "width": 2400,
-      "height": 1500,
-      "description": "intedat-detail",
+      "height": 1282,
+      "description": "intedat-company",
       "files": [
-        "intedat-detail-hd.avif",
-        "intedat-detail-hd.webp",
-        "intedat-detail-hd-1600.avif",
-        "intedat-detail-hd-1600.webp",
-        "intedat-detail-hd-800.avif",
-        "intedat-detail-hd-800.webp"
+        "intedat-company-hd.avif",
+        "intedat-company-hd.webp",
+        "intedat-company-hd-1600.avif",
+        "intedat-company-hd-1600.webp",
+        "intedat-company-hd-800.avif",
+        "intedat-company-hd-800.webp"
       ]
     }
   ]
