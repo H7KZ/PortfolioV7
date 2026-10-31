@@ -10,8 +10,9 @@ const page = computed(() => data.value.page)
 const portrait = computed(() => asMedia(page.value.portrait))
 const recommendations = computed(() => {
 	const label = page.value.allRecommendationsLabel
-	if (!label || !layout.value?.site.linkedinUrl) return null
-	return { href: layout.value.site.linkedinUrl, text: label.replace('{count}', String(data.value.testimonialCount)) }
+	const url = page.value.allRecommendationsUrl || layout.value?.site.linkedinUrl
+	if (!label || !url) return null
+	return { href: url, text: label.replace('{count}', String(data.value.testimonialCount)) }
 })
 const caption = computed(() => page.value.portraitCaption)
 const headlineLines = computed(() => {
@@ -160,7 +161,7 @@ useHead(() => {
 				:href="recommendations.href"
 				target="_blank"
 				rel="noopener"
-				class="-mt-[15px] inline-flex min-h-11 items-center self-start type-mono-s text-accent underline underline-offset-[3px] transition-colors duration-150 ease-(--ease) hover:text-accent-hover md:-mt-[23px] lg:hidden [&>span[aria-hidden]]:inline-block"
+				class="-mt-[15px] inline-flex min-h-11 items-center self-start type-mono-s text-accent underline underline-offset-[3px] transition-colors duration-150 ease-(--ease) hover:text-accent-hover md:-mt-[23px] lg:-mt-[27px] [&>span[aria-hidden]]:inline-block"
 				@click="trackLink(recommendations.href)"
 				><GlyphLabel :text="recommendations.text" new-tab
 			/></a>

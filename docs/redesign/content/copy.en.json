@@ -128,6 +128,7 @@
         "sub": "Pulled directly from LinkedIn recommendations, unedited.",
         "readMoreLabel": "Read more ↗",
         "allRecommendationsLabel": "See all {count} recommendations on LinkedIn ↗",
+        "allRecommendationsUrl": "https://www.linkedin.com/in/jan-kominek/details/recommendations/",
         "quoteLimit": 152
       }
     },
@@ -336,69 +337,13 @@
     "testimonialsNote": "Quotes are LinkedIn recommendations, quoted verbatim in English in both locales. The home shows three; the cut point and 'Read more' come from home.testimonials.quoteLimit. Marek Vospěl, Petr Krejci and Zdeněk Glazer stay in the CMS with home visibility off.",
     "projects": [
       {
-        "slug": "deeptrace",
-        "redirectFrom": ["/projects/corac_sith"],
+        "slug": "iont_platform",
+        "redirectFrom": ["/projects/iont_info", "/projects/iont_charge", "/projects/iont_admin"],
         "order": 1,
         "card": {
           "show": true,
           "size": "featured",
           "badge": "Flagship",
-          "year": "2025–2026",
-          "meta": "CORAC Engineering / Senior frontend",
-          "description": "Client-side hash-chain verification, D3.js supply-chain graphs and zero-trust auth for a sensitive Earth Observation data pipeline. Sole frontend engineer.",
-          "chips": ["Vue 3", "D3.js", "AWS Cognito", "Vite"]
-        },
-        "kicker": "CORAC Engineering · 2025–2026",
-        "title": "DeepTrace.",
-        "lede": "A zero-trust data provenance platform for Earth Observation data. It verifies file lineage and integrity in the browser, without ever transferring the sensitive files.",
-        "role": "Senior Frontend Engineer",
-        "timeline": "Apr 2025 – Aug 2026",
-        "sector": "GovTech · Aerospace",
-        "impact": [],
-        "challenge": [
-          "Earth Observation data is sensitive and massive. Providers and consumers need to verify that nothing was tampered with between collection, processing and delivery, but the files themselves often can’t move across networks.",
-          "DeepTrace solves this by doing the verification client-side: the browser fetches a cryptographic hash chain, reconstructs the lineage graph, and validates each step against trusted sources, without the operator ever holding the raw data."
-        ],
-        "contributions": [
-          {
-            "title": "Lineage visualization in D3.js",
-            "body": "Interactive force-directed graph of provenance. Each node is a processing step; edges are hash-verified transforms. Supports 1000+ nodes with zoom, pan, and query-based highlighting."
-          },
-          {
-            "title": "Client-side hash-chain verifier",
-            "body": "Pure-browser cryptographic integrity check. Walks the chain from leaf to root, validates each SHA-256 hash against a trusted anchor, flags any tampered link with precise diagnostics."
-          },
-          {
-            "title": "Zero-trust auth with Cognito",
-            "body": "AWS Cognito OAuth flow; access tokens never reach the server. Scoped permissions for data providers vs. consumers, with session-level hash-chain verification gating sensitive operations."
-          },
-          {
-            "title": "Vue 3 + Vite + Shadcn stack",
-            "body": "Set up the project from scratch. Strict TypeScript, automated linting, pnpm workspaces, CI with preview deploys. Established patterns the rest of the team adopted."
-          }
-        ],
-        "stack": ["Vue 3", "TypeScript", "D3.js", "Vite", "pnpm", "Shadcn UI", "AWS Cognito", "OAuth", "REST API", "SubtleCrypto", "Node.js v22+"],
-        "hero": { "path": "~/projects/deeptrace", "image": "deeptrace-thumbnail" },
-        "gallery": [
-          { "path": "~/projects/deeptrace/hashchain", "image": "deeptrace-hashchain" },
-          {
-            "path": "~/projects/deeptrace/lineage-graph",
-            "placeholder": { "label": "Lineage graph, full screen", "spec": "Capture 1440 × 900 at 2× · demo data only" }
-          },
-          {
-            "path": "~/projects/deeptrace/verification",
-            "placeholder": { "label": "Verification passed vs. tampered link, side by side", "spec": "Capture 1440 × 900 at 2× · demo data only" }
-          }
-        ],
-        "factsToConfirm": ["1000+ nodes", "SHA-256"]
-      },
-      {
-        "slug": "iont_platform",
-        "redirectFrom": ["/projects/iont_info", "/projects/iont_charge", "/projects/iont_admin"],
-        "order": 2,
-        "card": {
-          "show": true,
-          "size": "featured",
           "year": "2023–2024",
           "meta": "IONT tech / Fullstack",
           "description": "Driver app, ČSOB payment gateway and on-device admin panel for a public EV-charging network, from an empty repository to launch in five months.",
@@ -457,6 +402,62 @@
           }
         ],
         "factsToConfirm": ["ČSOB certification wording", "five months to launch"]
+      },
+      {
+        "slug": "deeptrace",
+        "redirectFrom": ["/projects/corac_sith"],
+        "order": 2,
+        "card": {
+          "show": true,
+          "size": "featured",
+          "year": "2025–2026",
+          "meta": "CORAC Engineering / Senior frontend",
+          "description": "Client-side hash-chain verification, D3.js supply-chain graphs and zero-trust auth for a sensitive Earth Observation data pipeline. Sole frontend engineer.",
+          "chips": ["Vue 3", "D3.js", "AWS Cognito", "Vite"]
+        },
+        "kicker": "CORAC Engineering · 2025–2026",
+        "title": "DeepTrace.",
+        "lede": "A zero-trust data provenance platform for Earth Observation data. It verifies file lineage and integrity in the browser, without ever transferring the sensitive files.",
+        "role": "Senior Frontend Engineer",
+        "timeline": "Apr 2025 – Aug 2026",
+        "sector": "GovTech · Aerospace",
+        "impact": [],
+        "challenge": [
+          "Earth Observation data is sensitive and massive. Providers and consumers need to verify that nothing was tampered with between collection, processing and delivery, but the files themselves often can’t move across networks.",
+          "DeepTrace solves this by doing the verification client-side: the browser fetches a cryptographic hash chain, reconstructs the lineage graph, and validates each step against trusted sources, without the operator ever holding the raw data."
+        ],
+        "contributions": [
+          {
+            "title": "Lineage visualization in D3.js",
+            "body": "Interactive force-directed graph of provenance. Each node is a processing step; edges are hash-verified transforms. Supports 1000+ nodes with zoom, pan, and query-based highlighting."
+          },
+          {
+            "title": "Client-side hash-chain verifier",
+            "body": "Pure-browser cryptographic integrity check. Walks the chain from leaf to root, validates each SHA-256 hash against a trusted anchor, flags any tampered link with precise diagnostics."
+          },
+          {
+            "title": "Zero-trust auth with Cognito",
+            "body": "AWS Cognito OAuth flow; access tokens never reach the server. Scoped permissions for data providers vs. consumers, with session-level hash-chain verification gating sensitive operations."
+          },
+          {
+            "title": "Vue 3 + Vite + Shadcn stack",
+            "body": "Set up the project from scratch. Strict TypeScript, automated linting, pnpm workspaces, CI with preview deploys. Established patterns the rest of the team adopted."
+          }
+        ],
+        "stack": ["Vue 3", "TypeScript", "D3.js", "Vite", "pnpm", "Shadcn UI", "AWS Cognito", "OAuth", "REST API", "SubtleCrypto", "Node.js v22+"],
+        "hero": { "path": "~/projects/deeptrace", "image": "deeptrace-thumbnail" },
+        "gallery": [
+          { "path": "~/projects/deeptrace/hashchain", "image": "deeptrace-hashchain" },
+          {
+            "path": "~/projects/deeptrace/lineage-graph",
+            "placeholder": { "label": "Lineage graph, full screen", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+          },
+          {
+            "path": "~/projects/deeptrace/verification",
+            "placeholder": { "label": "Verification passed vs. tampered link, side by side", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+          }
+        ],
+        "factsToConfirm": ["1000+ nodes", "SHA-256"]
       },
       {
         "slug": "kreditozrouti",
@@ -676,7 +677,7 @@
         ]
       }
     ],
-    "projectsNote": "Next-case-study order follows 'order' and wraps: DeepTrace → IONT platform → Kreditožrouti → Intedat → Scorecard → Disenchantment → DeepTrace. Archived (published, card.show false, never linked): pangolin, noteful. 'iont_charge' and 'iont_admin' redirect to iont_platform.",
+    "projectsNote": "Next-case-study order follows 'order' and wraps: IONT platform → DeepTrace → Kreditožrouti → Intedat → Scorecard → Disenchantment → IONT platform. Archived (published, card.show false, never linked): pangolin, noteful. 'iont_charge' and 'iont_admin' redirect to iont_platform.",
     "experience": {
       "work": [
         {

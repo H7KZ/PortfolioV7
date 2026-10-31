@@ -305,9 +305,9 @@ onMounted(() => {
 					</div>
 				</details>
 
-				<div class="flex flex-col-reverse gap-4.5 lg:flex-row lg:items-center lg:justify-between lg:gap-0">
-					<p v-if="config.privacyNote" class="type-mono-s text-faint lg:min-w-0 lg:flex-1">{{ config.privacyNote }}</p>
-					<UiButton type="submit" :busy="sending" class="max-lg:w-full">{{ sending ? config.sendingLabel : config.sendLabel }}</UiButton>
+				<div class="flex flex-col-reverse gap-4.5 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+					<p v-if="config.privacyNote" class="type-mono-s text-balance text-faint lg:min-w-0 lg:flex-1">{{ config.privacyNote }}</p>
+					<UiButton type="submit" :busy="sending" class="max-lg:w-full lg:shrink-0">{{ sending ? config.sendingLabel : config.sendLabel }}</UiButton>
 				</div>
 			</form>
 		</div>

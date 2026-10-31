@@ -428,6 +428,7 @@ async function importGlobals(): Promise<void> {
 				testimonials: { heading: testimonials.heading, sub: testimonials.sub },
 				readMoreLabel: testimonials.readMoreLabel,
 				allRecommendationsLabel: testimonials.allRecommendationsLabel,
+				allRecommendationsUrl: testimonials.allRecommendationsUrl,
 				quoteLimit: testimonials.quoteLimit,
 				meta: { description: hero.valueProp }
 			}
@@ -678,6 +679,7 @@ async function importTestimonials(): Promise<void> {
 				initials: localized.initials,
 				role: localized.role,
 				quote: localized.quote,
+				linkedinUrl: pick<string>(locale, 'globals.home.testimonials.allRecommendationsUrl'),
 				show: true,
 				quoteLanguage: 'en',
 				_status: 'published'

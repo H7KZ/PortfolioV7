@@ -113,6 +113,11 @@ export const Home = defineGlobal({
 									}
 								}),
 								{
+									name: 'allRecommendationsUrl',
+									type: 'text',
+									admin: { description: 'LinkedIn recommendations page. Falls back to the LinkedIn profile from Site settings.' }
+								},
+								{
 									name: 'quoteLimit',
 									type: 'number',
 									defaultValue: 450,

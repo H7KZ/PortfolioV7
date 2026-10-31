@@ -6,7 +6,7 @@ Development (`portfolio-dev`) runs its own web, CMS (`cms-dev.jankominek.com`) a
 
 1. Cloudflare DNS: `cms-dev` proxied, pointing where `cms` points.
 2. Cloudflare Access: an application for `cms-dev.jankominek.com` with the same policy as `cms.jankominek.com`.
-3. GitHub Environment `development` ([Secrets and config](secrets-and-config.md#environments)): variable `CMS_DOMAIN=cms-dev.jankominek.com`; secrets `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `PAYLOAD_SECRET` (the production value, so copied logins and sessions keep working), and `CMS_READ_API_KEY` and `CMS_CONTACT_API_KEY` with development's own keys. A copy from production brings production's keys, so set development's again after every copy (below).
+3. GitHub Environment `development` ([Secrets and config](secrets-and-config.md#environments)): variable `CMS_DOMAIN=cms-dev.jankominek.com`; secrets `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `PAYLOAD_SECRET` (signs sessions and indexes API keys; password hashes do not depend on it, so copied logins work with any value), and `CMS_READ_API_KEY` and `CMS_CONTACT_API_KEY` with development's own keys. A copy from production brings production's keys, so set development's again after every copy (below).
 
 ## Deploy
 
@@ -50,7 +50,7 @@ Follow [V7 content seed](v7-content-seed.md#dry-run-then-seed-local-with-the-tun
 ssh -N -L 45433:$(ssh <vps> "docker inspect -f '{{(index .NetworkSettings.Networks \"portfolio-dev-internal-network\").IPAddress}}' \$(docker ps -q --filter label=com.docker.compose.project=portfolio-dev --filter label=com.docker.compose.service=postgres)"):5432 <vps>
 ```
 
-- `DATABASE_URI` uses the development `POSTGRES_*` values (`docker exec <dev postgres> printenv POSTGRES_PASSWORD`); `PAYLOAD_SECRET` is the shared production value.
+- `DATABASE_URI` uses the development `POSTGRES_*` values (`docker exec <dev postgres> printenv POSTGRES_PASSWORD`); `PAYLOAD_SECRET` is the development value (`docker exec <dev cms> printenv PAYLOAD_SECRET`).
 - Copy the uploaded images into the development CMS and restart the development web:
 
 ```bash
@@ -59,3 +59,11 @@ ssh <vps> 'cms=$(docker ps -q --filter label=com.docker.compose.project=portfoli
 ```
 
 Verify as in the seed runbook, on `dev.jankominek.com`. `jankominek.com` must still show V6.
+
+## Reset an admin password
+
+The CMS has no email adapter, so "Forgot password" sends nothing. Five wrong passwords lock the user for 15 minutes. With the tunnel open, generate a password and set it through Payload, which also clears the lockout:
+
+```bash
+USER_EMAIL=<email> USER_PASSWORD=<password> DATABASE_URI=postgres://<dev user>:<dev password>@127.0.0.1:45433/<dev db> PAYLOAD_SECRET=<dev secret> REVALIDATE_URLS=" " PAYLOAD_DISABLE_JOBS=1 pnpm --filter @portfolio/cms run password:set
+```
