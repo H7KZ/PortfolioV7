@@ -18,84 +18,12 @@
       "files": ["deeptrace-hashchain-800.avif", "deeptrace-hashchain-800.webp", "deeptrace-hashchain.avif", "deeptrace-hashchain.webp"]
     },
     {
-      "name": "iont-thumbnail",
-      "source": "img_dark/projects-iont_info-thumbnail.png",
-      "width": 920,
-      "height": 811,
-      "description": "IONT platform hero",
-      "files": ["iont-thumbnail-800.avif", "iont-thumbnail-800.webp", "iont-thumbnail.avif", "iont-thumbnail.webp"]
-    },
-    {
-      "name": "iont-landing",
-      "source": "img_dark/projects-iont_info-landing.png",
-      "width": 1132,
-      "height": 684,
-      "description": "IONT landing page",
-      "files": ["iont-landing-800.avif", "iont-landing-800.webp", "iont-landing.avif", "iont-landing.webp"]
-    },
-    {
-      "name": "iont-phones",
-      "source": "img_dark/projects-iont_info-phones.png",
-      "width": 1234,
-      "height": 620,
-      "description": "IONT driver app on phones",
-      "files": ["iont-phones-800.avif", "iont-phones-800.webp", "iont-phones.avif", "iont-phones.webp"]
-    },
-    {
-      "name": "iont-charge",
-      "source": "img_dark/projects-iont_charge-thumbnail.png",
-      "width": 920,
-      "height": 845,
-      "description": "IONT charge app",
-      "files": ["iont-charge-800.avif", "iont-charge-800.webp", "iont-charge.avif", "iont-charge.webp"]
-    },
-    {
-      "name": "iont-admin",
-      "source": "img_dark/projects-iont_admin-thumbnail.png",
-      "width": 920,
-      "height": 735,
-      "description": "IONT admin panel",
-      "files": ["iont-admin-800.avif", "iont-admin-800.webp", "iont-admin.avif", "iont-admin.webp"]
-    },
-    {
-      "name": "kreditozrouti-dark",
-      "source": "img/kz_dark.jpg",
-      "width": 1440,
-      "height": 900,
-      "description": "Kreditožrouti hero, dark mode",
-      "files": ["kreditozrouti-dark-800.avif", "kreditozrouti-dark-800.webp", "kreditozrouti-dark.avif", "kreditozrouti-dark.webp"]
-    },
-    {
-      "name": "kreditozrouti-desktop",
-      "source": "img/kz_desktop.jpg",
-      "width": 1440,
-      "height": 900,
-      "description": "Kreditožrouti, light mode",
-      "files": ["kreditozrouti-desktop-800.avif", "kreditozrouti-desktop-800.webp", "kreditozrouti-desktop.avif", "kreditozrouti-desktop.webp"]
-    },
-    {
       "name": "kreditozrouti-mobile",
       "source": "img/kz_mobile.jpg",
       "width": 780,
       "height": 1688,
       "description": "Kreditožrouti on mobile",
       "files": ["kreditozrouti-mobile.avif", "kreditozrouti-mobile.webp"]
-    },
-    {
-      "name": "scorecard-thumbnail",
-      "source": "img_dark/projects-corac_scorecard-thumbnail.png",
-      "width": 1600,
-      "height": 1066,
-      "description": "Scorecard hero",
-      "files": ["scorecard-thumbnail-800.avif", "scorecard-thumbnail-800.webp", "scorecard-thumbnail.avif", "scorecard-thumbnail.webp"]
-    },
-    {
-      "name": "scorecard-main",
-      "source": "img_dark/projects-corac_scorecard-main.png",
-      "width": 1600,
-      "height": 900,
-      "description": "Scorecard report view",
-      "files": ["scorecard-main-800.avif", "scorecard-main-800.webp", "scorecard-main.avif", "scorecard-main.webp"]
     },
     {
       "name": "disenchantment-thumbnail-crop",
@@ -143,52 +71,215 @@
       "files": ["post-traefik-cover-800.avif", "post-traefik-cover-800.webp", "post-traefik-cover.avif", "post-traefik-cover.webp"]
     },
     {
-      "name": "iont-hero",
-      "source": "Desktop/Images/IONT Info 3.png",
-      "width": 1600,
-      "height": 908,
-      "description": "IONT platform hero, three phones on the site surface",
-      "files": ["iont-hero-800.avif", "iont-hero-800.webp", "iont-hero.avif", "iont-hero.webp"]
+      "name": "disenchantment-repo-hd",
+      "source": "github.com/H7KZ/Disenchantment at 2x",
+      "width": 2400,
+      "height": 1425,
+      "description": "disenchantment-repo",
+      "files": [
+        "disenchantment-repo-hd.avif",
+        "disenchantment-repo-hd.webp",
+        "disenchantment-repo-hd-1600.avif",
+        "disenchantment-repo-hd-1600.webp",
+        "disenchantment-repo-hd-800.avif",
+        "disenchantment-repo-hd-800.webp"
+      ]
     },
     {
-      "name": "iont-driver",
+      "name": "iont-admin-hd",
+      "source": "IONT Admin.png, backdrop replaced",
+      "width": 2400,
+      "height": 1906,
+      "description": "iont-admin",
+      "files": [
+        "iont-admin-hd.avif",
+        "iont-admin-hd.webp",
+        "iont-admin-hd-1600.avif",
+        "iont-admin-hd-1600.webp",
+        "iont-admin-hd-800.avif",
+        "iont-admin-hd-800.webp"
+      ]
+    },
+    {
+      "name": "iont-charge-hd",
+      "source": "IONT Charge.png, backdrop replaced",
+      "width": 2400,
+      "height": 1940,
+      "description": "iont-charge",
+      "files": [
+        "iont-charge-hd.avif",
+        "iont-charge-hd.webp",
+        "iont-charge-hd-1600.avif",
+        "iont-charge-hd-1600.webp",
+        "iont-charge-hd-800.avif",
+        "iont-charge-hd-800.webp"
+      ]
+    },
+    {
+      "name": "iont-driver-hd",
       "source": "IONT_charge_UI_settings2 mockups",
-      "width": 1600,
-      "height": 855,
-      "description": "IONT charger app, four phone screens",
-      "files": ["iont-driver-800.avif", "iont-driver-800.webp", "iont-driver.avif", "iont-driver.webp"]
+      "width": 2400,
+      "height": 1282,
+      "description": "iont-driver",
+      "files": [
+        "iont-driver-hd.avif",
+        "iont-driver-hd.webp",
+        "iont-driver-hd-1600.avif",
+        "iont-driver-hd-1600.webp",
+        "iont-driver-hd-800.avif",
+        "iont-driver-hd-800.webp"
+      ]
     },
     {
-      "name": "iont-panel",
-      "source": "charge_hlavni_obrazovka.png and Admin mockups",
-      "width": 1600,
-      "height": 855,
-      "description": "IONT admin panel, sign-in plus two status screens",
-      "files": ["iont-panel-800.avif", "iont-panel-800.webp", "iont-panel.avif", "iont-panel.webp"]
-    },
-    {
-      "name": "iont-hardware",
+      "name": "iont-hardware-hd",
       "source": "e-car and E-CC product renders",
       "width": 1600,
       "height": 855,
-      "description": "IONT charger product renders, not photos",
-      "files": ["iont-hardware-800.avif", "iont-hardware-800.webp", "iont-hardware.avif", "iont-hardware.webp"]
+      "description": "iont-hardware",
+      "files": ["iont-hardware-hd.avif", "iont-hardware-hd.webp", "iont-hardware-hd-800.avif", "iont-hardware-hd-800.webp"]
     },
     {
-      "name": "kreditozrouti-timetable",
-      "source": "kreditozrouti_courses_timetable.png",
-      "width": 1600,
-      "height": 854,
-      "description": "Timetable with lecturer names painted over",
-      "files": ["kreditozrouti-timetable-800.avif", "kreditozrouti-timetable-800.webp", "kreditozrouti-timetable.avif", "kreditozrouti-timetable.webp"]
+      "name": "iont-hero-hd",
+      "source": "IONT Info 3.png",
+      "width": 2400,
+      "height": 1362,
+      "description": "iont-hero",
+      "files": ["iont-hero-hd.avif", "iont-hero-hd.webp", "iont-hero-hd-1600.avif", "iont-hero-hd-1600.webp", "iont-hero-hd-800.avif", "iont-hero-hd-800.webp"]
     },
     {
-      "name": "kreditozrouti-search",
+      "name": "iont-landing-hd",
+      "source": "IONT Info1.png",
+      "width": 2400,
+      "height": 1450,
+      "description": "iont-landing",
+      "files": [
+        "iont-landing-hd.avif",
+        "iont-landing-hd.webp",
+        "iont-landing-hd-1600.avif",
+        "iont-landing-hd-1600.webp",
+        "iont-landing-hd-800.avif",
+        "iont-landing-hd-800.webp"
+      ]
+    },
+    {
+      "name": "iont-panel-hd",
+      "source": "charge_sparovani.png and Admin mockups",
+      "width": 2400,
+      "height": 1282,
+      "description": "iont-panel",
+      "files": [
+        "iont-panel-hd.avif",
+        "iont-panel-hd.webp",
+        "iont-panel-hd-1600.avif",
+        "iont-panel-hd-1600.webp",
+        "iont-panel-hd-800.avif",
+        "iont-panel-hd-800.webp"
+      ]
+    },
+    {
+      "name": "iont-phones-hd",
+      "source": "IONT Info 5.png",
+      "width": 2400,
+      "height": 1168,
+      "description": "iont-phones",
+      "files": [
+        "iont-phones-hd.avif",
+        "iont-phones-hd.webp",
+        "iont-phones-hd-1600.avif",
+        "iont-phones-hd-1600.webp",
+        "iont-phones-hd-800.avif",
+        "iont-phones-hd-800.webp"
+      ]
+    },
+    {
+      "name": "kreditozrouti-dark-hd",
+      "source": "kreditozrouti.cz capture at 2x, dark",
+      "width": 2400,
+      "height": 1363,
+      "description": "kreditozrouti-dark",
+      "files": [
+        "kreditozrouti-dark-hd.avif",
+        "kreditozrouti-dark-hd.webp",
+        "kreditozrouti-dark-hd-1600.avif",
+        "kreditozrouti-dark-hd-1600.webp",
+        "kreditozrouti-dark-hd-800.avif",
+        "kreditozrouti-dark-hd-800.webp"
+      ]
+    },
+    {
+      "name": "kreditozrouti-desktop-hd",
+      "source": "kreditozrouti.cz capture at 2x, light",
+      "width": 2400,
+      "height": 1282,
+      "description": "kreditozrouti-desktop",
+      "files": [
+        "kreditozrouti-desktop-hd.avif",
+        "kreditozrouti-desktop-hd.webp",
+        "kreditozrouti-desktop-hd-1600.avif",
+        "kreditozrouti-desktop-hd-1600.webp",
+        "kreditozrouti-desktop-hd-800.avif",
+        "kreditozrouti-desktop-hd-800.webp"
+      ]
+    },
+    {
+      "name": "kreditozrouti-search-hd",
       "source": "kreditozrouti_courses.png",
-      "width": 1600,
-      "height": 854,
-      "description": "Course list with filters",
-      "files": ["kreditozrouti-search-800.avif", "kreditozrouti-search-800.webp", "kreditozrouti-search.avif", "kreditozrouti-search.webp"]
+      "width": 2247,
+      "height": 1200,
+      "description": "kreditozrouti-search",
+      "files": [
+        "kreditozrouti-search-hd.avif",
+        "kreditozrouti-search-hd.webp",
+        "kreditozrouti-search-hd-1600.avif",
+        "kreditozrouti-search-hd-1600.webp",
+        "kreditozrouti-search-hd-800.avif",
+        "kreditozrouti-search-hd-800.webp"
+      ]
+    },
+    {
+      "name": "kreditozrouti-timetable-hd",
+      "source": "kreditozrouti_courses_timetable.png, lecturer names painted over",
+      "width": 2247,
+      "height": 1200,
+      "description": "kreditozrouti-timetable",
+      "files": [
+        "kreditozrouti-timetable-hd.avif",
+        "kreditozrouti-timetable-hd.webp",
+        "kreditozrouti-timetable-hd-1600.avif",
+        "kreditozrouti-timetable-hd-1600.webp",
+        "kreditozrouti-timetable-hd-800.avif",
+        "kreditozrouti-timetable-hd-800.webp"
+      ]
+    },
+    {
+      "name": "scorecard-main-hd",
+      "source": "Running app at 2x, demo rows",
+      "width": 2400,
+      "height": 1284,
+      "description": "scorecard-main",
+      "files": [
+        "scorecard-main-hd.avif",
+        "scorecard-main-hd.webp",
+        "scorecard-main-hd-1600.avif",
+        "scorecard-main-hd-1600.webp",
+        "scorecard-main-hd-800.avif",
+        "scorecard-main-hd-800.webp"
+      ]
+    },
+    {
+      "name": "scorecard-thumbnail-hd",
+      "source": "Running app at 2x, demo rows",
+      "width": 2400,
+      "height": 1284,
+      "description": "scorecard-thumbnail",
+      "files": [
+        "scorecard-thumbnail-hd.avif",
+        "scorecard-thumbnail-hd.webp",
+        "scorecard-thumbnail-hd-1600.avif",
+        "scorecard-thumbnail-hd-1600.webp",
+        "scorecard-thumbnail-hd-800.avif",
+        "scorecard-thumbnail-hd-800.webp"
+      ]
     }
   ]
 }

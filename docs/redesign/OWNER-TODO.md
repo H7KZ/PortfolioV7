@@ -52,11 +52,13 @@ These stay exactly as written until you confirm them.
 
 ## 5. Screenshots per project
 
-Each row is one window on the case study. Field: Projects > project > Case study > Gallery > row N > `image`. Rows count from 1. An uploaded image replaces the placeholder and its label. No client data in any capture.
+Each row is one window on the case study. Field: Projects > project > Case study > Gallery > row N > `image`. Rows count from 1. An uploaded image replaces the placeholder and its label. No client data in any capture. New images need a new filename, because the seed keeps a file it already has.
+
+Every image was rebuilt at 2400 px where a sharp source exists, so it stays crisp on 2× screens. The site also serves 1600 and 800 px sizes.
 
 ### IONT platform (flagship)
 
-Done with your go-ahead to use the IONT material: the hero and rows 5, 6 and 7 now have images, and the seed carries them to production. Rows 5 and 6 are built from the design mockups, row 6 also uses the charger sign-in screen, and row 7 shows product renders, because no photo of a real charger exists on your PC. Replace row 7 if you take one.
+All rows and the hero are sharp and come from the original 4K to 9K files. Rows 5 and 6 use the design mockups, row 6 also the real pairing screen. Row 7 shows product renders, which are only 800 px, so it is the softest image here. A photo of a real charger would replace it.
 
 ### DeepTrace
 
@@ -65,21 +67,21 @@ Done with your go-ahead to use the IONT material: the hero and rows 5, 6 and 7 n
 | 2   | `~/projects/deeptrace/lineage-graph` | Lineage graph, full screen                          | 1440 × 900 at 2×, demo data |
 | 3   | `~/projects/deeptrace/verification`  | Verification passed vs. tampered link, side by side | 1440 × 900 at 2×, demo data |
 
-No metrics yet. Case study > `impact` is empty, so the section is hidden. Add three rows (label, value, sub) if you can publish numbers. The files in `gui/.data` are random test bytes, not a PDF or an image, so they add nothing here or on Scorecard.
+The app starts, then redirects to the Cognito login, so only you can capture it. The hero and row 1 are still the 1600 px V6 files, and no sharper source exists; replace them in the same session. Case study > `impact` is empty. Add three rows (label, value, sub) if you can publish numbers.
 
 ### Kreditožrouti
 
-Rows 2 and 3 are done. Lecturer names on the timetable are painted over with flat bars, not blurred, so they cannot be recovered, and the published files carry no metadata.
+The hero, light mode, timetable and course list are sharp. The hero and light mode are fresh 2× captures of the live site, showing the wizard. Lecturer names on the timetable are painted over, so they cannot be recovered.
 
 | Row | Window                           | Show                                          | Capture                         |
 | --- | -------------------------------- | --------------------------------------------- | ------------------------------- |
 | 4   | `~/projects/kreditozrouti/usage` | Usage chart: 589 visitors, 204 finished setup | Crop of the umami dashboard, 2× |
 
-The umami share link sits behind Cloudflare Access, so it could not be captured from here. Take the screenshot yourself, or exclude the share path from Access. The site's numbers now follow your figures for Jun 16 to Oct 31, 2026: 35% is 204 of 589 visitors. Umami's 40% is the rate from `wizard_start`, a different definition.
+The umami share link sits behind Cloudflare Access, so take the screenshot yourself or exclude the share path from Access. The numbers follow your figures for Jun 16 to Oct 31, 2026: 35% is 204 of 589 visitors. Umami's 40% counts from `wizard_start`, a different definition.
 
 ### Intedat
 
-The only project with no image at all. Its home card shows a dotted empty panel, and it is one of the four cards on the home page, so this is the most visible gap on the site.
+The only project with no image at all, and one of the four home cards, so this is the most visible gap on the site. It needs the full Docker and MySQL stack with a database, and there is no demo data, so it was not run. Only you can capture it from a demo instance.
 
 | Slot                            | Window                      | Show                       | Capture                     |
 | ------------------------------- | --------------------------- | -------------------------- | --------------------------- |
@@ -87,21 +89,21 @@ The only project with no image at all. Its home card shows a dotted empty panel,
 | Gallery row 1                   | `~/projects/intedat/search` | Search results             | 1440 × 900 at 2×, demo data |
 | Gallery row 2                   | `~/projects/intedat/detail` | A detail or editing screen | 1440 × 900 at 2×, demo data |
 
-No metrics yet: Case study > `impact` is empty, and nothing was published from the internal docs. `docs/elasticsearch.md` holds commands and limits, no results. The harvester benchmark reports 241 successes against 12 failures (95%) on one run, but it does not say what a success means and the case study does not mention the harvester. Tell me if you want it on the page and how to word it. Check that Intedat allows showing any of the screenshots.
+No metrics: Case study > `impact` is empty, and nothing was published from the internal docs. The harvester benchmark reports 241 successes against 12 failures (95%) on one run, but it does not say what a success means and the case study does not mention the harvester. Check that Intedat allows showing any of the screenshots.
 
 ### Scorecard
+
+The hero and row 1 are fresh 2× captures of the running app, filled with made-up demo rows.
 
 | Row | Window                              | Show                                        | Capture                     |
 | --- | ----------------------------------- | ------------------------------------------- | --------------------------- |
 | 2   | `~/projects/corac_scorecard/report` | Report builder next to an exported PDF page | 1440 × 900 at 2×, demo data |
 
-No metrics yet: Case study > `impact` is empty.
+Export PDF produced no file in the automated browser, so export one by hand. Case study > `impact` is empty.
 
 ### Disenchantment
 
-| Row | Window                           | Show                                              | Capture                     |
-| --- | -------------------------------- | ------------------------------------------------- | --------------------------- |
-| 2   | `~/projects/disenchantment/repo` | GitHub repository header with stars and downloads | 1440 × 900 at 2×, demo data |
+Row 2 is a fresh 2× capture of the GitHub repository. The hero (920 px) and the anvil row (from an 800 px GIF) stay as they are, because no sharper source exists. A new in-game capture would fix both.
 
 ## 6. Blog
 

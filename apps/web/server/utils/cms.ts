@@ -55,7 +55,13 @@ function toMediaView(value: Record<string, unknown>): MediaView {
 		mimeType: (value.mimeType as string | null) ?? null,
 		width: (value.width as number | null) ?? null,
 		height: (value.height as number | null) ?? null,
-		formats: { avif: siteUrl(formats.avif), avif800: siteUrl(formats.avif800), webp800: siteUrl(formats.webp800) }
+		formats: {
+			avif: siteUrl(formats.avif),
+			avif800: siteUrl(formats.avif800),
+			webp800: siteUrl(formats.webp800),
+			avif1600: siteUrl(formats.avif1600),
+			webp1600: siteUrl(formats.webp1600)
+		}
 	}
 }
 

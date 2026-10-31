@@ -565,40 +565,40 @@
         "stack": ["SvelteKit", "Svelte", "Fastify", "Node.js", "MongoDB", "Docker Swarm", "Raspberry Pi", "CI/CD", "Linux"],
         "hero": {
           "path": "~/projects/iont_info",
-          "image": "iont-hero"
+          "image": "iont-hero-hd"
         },
         "gallery": [
           {
             "path": "~/projects/iont_info/landing",
-            "image": "iont-landing",
+            "image": "iont-landing-hd",
             "crop": "strip"
           },
           {
             "path": "~/projects/iont_info/mobile",
-            "image": "iont-phones",
+            "image": "iont-phones-hd",
             "crop": "strip"
           },
           {
             "path": "~/projects/iont_charge",
-            "image": "iont-charge",
+            "image": "iont-charge-hd",
             "crop": "strip"
           },
           {
             "path": "~/projects/iont_admin",
-            "image": "iont-admin",
+            "image": "iont-admin-hd",
             "crop": "strip"
           },
           {
             "path": "~/projects/iont_platform/driver-app",
-            "image": "iont-driver"
+            "image": "iont-driver-hd"
           },
           {
             "path": "~/projects/iont_platform/admin-panel",
-            "image": "iont-panel"
+            "image": "iont-panel-hd"
           },
           {
             "path": "~/projects/iont_platform/hardware",
-            "image": "iont-hardware"
+            "image": "iont-hardware-hd"
           }
         ],
         "factsToConfirm": ["ČSOB certification wording", "five months to launch"]
@@ -842,20 +842,20 @@
         "stack": ["TypeScript", "Vue.js", "Node.js", "Redis", "BullMQ", "Docker", "Traefik", "CI/CD", "Git"],
         "hero": {
           "path": "~/projects/kreditozrouti",
-          "image": "kreditozrouti-dark"
+          "image": "kreditozrouti-dark-hd"
         },
         "gallery": [
           {
             "path": "kreditozrouti.cz · light mode",
-            "image": "kreditozrouti-desktop"
+            "image": "kreditozrouti-desktop-hd"
           },
           {
             "path": "~/projects/kreditozrouti/timetable",
-            "image": "kreditozrouti-timetable"
+            "image": "kreditozrouti-timetable-hd"
           },
           {
             "path": "~/projects/kreditozrouti/search",
-            "image": "kreditozrouti-search"
+            "image": "kreditozrouti-search-hd"
           },
           {
             "path": "~/projects/kreditozrouti/usage",
@@ -968,12 +968,12 @@
         "stack": ["Vue.js", "Shadcn UI", "Vite", "pnpm", "Node.js", "ESLint", "Prettier"],
         "hero": {
           "path": "~/projects/corac_scorecard",
-          "image": "scorecard-main"
+          "image": "scorecard-main-hd"
         },
         "gallery": [
           {
             "path": "~/projects/corac_scorecard/report",
-            "image": "scorecard-thumbnail"
+            "image": "scorecard-thumbnail-hd"
           },
           {
             "path": "~/projects/corac_scorecard/report",
@@ -1046,10 +1046,7 @@
           },
           {
             "path": "~/projects/disenchantment/repo",
-            "placeholder": {
-              "label": "Hlavička repozitáře na GitHubu s hvězdičkami a staženími",
-              "spec": "Snímek 1440 × 900 ve 2× · jen ukázková data"
-            }
+            "image": "disenchantment-repo-hd"
           }
         ]
       }
