@@ -382,7 +382,7 @@
           }
         ],
         "stack": ["SvelteKit", "Svelte", "Fastify", "Node.js", "MongoDB", "Docker Swarm", "Raspberry Pi", "CI/CD", "Linux"],
-        "hero": { "path": "~/projects/iont_info", "image": "iont-thumbnail" },
+        "hero": { "path": "~/projects/iont_info", "image": "iont-hero" },
         "gallery": [
           { "path": "~/projects/iont_info/landing", "image": "iont-landing", "crop": "strip" },
           { "path": "~/projects/iont_info/mobile", "image": "iont-phones", "crop": "strip" },
@@ -390,15 +390,15 @@
           { "path": "~/projects/iont_admin", "image": "iont-admin", "crop": "strip" },
           {
             "path": "~/projects/iont_platform/driver-app",
-            "placeholder": { "label": "Driver app on a phone: find a charger, pay, charge", "spec": "Capture 390 × 844 at 3× · demo data only" }
+            "image": "iont-driver"
           },
           {
             "path": "~/projects/iont_platform/admin-panel",
-            "placeholder": { "label": "On-device admin panel on the charger screen", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+            "image": "iont-panel"
           },
           {
             "path": "~/projects/iont_platform/hardware",
-            "placeholder": { "label": "A real charger with the app in hand", "spec": "Photo · landscape, well lit" }
+            "image": "iont-hardware"
           }
         ],
         "factsToConfirm": ["ČSOB certification wording", "five months to launch"]
@@ -479,7 +479,7 @@
         "sector": "EdTech · Higher Education",
         "impact": [
           { "label": "Students", "value": "200+", "sub": "Finished the setup wizard" },
-          { "label": "Onboarding", "value": "35%", "sub": "Of 588 visitors finish setup" },
+          { "label": "Onboarding", "value": "35%", "sub": "Of 589 visitors finish setup" },
           { "label": "Status", "value": "Live", "sub": "Monitored, auto-deployed" }
         ],
         "challenge": [
@@ -538,15 +538,15 @@
           { "path": "kreditozrouti.cz · light mode", "image": "kreditozrouti-desktop" },
           {
             "path": "~/projects/kreditozrouti/timetable",
-            "placeholder": { "label": "Timetable builder with a real schedule", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+            "image": "kreditozrouti-timetable"
           },
           {
             "path": "~/projects/kreditozrouti/search",
-            "placeholder": { "label": "Course search with filters", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+            "image": "kreditozrouti-search"
           },
           {
             "path": "~/projects/kreditozrouti/usage",
-            "placeholder": { "label": "Usage chart: 588 visitors, 204 finished setup", "spec": "Capture 1440 × 900 at 2× · demo data only" }
+            "placeholder": { "label": "Usage chart: 589 visitors, 204 finished setup", "spec": "Capture 1440 × 900 at 2× · demo data only" }
           }
         ]
       },

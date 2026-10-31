@@ -141,6 +141,54 @@
       "height": 972,
       "description": "Blog post cover",
       "files": ["post-traefik-cover-800.avif", "post-traefik-cover-800.webp", "post-traefik-cover.avif", "post-traefik-cover.webp"]
+    },
+    {
+      "name": "iont-hero",
+      "source": "Desktop/Images/IONT Info 3.png",
+      "width": 1600,
+      "height": 908,
+      "description": "IONT platform hero, three phones on the site surface",
+      "files": ["iont-hero-800.avif", "iont-hero-800.webp", "iont-hero.avif", "iont-hero.webp"]
+    },
+    {
+      "name": "iont-driver",
+      "source": "IONT_charge_UI_settings2 mockups",
+      "width": 1600,
+      "height": 855,
+      "description": "IONT charger app, four phone screens",
+      "files": ["iont-driver-800.avif", "iont-driver-800.webp", "iont-driver.avif", "iont-driver.webp"]
+    },
+    {
+      "name": "iont-panel",
+      "source": "charge_hlavni_obrazovka.png and Admin mockups",
+      "width": 1600,
+      "height": 855,
+      "description": "IONT admin panel, sign-in plus two status screens",
+      "files": ["iont-panel-800.avif", "iont-panel-800.webp", "iont-panel.avif", "iont-panel.webp"]
+    },
+    {
+      "name": "iont-hardware",
+      "source": "e-car and E-CC product renders",
+      "width": 1600,
+      "height": 855,
+      "description": "IONT charger product renders, not photos",
+      "files": ["iont-hardware-800.avif", "iont-hardware-800.webp", "iont-hardware.avif", "iont-hardware.webp"]
+    },
+    {
+      "name": "kreditozrouti-timetable",
+      "source": "kreditozrouti_courses_timetable.png",
+      "width": 1600,
+      "height": 854,
+      "description": "Timetable with lecturer names painted over",
+      "files": ["kreditozrouti-timetable-800.avif", "kreditozrouti-timetable-800.webp", "kreditozrouti-timetable.avif", "kreditozrouti-timetable.webp"]
+    },
+    {
+      "name": "kreditozrouti-search",
+      "source": "kreditozrouti_courses.png",
+      "width": 1600,
+      "height": 854,
+      "description": "Course list with filters",
+      "files": ["kreditozrouti-search-800.avif", "kreditozrouti-search-800.webp", "kreditozrouti-search.avif", "kreditozrouti-search.webp"]
     }
   ]
 }

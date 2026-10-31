@@ -58,6 +58,30 @@ const ALT: Record<string, Record<Locale, string>> = {
 		en: 'IONT admin panel running on the charger, with configuration and diagnostics',
 		cs: 'Administrace IONT běžící přímo v nabíječce, s nastavením a diagnostikou'
 	},
+	'iont-hero': {
+		en: 'Three phones with the IONT app: the profile menu, a charger device card and its settings',
+		cs: 'Tři telefony s aplikací IONT: nabídka profilu, karta nabíječky a její nastavení'
+	},
+	'iont-driver': {
+		en: 'Four phone screens of the IONT charger app: a live charging session, two connectors at once, RFID cards and timers',
+		cs: 'Čtyři obrazovky aplikace IONT pro nabíječku: probíhající nabíjení, dvě zásuvky najednou, karty RFID a časovače'
+	},
+	'iont-panel': {
+		en: 'IONT admin panel: the charger sign-in screen next to two phone screens with charger status and settings',
+		cs: 'Administrace IONT: přihlášení do nabíječky a dvě obrazovky telefonu se stavem a nastavením nabíječky'
+	},
+	'iont-hardware': {
+		en: 'Product renders of IONT chargers: two charging posts and a wall-mounted unit with its cable',
+		cs: 'Produktové vizualizace nabíječek IONT: dva nabíjecí stojany a nástěnná jednotka s kabelem'
+	},
+	'kreditozrouti-timetable': {
+		en: 'Kreditožrouti week timetable with seven courses and one conflict, lecturer names hidden',
+		cs: 'Týdenní rozvrh v Kreditožroutech se sedmi předměty a jednou kolizí, jména vyučujících jsou skrytá'
+	},
+	'kreditozrouti-search': {
+		en: 'Kreditožrouti course list with faculty, ECTS and schedule columns next to the filters',
+		cs: 'Seznam předmětů v Kreditožroutech se sloupci fakulta, ECTS a rozvrh vedle filtrů'
+	},
 	'kreditozrouti-dark': {
 		en: 'Kreditožrouti in dark mode: a weekly timetable with courses placed by day and hour',
 		cs: 'Kreditožrouti v tmavém režimu: týdenní rozvrh s předměty rozmístěnými podle dnů a hodin'
