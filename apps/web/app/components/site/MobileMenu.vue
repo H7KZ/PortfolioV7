@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
 					:hreflang="code"
 					:lang="code"
 					:aria-current="code === currentLocale ? 'true' : undefined"
-					class="flex min-h-11 items-center rounded-sm px-4 type-body-s no-underline"
+					class="flex min-h-target items-center rounded-sm px-4 type-body-s no-underline"
 					:class="code === currentLocale ? 'bg-surface-2 text-ink' : 'text-mute hover:text-ink'"
 					@click="switchTo(code)"
 					>{{ languageNames?.[code] }}</NuxtLink

@@ -262,7 +262,7 @@ onMounted(() => {
 
 				<details ref="advanced" class="group border-y border-line" :open="advancedHasError || undefined">
 					<summary
-						class="flex min-h-11 cursor-pointer list-none items-center gap-2.5 py-3.5 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-focus [&::-webkit-details-marker]:hidden"
+						class="flex min-h-target cursor-pointer list-none items-center gap-2.5 py-3.5 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-focus [&::-webkit-details-marker]:hidden"
 					>
 						<span class="type-mono-m text-accent" aria-hidden="true"
 							><span class="group-open:hidden">+</span><span class="hidden group-open:inline">−</span></span

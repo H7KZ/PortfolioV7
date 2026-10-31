@@ -14,7 +14,7 @@ function toggle(key: string, checked: boolean): void {
 			<label
 				v-for="option in options"
 				:key="option.key"
-				class="inline-flex min-h-11 max-w-full cursor-pointer items-center justify-center gap-2 rounded-full border px-4 text-center type-body-s transition-colors duration-150 ease-(--ease) has-focus-visible:outline-2 has-focus-visible:outline-offset-3 has-focus-visible:outline-focus"
+				class="inline-flex min-h-target max-w-full cursor-pointer items-center justify-center gap-2 rounded-full border px-4 text-center type-body-s transition-colors duration-150 ease-(--ease) has-focus-visible:outline-2 has-focus-visible:outline-offset-3 has-focus-visible:outline-focus"
 				:class="model.includes(option.key) ? 'border-accent bg-accent-soft text-ink' : 'border-control text-ink-soft hover:border-ink-soft'"
 			>
 				<input

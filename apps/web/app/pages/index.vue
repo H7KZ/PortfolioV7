@@ -161,7 +161,7 @@ useHead(() => {
 				:href="recommendations.href"
 				target="_blank"
 				rel="noopener"
-				class="-mt-[15px] inline-flex min-h-11 items-center self-start type-mono-s text-accent underline underline-offset-[3px] transition-colors duration-150 ease-(--ease) hover:text-accent-hover md:-mt-[23px] lg:-mt-[27px] [&>span[aria-hidden]]:inline-block"
+				class="-mt-[15px] inline-flex min-h-target items-center self-start type-mono-s text-accent underline underline-offset-[3px] transition-colors duration-150 ease-(--ease) hover:text-accent-hover md:-mt-[23px] lg:-mt-[27px] [&>span[aria-hidden]]:inline-block"
 				@click="trackLink(recommendations.href)"
 				><GlyphLabel :text="recommendations.text" new-tab
 			/></a>

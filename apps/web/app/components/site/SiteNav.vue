@@ -33,7 +33,7 @@ watch(
 		<div class="site-container flex items-center justify-between gap-2 py-3.5 md:py-5">
 			<NuxtLink
 				:to="href('/')"
-				class="inline-flex min-h-11 items-center gap-2 rounded-[4px] type-mono-m text-ink no-underline transition-colors duration-150 ease-(--ease) hover:text-accent"
+				class="tap-target inline-flex min-h-control-sm items-center gap-2 rounded-[4px] type-mono-m text-ink no-underline transition-colors duration-150 ease-(--ease) hover:text-accent"
 				@click="closeMenu(false)"
 			>
 				<svg class="h-[18px] w-[9px] shrink-0 text-accent" viewBox="0 0 9 18" fill="currentColor" aria-hidden="true">
@@ -54,10 +54,8 @@ watch(
 					</ul>
 				</nav>
 
-				<UiButton kind="secondary" size="small" dot class="max-[359px]:hidden md:min-h-12 md:px-[22px] md:py-3.5" :to="href(navigation.hire.href)">{{
-					navigation.hire.label
-				}}</UiButton>
-				<div class="flex rounded-[8px] border border-line-strong max-md:hidden">
+				<UiButton kind="secondary" size="small" dot class="max-[359px]:hidden" :to="href(navigation.hire.href)">{{ navigation.hire.label }}</UiButton>
+				<div class="flex h-control-sm rounded-[6px] border border-line-strong max-md:hidden">
 					<NuxtLink
 						v-for="(code, index) in locales"
 						:key="code"
@@ -65,7 +63,7 @@ watch(
 						:hreflang="code"
 						:lang="code"
 						:aria-current="code === currentLocale ? 'true' : undefined"
-						class="inline-flex min-h-[46px] min-w-11 items-center justify-center rounded-[7px] type-mono-s no-underline transition-colors duration-150 ease-(--ease)"
+						class="tap-target inline-flex h-full min-w-12 items-center justify-center rounded-[5px] type-mono-s no-underline transition-colors duration-150 ease-(--ease)"
 						:class="code === currentLocale ? 'bg-surface-2 text-ink' : 'text-mute hover:text-ink'"
 						@click="code !== currentLocale && trackSwitch(code)"
 						>{{ languageLabels[index] ?? code }}<span v-if="languageNames?.[code]" class="sr-only"> ({{ languageNames[code] }})</span></NuxtLink
@@ -74,7 +72,7 @@ watch(
 				<button
 					ref="menuButton"
 					type="button"
-					class="grid size-11 place-items-center rounded-md text-ink transition-colors duration-150 ease-(--ease) hover:bg-surface-2 md:hidden"
+					class="grid size-target place-items-center rounded-md text-ink transition-colors duration-150 ease-(--ease) hover:bg-surface-2 md:hidden"
 					:aria-expanded="menuOpen"
 					aria-controls="mobile-menu"
 					:aria-label="(menuOpen ? navigation.closeMenuLabel : navigation.toggleMenuLabel) ?? undefined"

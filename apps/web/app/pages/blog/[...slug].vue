@@ -71,7 +71,7 @@ useHead(() => ({
 			<div class="flex max-w-[800px] min-w-0 flex-col gap-[18px] lg:flex-1 lg:gap-[22px]">
 				<NuxtLink
 					:to="href('/blog')"
-					class="-my-3 inline-flex min-h-11 items-center gap-[0.6em] self-start type-mono-s text-ink-soft no-underline transition-colors duration-150 ease-(--ease) hover:text-ink"
+					class="-my-3 inline-flex min-h-target items-center gap-[0.6em] self-start type-mono-s text-ink-soft no-underline transition-colors duration-150 ease-(--ease) hover:text-ink"
 					><ArrowGlyph class="-scale-x-100 text-accent" />{{ backLabel }}</NuxtLink
 				>
 				<div class="flex flex-wrap items-center gap-x-2 gap-y-2.5 [&_ul]:contents">
