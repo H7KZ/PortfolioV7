@@ -55,6 +55,7 @@
     "home": {
       "hero": {
         "eyebrowCommand": "whoami  # Jan Komínek · freelance fullstack engineer · Prague, CZ",
+        "eyebrowCommandShort": "whoami  # Prague, CZ",
         "headline": "From empty repo\nto production.",
         "valueProp": "A zero-trust data provenance platform, an EV charging network with live payments, and a course scheduler I still run today. Built end to end, from infrastructure to UI. Seven companies and 12+ shipped projects since 2022.",
         "primaryCta": { "label": "Start a project", "href": "/contact" },
@@ -126,7 +127,8 @@
         "heading": "Real feedback from\nteammates and managers.",
         "sub": "Pulled directly from LinkedIn recommendations, unedited.",
         "readMoreLabel": "Read more ↗",
-        "quoteLimit": 160
+        "allRecommendationsLabel": "See all {count} recommendations on LinkedIn ↗",
+        "quoteLimit": 152
       }
     },
     "project-page": {
@@ -139,7 +141,8 @@
       "architectureLabel": "Architecture",
       "stackLabel": "Stack",
       "nextLabel": "Next case study",
-      "placeholderLabel": "Screenshot placeholder"
+      "placeholderLabel": "Screenshot placeholder",
+      "placeholderSuffix": "placeholder"
     },
     "resume": {
       "label": "cat ./resume.md  # updated Oct 2026",
@@ -258,9 +261,29 @@
       "heading": "Blog.",
       "lead": "Write-ups on DevOps, SvelteKit and TypeScript, from setups I run in production.",
       "minutesLong": "min read",
+      "backLabel": "← All posts",
+      "tocLabel": "On this page",
+      "shareLabel": "Found this useful?",
+      "shareText": "Share it with someone who'd benefit, or follow new posts via RSS.",
       "readLabel": "Read the guide",
+      "copyLabel": "copy",
+      "copiedLabel": "copied",
       "draftingLabel": "Drafting",
-      "nextUpText": "More posts are in progress. Follow along via RSS at jankominek.com/feed.xml."
+      "nextUpText": "More posts in progress. Follow via RSS: jankominek.com/feed.xml."
+    },
+    "privacy": {
+      "label": "cat ./privacy.md",
+      "title": "Privacy policy.",
+      "updatedLabel": "Updated",
+      "bindingNote": "Also available in Czech. If the versions differ, the Czech one prevails.",
+      "tocLabel": "On this page"
+    },
+    "terms": {
+      "label": "cat ./terms.md",
+      "title": "Terms of use.",
+      "updatedLabel": "Updated",
+      "bindingNote": "Also available in Czech. If the versions differ, the Czech one prevails.",
+      "tocLabel": "On this page"
     }
   },
   "collections": {
@@ -416,10 +439,10 @@
         "stack": ["SvelteKit", "Svelte", "Fastify", "Node.js", "MongoDB", "Docker Swarm", "Raspberry Pi", "CI/CD", "Linux"],
         "hero": { "path": "~/projects/iont_info", "image": "iont-thumbnail" },
         "gallery": [
-          { "path": "~/projects/iont_info/landing", "image": "iont-landing" },
-          { "path": "~/projects/iont_info/mobile", "image": "iont-phones" },
-          { "path": "~/projects/iont_charge", "image": "iont-charge" },
-          { "path": "~/projects/iont_admin", "image": "iont-admin" },
+          { "path": "~/projects/iont_info/landing", "image": "iont-landing", "crop": "strip" },
+          { "path": "~/projects/iont_info/mobile", "image": "iont-phones", "crop": "strip" },
+          { "path": "~/projects/iont_charge", "image": "iont-charge", "crop": "strip" },
+          { "path": "~/projects/iont_admin", "image": "iont-admin", "crop": "strip" },
           {
             "path": "~/projects/iont_platform/driver-app",
             "placeholder": { "label": "Driver app on a phone: find a charger, pay, charge", "spec": "Capture 390 × 844 at 3× · demo data only" }
@@ -597,9 +620,9 @@
           }
         ],
         "stack": ["Vue.js", "Shadcn UI", "Vite", "pnpm", "Node.js", "ESLint", "Prettier"],
-        "hero": { "path": "~/projects/corac_scorecard", "image": "scorecard-thumbnail" },
+        "hero": { "path": "~/projects/corac_scorecard", "image": "scorecard-main" },
         "gallery": [
-          { "path": "~/projects/corac_scorecard/report", "image": "scorecard-main" },
+          { "path": "~/projects/corac_scorecard/report", "image": "scorecard-thumbnail" },
           {
             "path": "~/projects/corac_scorecard/report",
             "placeholder": { "label": "Report builder next to an exported PDF page", "spec": "Capture 1440 × 900 at 2× · demo data only" }

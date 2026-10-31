@@ -23,27 +23,29 @@ const {
 	size?: 'default' | 'small'
 }>()
 
+// The slot sits in a span so label and trailing glyph stay one inline run (a space apart, as in Figma) instead of two flex items a full gap apart.
 const classes = computed(() => [
-	'type-button inline-flex shrink-0 items-center justify-center gap-2.5 rounded-md px-5 whitespace-nowrap no-underline transition-colors duration-150 ease-(--ease) disabled:cursor-not-allowed disabled:opacity-50',
-	size === 'small' ? 'min-h-11 px-3 sm:px-4' : 'min-h-11 md:min-h-12',
+	'[--glyph-gap:0.3em] type-button inline-flex shrink-0 items-center justify-center gap-2.5 rounded-sm whitespace-nowrap no-underline transition-colors duration-150 ease-(--ease) disabled:cursor-not-allowed disabled:opacity-40 aria-disabled:opacity-40',
+	size === 'small' ? 'min-h-11 px-4 py-3' : 'min-h-12 px-[22px] py-3.5',
 	block ? 'w-full' : '',
 	kind === 'primary'
-		? 'bg-accent text-accent-ink hover:bg-accent-hover'
-		: 'border border-control text-ink hover:border-ink-soft hover:bg-surface-2 aria-disabled:hover:bg-transparent'
+		? 'bg-accent text-accent-ink hover:bg-accent-hover disabled:hover:bg-accent'
+		: 'border border-control text-ink hover:border-ink-soft hover:bg-surface-2 disabled:hover:border-control disabled:hover:bg-transparent'
 ])
+const dotClass = computed(() => ['size-[7px] shrink-0 rounded-full', kind === 'primary' ? 'bg-accent-ink' : 'bg-accent'])
 </script>
 
 <template>
 	<NuxtLink v-if="to" :to="to" :class="classes">
-		<span v-if="dot" class="live-dot" aria-hidden="true"></span>
-		<slot />
+		<span v-if="dot" :class="dotClass" aria-hidden="true"></span>
+		<span><slot /></span>
 	</NuxtLink>
 	<a v-else-if="href" :href="href" :class="classes" :target="external ? '_blank' : undefined" :rel="external ? 'noopener' : undefined">
-		<span v-if="dot" class="live-dot" aria-hidden="true"></span>
-		<slot />
+		<span v-if="dot" :class="dotClass" aria-hidden="true"></span>
+		<span><slot /></span>
 	</a>
 	<button v-else :type="type" :class="classes" :disabled="disabled || busy" :aria-busy="busy || undefined">
-		<span v-if="dot" class="live-dot" aria-hidden="true"></span>
-		<slot />
+		<span v-if="dot" :class="dotClass" aria-hidden="true"></span>
+		<span><slot /></span>
 	</button>
 </template>

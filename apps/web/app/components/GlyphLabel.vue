@@ -7,6 +7,6 @@ const { newTabLabel } = useSiteText()
 
 <template>
 	<span v-if="parts.before" aria-hidden="true" class="mr-[0.4em]">{{ parts.before.trim() }}</span
-	>{{ parts.text }}<span v-if="parts.after" aria-hidden="true" class="ml-[0.4em]">{{ parts.after.trim() }}</span
+	>{{ parts.text }}<span v-if="parts.after" aria-hidden="true" class="ml-(--glyph-gap,8px)">{{ parts.after.trim() }}</span
 	><span v-if="newTab && newTabLabel" class="sr-only"> {{ newTabLabel }}</span>
 </template>

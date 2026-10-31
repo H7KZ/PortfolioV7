@@ -35,13 +35,6 @@
 	--gutter: clamp(20px, 5.2vw, 40px);
 	--ease: cubic-bezier(0.2, 0, 0, 1);
 
-	/* Fluid type: mobile value at 390px viewport, desktop value at 1440px. */
-	--text-display-xl: clamp(40px, 31.09px + 2.286vw, 64px);
-	--text-display-l: clamp(34px, 27.31px + 1.714vw, 52px);
-	--text-h2: clamp(26px, 22.29px + 0.952vw, 36px);
-	--text-h3: clamp(20px, 19.26px + 0.19vw, 22px);
-	--text-body-l: clamp(17px, 16.63px + 0.095vw, 18px);
-
 	/* Section rhythm: 72 / 48 mobile, 96 / 64 tablet, 120 / 96 desktop. */
 	--section-gap: 72px;
 	--block-gap: 48px;
@@ -92,108 +85,194 @@
 	--breakpoint-2xl: 1536px;
 }
 
-/* Type styles, one per Figma text style (SPEC 4.2). */
+/* Type styles, one per Figma text style (SPEC 4.2). Line heights are whole pixels: Figma lays text out on rounded line boxes, so fractional values drift a few px per paragraph. */
 @utility type-display-xl {
 	font-family: var(--font-sans);
-	font-size: var(--text-display-xl);
+	font-size: 40px;
 	font-weight: 700;
-	line-height: 0.96;
-	letter-spacing: -0.04em;
+	line-height: 39px;
+	letter-spacing: -1.6px;
+
+	@media (min-width: 768px) {
+		font-size: 52px;
+		line-height: 52px;
+		letter-spacing: -1.9px;
+	}
+
+	@media (min-width: 1024px) {
+		font-size: 64px;
+		line-height: 60px;
+		letter-spacing: -3.4px;
+	}
 }
 
 @utility type-display-l {
 	font-family: var(--font-sans);
-	font-size: var(--text-display-l);
+	font-size: 34px;
 	font-weight: 700;
-	line-height: 1.02;
-	letter-spacing: -0.0294em;
+	line-height: 35px;
+	letter-spacing: -1px;
+
+	@media (min-width: 768px) {
+		font-size: 52px;
+		line-height: 52px;
+		letter-spacing: -1.9px;
+	}
+}
+
+/* The Contact CTA is a component with only Desktop and Mobile sizes, so it keeps the mobile type through tablet. */
+@utility type-display-l-lg {
+	font-family: var(--font-sans);
+	font-size: 34px;
+	font-weight: 700;
+	line-height: 35px;
+	letter-spacing: -1px;
+
+	@media (min-width: 1024px) {
+		font-size: 52px;
+		line-height: 52px;
+		letter-spacing: -1.9px;
+	}
+}
+
+@utility type-body-l-lg {
+	font-family: var(--font-sans);
+	font-size: 17px;
+	font-weight: 400;
+	line-height: 26px;
+
+	@media (min-width: 1024px) {
+		font-size: 18px;
+		line-height: 27px;
+	}
 }
 
 @utility type-h2 {
 	font-family: var(--font-sans);
-	font-size: var(--text-h2);
+	font-size: 26px;
 	font-weight: 700;
-	line-height: 1.1;
-	letter-spacing: -0.0269em;
+	line-height: 29px;
+	letter-spacing: -0.7px;
+
+	@media (min-width: 768px) {
+		font-size: 36px;
+		line-height: 39px;
+		letter-spacing: -1.1px;
+	}
+}
+
+/* Section headers keep the mobile size through tablet. */
+@utility type-h2-section {
+	font-family: var(--font-sans);
+	font-size: 26px;
+	font-weight: 700;
+	line-height: 29px;
+	letter-spacing: -0.7px;
+
+	@media (min-width: 1024px) {
+		font-size: 36px;
+		line-height: 39px;
+		letter-spacing: -1.1px;
+	}
 }
 
 @utility type-h3 {
 	font-family: var(--font-sans);
-	font-size: var(--text-h3);
+	font-size: 20px;
 	font-weight: 500;
-	line-height: 1.24;
-	letter-spacing: -0.015em;
+	line-height: 25px;
+	letter-spacing: -0.3px;
+
+	@media (min-width: 768px) {
+		font-size: 22px;
+		line-height: 27px;
+		letter-spacing: -0.4px;
+	}
+}
+
+/* The Desktop/H3 style at every width, for cards that never step down. */
+@utility type-h3-desktop {
+	font-family: var(--font-sans);
+	font-size: 22px;
+	font-weight: 500;
+	line-height: 27px;
+	letter-spacing: -0.4px;
 }
 
 @utility type-h4 {
 	font-family: var(--font-sans);
 	font-size: 18px;
 	font-weight: 500;
-	line-height: 1.32;
+	line-height: 24px;
 	letter-spacing: -0.0111em;
 }
 
 @utility type-body-l {
 	font-family: var(--font-sans);
-	font-size: var(--text-body-l);
+	font-size: 17px;
 	font-weight: 400;
-	line-height: 1.52;
+	line-height: 26px;
+
+	@media (min-width: 768px) {
+		font-size: 18px;
+		line-height: 27px;
+	}
 }
 
 @utility type-body {
 	font-family: var(--font-sans);
 	font-size: 16px;
 	font-weight: 400;
-	line-height: 1.6;
+	line-height: 26px;
 }
 
 @utility type-body-medium {
 	font-family: var(--font-sans);
 	font-size: 16px;
 	font-weight: 500;
-	line-height: 1.5;
+	line-height: 24px;
 }
 
 @utility type-body-s {
 	font-family: var(--font-sans);
 	font-size: 14px;
 	font-weight: 400;
-	line-height: 1.56;
+	line-height: 22px;
 }
 
 @utility type-quote {
 	font-family: var(--font-sans);
 	font-size: 17px;
 	font-weight: 400;
-	line-height: 1.56;
+	line-height: 27px;
 }
 
 @utility type-mono-label {
 	font-family: var(--font-mono);
 	font-size: 12px;
 	font-weight: 500;
-	line-height: 1.3;
+	line-height: 16px;
 }
 
 @utility type-mono-s {
 	font-family: var(--font-mono);
 	font-size: 13px;
 	font-weight: 400;
-	line-height: 1.5;
+	line-height: 20px;
 }
 
 @utility type-mono-m {
 	font-family: var(--font-mono);
 	font-size: 15px;
 	font-weight: 500;
-	line-height: 1.4;
+	line-height: 21px;
 }
 
 @utility type-stat {
 	font-family: var(--font-sans);
 	font-size: 32px;
 	font-weight: 700;
-	line-height: 1;
+	line-height: 32px;
 	letter-spacing: -0.0375em;
 }
 
@@ -201,7 +280,7 @@
 	font-family: var(--font-sans);
 	font-size: 15px;
 	font-weight: 500;
-	line-height: 1;
+	line-height: 15px;
 }
 
 /* Centered 1200px column with the responsive side gutter. */
@@ -247,14 +326,6 @@
 	h3,
 	h4 {
 		color: var(--color-ink);
-		text-wrap: balance;
-	}
-
-	p,
-	li,
-	dd,
-	blockquote {
-		text-wrap: pretty;
 	}
 
 	::selection {
@@ -274,42 +345,70 @@
 	display: none;
 }
 
-/* Dot grid and green glow behind the top of each page only (SPEC 4.4). */
+/* Dot grid, fade and green glow behind the top of each page only (SPEC 4.4). Three layers as in Figma: dots, then the fade into the page colour, then the glow on top. */
 .page-backdrop {
+	--backdrop-height: 720px;
+	--backdrop-fade: linear-gradient(180deg, rgb(11 13 16 / 0.25), rgb(11 13 16));
+	--backdrop-glow: radial-gradient(ellipse 278.6px 400px at 64.3% 360px, rgb(91 227 143 / 0.12), rgb(91 227 143 / 0) 70%);
 	position: absolute;
 	inset: 0 0 auto;
-	height: 720px;
+	height: var(--backdrop-height);
+	overflow: hidden;
 	pointer-events: none;
 	z-index: 0;
-	background-image:
-		radial-gradient(ellipse 55% 45% at 50% 0%, rgb(91 227 143 / 0.1), transparent 70%),
-		radial-gradient(circle at center, rgb(241 243 245 / 0.07) 1px, transparent 1.5px);
-	background-size:
-		100% 100%,
-		24px 24px;
-	mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+	background-image: radial-gradient(circle at 12px 12px, rgb(255 255 255 / 0.08) 1px, rgb(255 255 255 / 0) 1.4px);
+	background-size: 24px 24px;
+}
+
+.page-backdrop::before,
+.page-backdrop::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+}
+
+.page-backdrop::before {
+	background-image: var(--backdrop-fade);
+}
+
+.page-backdrop::after {
+	background-image: var(--backdrop-glow);
 }
 
 @media (min-width: 768px) {
 	.page-backdrop {
-		height: 820px;
+		--backdrop-height: 820px;
+		--backdrop-glow: radial-gradient(ellipse 548.6px 455.6px at 64.3% 410px, rgb(91 227 143 / 0.12), rgb(91 227 143 / 0) 70%);
 	}
 }
 
 @media (min-width: 1024px) {
 	.page-backdrop {
-		height: 900px;
+		--backdrop-height: 900px;
+		--backdrop-fade: linear-gradient(180deg, rgb(11 13 16 / 0.2), rgb(11 13 16));
+		--backdrop-glow: radial-gradient(ellipse 900px 450px at calc(50% + 360px) 360px, rgb(91 227 143 / 0.1), rgb(91 227 143 / 0) 70%);
+	}
+
+	.page-backdrop--flat-lg {
+		--backdrop-glow: none;
+	}
+
+	.page-backdrop--home {
+		--backdrop-height: 1100px;
+		--backdrop-fade:
+			linear-gradient(90deg, rgb(11 13 16 / 0.85) 0%, rgb(11 13 16 / 0) 45%, rgb(11 13 16 / 0) 100%),
+			linear-gradient(180deg, rgb(11 13 16 / 0) 0%, rgb(11 13 16 / 0.35) 55%, rgb(11 13 16) 100%);
+		--backdrop-glow: radial-gradient(ellipse 800px 611.1px at calc(50% + 480px) 464px, rgb(91 227 143 / 0.14), rgb(91 227 143 / 0) 70%);
 	}
 }
 
 .live-dot {
 	display: inline-block;
-	width: 8px;
-	height: 8px;
+	width: 6px;
+	height: 6px;
 	flex-shrink: 0;
 	border-radius: 999px;
 	background: var(--color-accent);
-	box-shadow: 0 0 0 4px var(--color-accent-soft);
 }
 
 /* Long-form text from the CMS: posts, legal pages, case study challenge. */
@@ -332,7 +431,7 @@
 	--tw-prose-td-borders: var(--color-line);
 	font-family: var(--font-sans);
 	font-size: 16px;
-	line-height: 1.6;
+	line-height: 26px;
 	max-width: 68ch;
 
 	:where(h2, h3, h4) {
@@ -396,6 +495,7 @@
 @media (min-width: 1024px) {
 	.prose-site {
 		font-size: 17px;
+		line-height: 27px;
 	}
 }
 

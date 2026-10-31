@@ -25,27 +25,20 @@ const PLACEMENT: Record<string, { row: number; col: 1 | 2 | 'span' }> = {
 const FLOW = ['web', 'traefik', 'api', 'mysql', 'redis', 'scraper', 'insis', 'ai', 'mcp']
 
 /**
- * Where each edge leaves and enters its nodes, as a fraction of the node width. Vertical edges between the same
- * column share x, so they stay straight; the API to MySQL edge changes column and bends once in the row gap.
+ * Where each edge leaves and enters its nodes, as a fraction of the node width. Every edge runs down the middle of
+ * its column except the API to MySQL edge, which changes column and bends once at the middle of the row gap.
  */
 const ANCHORS: Record<string, { from: number; to: number; labelSide: 'left' | 'right' | 'above' }> = {
-	'web>traefik': { from: 0.5, to: 0.5, labelSide: 'right' },
-	'ai>traefik': { from: 0.5, to: 0.5, labelSide: 'right' },
-	'traefik>api': { from: 0.5, to: 0.5, labelSide: 'right' },
-	'traefik>mcp': { from: 0.5, to: 0.5, labelSide: 'right' },
-	'api>redis': { from: 0.3, to: 0.3, labelSide: 'left' },
-	'api>mysql': { from: 0.75, to: 0.25, labelSide: 'above' },
-	'mcp>mysql': { from: 0.7, to: 0.7, labelSide: 'right' },
-	'redis>scraper': { from: 0.3, to: 0.3, labelSide: 'right' },
+	'api>redis': { from: 0.5, to: 0.5, labelSide: 'left' },
+	'api>mysql': { from: 0.82, to: 0.22, labelSide: 'above' },
 	'scraper>insis': { from: 0, to: 0, labelSide: 'above' }
 }
 
-/** On phones the columns are narrow, so labels move inside their column instead of past the card edge. */
-const COMPACT_ANCHORS: typeof ANCHORS = {
-	'api>redis': { from: 0.15, to: 0.15, labelSide: 'right' },
-	'redis>scraper': { from: 0.15, to: 0.15, labelSide: 'right' },
-	'mcp>mysql': { from: 0.85, to: 0.85, labelSide: 'left' }
-}
+/** Keeps the separator dot at the end of a line instead of the start of the next one. */
+const trailDots = (text: string) => text.replaceAll(' · ', ' · ')
+
+/** The mono font has no arrow, so the fallback's long glyph is swapped for the drawn one. */
+const observability = computed(() => architecture.observability?.split('→') ?? [])
 
 const nodes = computed(() =>
 	[...(architecture.nodes ?? [])].sort((a, b) => {
@@ -85,7 +78,7 @@ function layoutEdge(edge: Edge, origin: DOMRect, compact: boolean): DrawnEdge | 
 	const to = rectOf(edge.to)
 	if (!from || !to) return null
 	const key = `${edge.from}>${edge.to}`
-	const anchor = (compact ? COMPACT_ANCHORS[key] : undefined) ?? ANCHORS[key] ?? { from: 0.5, to: 0.5, labelSide: 'right' as const }
+	const anchor = ANCHORS[key] ?? { from: 0.5, to: 0.5, labelSide: 'right' as const }
 	const label = (compact ? (edge.labelShort ?? edge.label) : edge.label) ?? null
 	const x = (rect: DOMRect, fraction: number) => rect.left - origin.left + rect.width * fraction
 	const top = (rect: DOMRect) => rect.top - origin.top
@@ -125,7 +118,7 @@ function layoutEdge(edge: Edge, origin: DOMRect, compact: boolean): DrawnEdge | 
 			labelSide: anchor.labelSide
 		}
 	}
-	const bend = y1 + Math.min(24, (y2 - y1) / 2)
+	const bend = (y1 + y2) / 2
 	return {
 		id: edge.id ?? `${edge.from}-${edge.to}`,
 		kind: edge.kind,
@@ -164,31 +157,27 @@ const STROKE: Record<Kind, { color: string; width: number; dash?: string }> = {
 function labelClass(edge: DrawnEdge): string {
 	if (edge.labelSide === 'left') return '-translate-x-[calc(100%+8px)] -translate-y-1/2'
 	if (edge.labelSide === 'right') return 'translate-x-2 -translate-y-1/2'
-	return '-translate-x-1/2 -translate-y-[calc(100%+4px)]'
+	return '-translate-x-1/2 -translate-y-[calc(100%+6px)]'
 }
 </script>
 
 <template>
-	<figure class="m-0 flex flex-col gap-4">
-		<div class="rounded-lg border border-line bg-surface p-5 md:p-8">
+	<figure class="m-0 flex flex-col gap-5">
+		<div class="rounded-[12px] border border-line bg-surface p-4 md:p-6 lg:p-7">
 			<p v-if="architecture.textAlternative" class="sr-only">{{ architecture.textAlternative }}</p>
-			<!-- Clipped so a drawing measured at the previous width never widens the page while it is redrawn. -->
-			<div ref="root" class="relative overflow-hidden" aria-hidden="true">
-				<ol class="relative z-[1] grid list-none grid-cols-2 gap-x-6 gap-y-14 p-0 md:gap-x-24">
+			<!-- Figma draws the diagram 2px wider than the padded box, so the grid is widened to the same size. Clipped so a drawing measured at the previous width never widens the page while it is redrawn. -->
+			<div ref="root" class="relative -mr-0.5 overflow-hidden" aria-hidden="true">
+				<ol class="relative z-[1] grid list-none grid-cols-2 gap-x-6 gap-y-14 p-0 md:gap-x-12 lg:gap-x-14">
 					<li
 						v-for="node in nodes"
 						:key="node.key"
 						:data-node="node.key"
 						:style="cellStyle(node.key)"
-						class="flex flex-col gap-1 rounded-md border p-3 md:p-4"
+						class="flex flex-col gap-1 rounded-[8px] border py-3 pr-[13px] pl-3.5"
 						:class="node.external ? 'border-dashed border-control' : 'border-line-strong bg-surface-2'"
 					>
 						<span class="type-body-medium text-ink">{{ node.name }}</span>
-						<span v-if="node.tech" class="type-mono-s text-ink-soft">
-							<template v-for="(part, index) in node.tech.split(' · ')" :key="index"
-								><span v-if="index > 0">&nbsp;· </span><span :class="{ 'whitespace-nowrap': part.length <= 18 }">{{ part }}</span></template
-							>
-						</span>
+						<span v-if="node.tech" class="type-mono-s text-mute">{{ trailDots(node.tech) }}</span>
 					</li>
 				</ol>
 				<svg
@@ -242,14 +231,14 @@ function labelClass(edge: DrawnEdge): string {
 				>
 			</div>
 
-			<div class="mt-8 flex flex-col gap-4 border-t border-line pt-5">
-				<ul v-if="architecture.legend" class="flex list-none flex-wrap gap-x-6 gap-y-2 p-0 type-mono-label text-mute" aria-hidden="true">
+			<div class="mt-6 flex flex-col gap-3 border-t border-line pt-5">
+				<ul v-if="architecture.legend" class="m-0 flex list-none flex-wrap gap-x-6 gap-y-2.5 p-0 type-mono-label text-mute" aria-hidden="true">
 					<li v-for="kind in ['request', 'sync', 'async'] as const" :key="kind" class="flex items-center gap-2">
-						<svg width="28" height="8" viewBox="0 0 28 8">
+						<svg width="24" height="8" viewBox="0 0 24 8">
 							<line
 								x1="0"
 								y1="4"
-								x2="28"
+								x2="24"
 								y2="4"
 								:stroke="STROKE[kind].color"
 								:stroke-width="STROKE[kind].width"
@@ -259,9 +248,11 @@ function labelClass(edge: DrawnEdge): string {
 						{{ architecture.legend[kind] }}
 					</li>
 				</ul>
-				<p v-if="architecture.observability" class="type-body-s text-mute">{{ architecture.observability }}</p>
+				<p v-if="architecture.observability" class="m-0 type-mono-label text-mute">
+					<template v-for="(part, index) in observability" :key="index"><ArrowGlyph v-if="index" />{{ part }}</template>
+				</p>
 			</div>
 		</div>
-		<figcaption v-if="architecture.caption" class="max-w-[68ch] type-body text-ink-soft">{{ architecture.caption }}</figcaption>
+		<figcaption v-if="architecture.caption" class="max-w-[680px] type-body text-ink-soft">{{ architecture.caption }}</figcaption>
 	</figure>
 </template>

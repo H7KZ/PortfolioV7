@@ -17,11 +17,11 @@ function select(key: string): void {
 		<label
 			v-for="option in options"
 			:key="option.key"
-			class="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border px-4 type-button transition-colors duration-150 ease-(--ease) has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-focus"
-			:class="model === option.key ? 'border-accent bg-accent-soft text-ink' : 'border-control text-ink-soft hover:border-ink-soft hover:text-ink'"
+			class="inline-flex min-h-11 max-w-full cursor-pointer items-center justify-center gap-2 rounded-full border px-4 text-center type-body-s transition-colors duration-150 ease-(--ease) has-focus-visible:outline-2 has-focus-visible:outline-offset-3 has-focus-visible:outline-focus"
+			:class="model === option.key ? 'border-accent bg-accent-soft text-ink' : 'border-control text-ink-soft hover:border-ink-soft'"
 		>
 			<input type="radio" class="sr-only" :name="name" :value="option.key" :checked="model === option.key" @click="select(option.key)" />
-			<span v-if="model === option.key" aria-hidden="true" class="text-accent">✓</span>
+			<span v-if="model === option.key" aria-hidden="true" class="type-mono-s text-accent">✓</span>
 			{{ option.label }}
 		</label>
 	</div>

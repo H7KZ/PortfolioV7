@@ -96,6 +96,16 @@ export const Projects: CollectionConfig = {
 										{ name: 'path', type: 'text' }
 									]
 								},
+								{
+									name: 'crop',
+									type: 'select',
+									defaultValue: 'default',
+									options: [
+										{ label: 'Default (natural proportions)', value: 'default' },
+										{ label: 'Strip (wide 1198:400 band, cropped to fill)', value: 'strip' }
+									],
+									admin: { description: 'How the image is framed in its window. Strip suits wide, short crops of phone or admin screens.' }
+								},
 								{ type: 'row', fields: [text('placeholderLabel'), text('placeholderSpec')] }
 							]
 						},

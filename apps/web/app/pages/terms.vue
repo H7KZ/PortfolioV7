@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { Term } from '@portfolio/content'
-
-import type { Resolved } from '#shared/types/content'
+import type { LegalPage } from '#shared/types/content'
 
 definePageMeta({ contactCta: false })
 
-const page = await useContent<Resolved<Term>>('legal/terms')
+const page = await useContent<LegalPage>('legal/terms')
 
 useSeo(() => ({
 	title: page.value.meta?.title ?? page.value.title,

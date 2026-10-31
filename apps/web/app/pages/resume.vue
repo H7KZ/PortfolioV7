@@ -6,6 +6,9 @@ const href = useHref()
 const { track } = useAnalytics()
 
 const page = computed(() => data.value.page)
+const portrait = computed(() => asMedia(page.value.portrait))
+const name = computed(() => page.value.name.replace(/\.$/, ''))
+const namePeriod = computed(() => page.value.name.endsWith('.'))
 
 const SECTIONS = [
 	{ kind: 'work', header: 'experience', id: 'experience' },
@@ -33,24 +36,28 @@ useSeo(() => ({
 
 <template>
 	<div>
-		<header class="site-container flex flex-col gap-8 pt-10 pb-(--block-gap) md:pt-14 lg:pt-20">
-			<p class="type-mono-s break-words text-mute"><span class="text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
-			<div class="flex max-w-[840px] flex-col gap-4">
-				<h1 class="type-display-l">{{ page.name }}</h1>
-				<p class="type-body-medium text-ink">{{ page.subtitle }}</p>
-				<p class="max-w-[64ch] type-body-l text-ink-soft">{{ page.bio }}</p>
+		<header class="site-container flex flex-col gap-4 pt-9 pb-7 md:gap-5 md:pt-14 md:pb-10 lg:flex-row lg:items-center lg:gap-14 lg:pt-[72px] lg:pb-14">
+			<div v-if="portrait" class="size-28 shrink-0 overflow-hidden rounded-lg border border-line-strong bg-surface-2 md:size-40 lg:size-[300px]">
+				<ResponsiveImage :image="portrait" priority sizes="(min-width: 1024px) 300px, 160px" img-class="object-top" />
 			</div>
-			<div class="flex flex-wrap gap-3">
-				<UiButton v-if="page.cv" href="/cv.pdf" download @click="track('cv-download')"><GlyphLabel :text="page.downloadLabel" /></UiButton>
-				<UiButton kind="secondary" :to="href(page.hireCta.href)">{{ page.hireCta.label }}</UiButton>
+			<div class="flex min-w-0 flex-1 flex-col items-start gap-4 md:gap-5">
+				<p class="type-mono-s text-mute"><span class="whitespace-pre text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
+				<h1 class="type-display-l text-ink">{{ name }}<span v-if="namePeriod" class="text-accent">.</span></h1>
+				<p class="type-mono-s text-mute lg:type-mono-m">{{ page.subtitle }}</p>
+				<p class="max-w-[680px] type-body-l text-ink-soft">{{ page.bio }}</p>
+				<div class="flex w-full flex-col gap-3 md:w-auto md:flex-row">
+					<UiButton v-if="page.cv" href="/cv.pdf" download @click="track('cv-download')"><GlyphLabel :text="page.downloadLabel" /></UiButton>
+					<UiButton kind="secondary" :to="href(page.hireCta.href)">{{ page.hireCta.label }}</UiButton>
+				</div>
 			</div>
 		</header>
 
 		<div v-if="page.impact?.length" class="site-container pb-(--section-gap)">
-			<dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+			<dl class="grid grid-cols-2 gap-x-3 gap-y-3.5 md:gap-y-3 lg:grid-cols-4 lg:gap-6">
 				<StatTile
 					v-for="item in page.impact"
 					:key="item.id ?? item.label"
+					layout="resume"
 					:label="item.label"
 					:value="item.value"
 					:sub="item.sub"
@@ -63,36 +70,31 @@ useSeo(() => ({
 			v-for="section in SECTIONS"
 			:id="section.id"
 			:key="section.kind"
-			class="site-container section-grid scroll-mt-24 pb-(--section-gap)"
+			class="site-container scroll-mt-24 pb-12 md:pb-16 lg:pb-30"
 			:aria-labelledby="`${section.id}-heading`"
 		>
-			<div class="flex flex-col gap-3 lg:pr-12">
-				<h2 :id="`${section.id}-heading`" class="type-h2">{{ page[section.header].heading }}</h2>
-				<p v-if="sub(section.header)" class="type-body text-ink-soft">{{ sub(section.header) }}</p>
-			</div>
-			<ol class="relative list-none p-0 before:absolute before:top-2 before:bottom-2 before:left-[5px] before:w-px before:bg-line-strong">
+			<SectionHeader :id="`${section.id}-heading`" :heading="page[section.header].heading" :sub="sub(section.header)" />
+			<ol class="m-0 list-none p-0 pt-7 md:pt-9 lg:pt-12 lg:pl-[30%]">
 				<TimelineItem v-for="entry in entries(section.kind)" :key="entry.id" :entry="entry" :show-tags="section.kind !== 'education'" />
 			</ol>
 		</section>
 
-		<section class="site-container section-grid pb-(--section-gap)" aria-labelledby="skills-heading">
-			<div class="flex flex-col gap-3 lg:pr-12">
-				<h2 id="skills-heading" class="type-h2">{{ page.skills.heading }}</h2>
-				<p v-if="page.skills.sub" class="type-body text-ink-soft">{{ page.skills.sub }}</p>
-			</div>
-			<div class="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
-				<div v-for="(group, index) in page.skillGroups ?? []" :key="group.id ?? index" class="flex flex-col gap-4">
-					<h3 class="border-b border-line pb-3 type-mono-label text-mute">{{ group.title }}</h3>
-					<ul class="flex list-none flex-col gap-2 p-0">
+		<section class="site-container pb-(--section-gap) lg:pb-36" aria-labelledby="skills-heading">
+			<SectionHeader id="skills-heading" :heading="page.skills.heading" :sub="page.skills.sub" />
+			<div class="grid grid-cols-2 gap-x-4 gap-y-6 pt-7 md:gap-x-4 md:pt-9 lg:grid-cols-4 lg:gap-x-6 lg:pt-12">
+				<div v-for="(group, index) in page.skillGroups ?? []" :key="group.id ?? index" class="flex min-w-0 flex-col gap-2 lg:gap-2.5">
+					<h3 class="m-0 type-mono-label text-mute">{{ group.title }}</h3>
+					<div class="h-px w-full bg-line" aria-hidden="true"></div>
+					<ul class="m-0 flex list-none flex-col gap-2 p-0 lg:gap-2.5">
 						<li
 							v-for="skill in group.skills ?? []"
 							:key="skill.id ?? skill.name"
-							class="flex items-center gap-2 type-body-s"
+							class="flex items-center gap-2 type-body"
 							:class="skill.primary ? 'text-ink' : 'text-ink-soft'"
 						>
 							{{ skill.name }}
 							<template v-if="skill.primary">
-								<span class="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true"></span>
+								<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
 								<span v-if="page.primarySkillLabel" class="sr-only">{{ page.primarySkillLabel }}</span>
 							</template>
 						</li>
