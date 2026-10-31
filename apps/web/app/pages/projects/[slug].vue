@@ -87,7 +87,7 @@ useHead(() => {
 				<div class="flex min-w-0 flex-col items-start gap-4 md:gap-[18px] lg:flex-1 lg:gap-5">
 					<NuxtLink
 						:to="href('/#work')"
-						class="inline-flex min-h-11 items-center type-mono-s text-ink-soft no-underline transition-colors duration-150 ease-(--ease) hover:text-ink [&>span[aria-hidden]]:mr-[0.6em] [&>span[aria-hidden]]:text-accent"
+						class="inline-flex min-h-target items-center type-mono-s text-ink-soft no-underline transition-colors duration-150 ease-(--ease) hover:text-ink [&>span[aria-hidden]]:mr-[0.6em] [&>span[aria-hidden]]:text-accent"
 						><GlyphLabel :text="labels.backLabel"
 					/></NuxtLink>
 					<p v-if="project.kicker" class="type-mono-label text-mute">{{ project.kicker }}</p>

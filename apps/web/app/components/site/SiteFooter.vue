@@ -17,7 +17,7 @@ const footer = computed(() => layout.value?.footer)
 						:external="link.external || link.href.startsWith('/feed.xml') || undefined"
 						:target="link.external ? '_blank' : undefined"
 						:rel="link.external ? 'noopener' : undefined"
-						class="inline-flex min-h-11 items-center gap-[0.6em] type-mono-s text-mute no-underline transition-colors duration-150 ease-(--ease) hover:text-ink"
+						class="inline-flex min-h-target items-center gap-[0.6em] type-mono-s text-mute no-underline transition-colors duration-150 ease-(--ease) hover:text-ink"
 						@click="trackLink(link.href)"
 					>
 						{{ link.label }}<span v-if="link.arrow" aria-hidden="true">↗</span>

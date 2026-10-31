@@ -41,7 +41,7 @@ test('G5 keyboard: interactive targets are at least 44px tall', async ({ page })
 			const small = await page.evaluate(() =>
 				[...document.querySelectorAll<HTMLElement>('header a, header button, footer a, main a.inline-flex, main button, [role=radiogroup] label')]
 					.filter(element => element.offsetParent !== null && !element.closest('.prose-site'))
-					.filter(element => element.getBoundingClientRect().height < 43.5)
+					.filter(element => Math.max(element.getBoundingClientRect().height, parseFloat(getComputedStyle(element, '::after').height) || 0) < 43.5)
 					.map(element => `${element.tagName} "${element.textContent?.trim().slice(0, 30)}" ${Math.round(element.getBoundingClientRect().height)}px`)
 			)
 			expect(small, `${route} at ${width}`).toEqual([])

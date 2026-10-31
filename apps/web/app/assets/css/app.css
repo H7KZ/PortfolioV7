@@ -35,6 +35,11 @@
 	--gutter: clamp(20px, 5.2vw, 40px);
 	--ease: cubic-bezier(0.2, 0, 0, 1);
 
+	/* Control heights, the one place to change them: h-control-lg, h-control-sm, h-target and the min-h- and size- forms. Controls under --control-target keep a tap area of that height through tap-target. */
+	--control-lg: 48px;
+	--control-sm: 32px;
+	--control-target: 44px;
+
 	/* Section rhythm: 72 / 48 mobile, 96 / 64 tablet, 120 / 96 desktop. */
 	--section-gap: 72px;
 	--block-gap: 48px;
@@ -77,6 +82,9 @@
 	--radius-sm: var(--radius-sm);
 	--radius-md: var(--radius-md);
 	--radius-lg: var(--radius-lg);
+	--spacing-control-lg: var(--control-lg);
+	--spacing-control-sm: var(--control-sm);
+	--spacing-target: var(--control-target);
 	/* Every breakpoint in px: mixing them with the rem defaults puts sm after xl in the built CSS. */
 	--breakpoint-sm: 640px;
 	--breakpoint-md: 768px;
@@ -284,6 +292,20 @@
 }
 
 /* Centered 1200px column with the responsive side gutter. */
+/* Lets a control look shorter than the tap area SPEC 9 asks for. */
+@utility tap-target {
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset-inline: 0;
+		top: 50%;
+		height: var(--control-target);
+		translate: 0 -50%;
+	}
+}
+
 @utility site-container {
 	width: 100%;
 	max-width: calc(var(--container) + 2 * var(--gutter));
