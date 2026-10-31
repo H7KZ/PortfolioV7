@@ -91,9 +91,14 @@ onBeforeUnmount(() => {
 					>{{ languageNames?.[code] }}</NuxtLink
 				>
 			</div>
-			<UiButton v-if="navigation.mobileMenu?.primaryCta?.href" block :to="href(navigation.mobileMenu.primaryCta.href)" @click="emit('close')">{{
-				navigation.mobileMenu.primaryCta.label
-			}}</UiButton>
+			<UiButton
+				v-if="navigation.mobileMenu?.primaryCta?.href"
+				block
+				class="justify-start!"
+				:to="href(navigation.mobileMenu.primaryCta.href)"
+				@click="emit('close')"
+				>{{ navigation.mobileMenu.primaryCta.label }}</UiButton
+			>
 			<a
 				v-if="navigation.mobileMenu?.email"
 				:href="`mailto:${navigation.mobileMenu.email}`"

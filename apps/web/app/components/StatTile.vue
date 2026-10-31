@@ -27,7 +27,7 @@ const valueClass = computed(() => {
 		class="rounded-md border border-line bg-surface"
 		:class="
 			layout === 'resume'
-				? 'flex flex-col gap-2 px-5 pt-5 pb-[18px] lg:min-h-[158px] lg:gap-2.5 lg:p-6'
+				? 'flex flex-col gap-2 px-5 pt-5 pb-[19px] md:pb-[18px] lg:min-h-[158px] lg:gap-2.5 lg:p-6'
 				: 'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 px-[18px] py-4 md:flex md:flex-col md:items-stretch md:gap-2 md:px-5 md:pt-5 md:pb-[18px] lg:gap-2.5 lg:p-6'
 		"
 	>

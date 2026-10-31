@@ -190,7 +190,7 @@ onMounted(() => {
 					<p v-if="config.success?.body" class="type-body text-ink-soft">{{ config.success.body }}</p>
 				</div>
 				<div>
-					<UiButton kind="secondary" @click="reset">{{ config.success?.sendAnotherLabel }}</UiButton>
+					<UiButton kind="secondary" class="w-full md:w-auto" @click="reset">{{ config.success?.sendAnotherLabel }}</UiButton>
 				</div>
 			</div>
 

@@ -23,7 +23,7 @@ const highlights = computed(() => (entry.highlights ?? []).slice(0, 3))
 			</p>
 			<h3 class="type-h3 text-ink">{{ entry.role }}</h3>
 			<p class="type-mono-label text-ink-soft">{{ entry.organization }}</p>
-			<p v-if="entry.description" class="max-w-[680px] type-body text-ink-soft">{{ entry.description }}</p>
+			<p v-if="entry.description" class="max-w-[680px] type-body text-ink-soft md:text-[17px] lg:text-[16px]">{{ entry.description }}</p>
 			<ul v-if="highlights.length" class="m-0 flex w-full list-none flex-col gap-1.5 p-0">
 				<li v-for="highlight in highlights" :key="highlight.id ?? highlight.text" class="max-w-[680px] type-body text-ink-soft">
 					<span aria-hidden="true">– </span>{{ highlight.text }}

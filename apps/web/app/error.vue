@@ -30,8 +30,8 @@ useHead(() => ({ title: title.value, meta: [{ key: 'robots', name: 'robots', con
 <template>
 	<NuxtLayout :contact-cta="false">
 		<div class="site-container flex flex-col items-start gap-6 pt-16 pb-[72px] md:pt-24 md:pb-24 lg:pt-30 lg:pb-36">
-			<h1 class="type-display-l">{{ title }}</h1>
-			<p class="max-w-[640px] type-body-l text-ink-soft">{{ message }}</p>
+			<h1 class="type-display-l-lg">{{ title }}</h1>
+			<p class="max-w-[640px] type-body-l-lg text-ink-soft">{{ message }}</p>
 
 			<ul v-if="suggestions.length" class="flex w-full max-w-[592px] list-none flex-col gap-2.5 p-0 lg:gap-3">
 				<li v-for="suggestion in suggestions" :key="suggestion.id ?? suggestion.href">

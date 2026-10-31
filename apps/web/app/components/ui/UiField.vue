@@ -33,7 +33,7 @@ const control = computed(() => [
 	error
 		? 'border-danger shadow-[inset_0_0_0_1px_var(--color-danger)]'
 		: 'border-control hover:border-ink-soft focus:border-accent focus:shadow-[0_0_0_1px_var(--color-accent)]',
-	multiline ? 'min-h-[140px] resize-y lg:min-h-[150px]' : 'min-h-13'
+	multiline ? 'min-h-[140px] resize-none lg:min-h-[150px]' : 'min-h-13'
 ])
 </script>
 

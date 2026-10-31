@@ -35,6 +35,8 @@ const NuxtLink = resolveComponent('NuxtLink')
 			<span class="type-body-medium text-ink"><GlyphLabel :text="label" :new-tab="external" /></span>
 			<span v-if="sub" class="type-mono-s break-words text-mute">{{ sub }}</span>
 		</span>
-		<span class="type-mono-m text-accent transition-transform duration-150 ease-(--ease) group-hover:translate-x-0.5" aria-hidden="true">→</span>
+		<span class="type-mono-m text-accent transition-transform duration-150 ease-(--ease) group-hover:translate-x-0.5" aria-hidden="true"
+			><ArrowGlyph
+		/></span>
 	</component>
 </template>

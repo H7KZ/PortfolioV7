@@ -46,12 +46,10 @@ const target = computed(() => (href ? (external ? href : localize(href)) : null)
 			class="type-mono-s whitespace-nowrap text-accent no-underline group-hover:underline group-hover:underline-offset-4 after:absolute after:inset-0 after:content-[''] focus-visible:outline-none md:col-start-2 md:row-span-2 md:row-start-1 lg:col-start-3 lg:row-span-1"
 			@click="trackLink(href ?? '')"
 		>
-			<span class="sr-only">{{ title }}: </span><GlyphLabel :text="linkLabel" :new-tab="external ?? false" /><span
+			<span class="sr-only">{{ title }}: </span><GlyphLabel :text="linkLabel" :new-tab="external ?? false" /><ArrowGlyph
 				v-if="needsArrow"
-				aria-hidden="true"
 				class="ml-[0.4em]"
-				>→</span
-			>
+			/>
 		</NuxtLink>
 		<p
 			v-else-if="linkLabel"

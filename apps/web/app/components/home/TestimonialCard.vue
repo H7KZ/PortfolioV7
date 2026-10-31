@@ -6,6 +6,8 @@ const { testimonial, limit, readMoreLabel } = defineProps<{ testimonial: Resolve
 
 const locale = useLocaleCode()
 const { trackLink } = useAnalytics()
+const readMore = computed(() => splitGlyphs(readMoreLabel))
+const { newTabLabel } = useSiteText()
 const quote = computed(() => truncateWords(testimonial.quote, limit))
 const quoteLang = computed(() => (testimonial.quoteLanguage && testimonial.quoteLanguage !== locale.value ? testimonial.quoteLanguage : undefined))
 </script>
@@ -21,11 +23,14 @@ const quoteLang = computed(() => (testimonial.quoteLanguage && testimonial.quote
 					:href="testimonial.linkedinUrl"
 					target="_blank"
 					rel="noopener"
-					class="whitespace-nowrap text-ink-soft no-underline hover:text-ink hover:underline hover:underline-offset-4"
+					class="text-ink-soft no-underline hover:text-ink hover:underline hover:underline-offset-4"
 					:lang="quoteLang ? locale : undefined"
 					@click="trackLink(testimonial.linkedinUrl)"
-					><GlyphLabel :text="readMoreLabel" new-tab
-				/></a>
+					>{{ readMore.text
+					}}<template v-if="readMore.after"
+						>{{ ' ' }}<span aria-hidden="true">{{ readMore.after.trim() }}</span></template
+					><span v-if="newTabLabel" class="sr-only"> {{ newTabLabel }}</span></a
+				>
 			</p>
 		</blockquote>
 		<div class="min-h-0 flex-1" aria-hidden="true"></div>

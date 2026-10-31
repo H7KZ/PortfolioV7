@@ -128,7 +128,7 @@
         "sub": "Pulled directly from LinkedIn recommendations, unedited.",
         "readMoreLabel": "Read more ↗",
         "allRecommendationsLabel": "See all {count} recommendations on LinkedIn ↗",
-        "quoteLimit": 160
+        "quoteLimit": 152
       }
     },
     "project-page": {

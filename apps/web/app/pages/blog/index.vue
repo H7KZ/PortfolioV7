@@ -81,7 +81,7 @@ useHead(() => ({
 						<p v-if="post.description" class="type-body text-ink-soft">{{ post.description }}</p>
 						<UiTags :tags="orderedTags(post.tags)" />
 						<p v-if="page.readLabel" class="flex gap-2 type-mono-s text-ink" aria-hidden="true">
-							{{ page.readLabel }}<span class="text-accent">→</span>
+							{{ page.readLabel }}<ArrowGlyph class="self-center text-accent" />
 						</p>
 					</div>
 				</article>

@@ -44,7 +44,7 @@ const image = computed(() => asMedia(project.thumbnail))
 			<div class="min-h-0 flex-1" aria-hidden="true"></div>
 			<p class="flex items-start justify-between border-t border-line pt-4 type-mono-s" aria-hidden="true">
 				<span class="text-ink">{{ linkLabel }}</span>
-				<span class="text-accent transition-transform duration-200 ease-(--ease) group-hover:translate-x-1">→</span>
+				<span class="text-accent transition-transform duration-200 ease-(--ease) group-hover:translate-x-1"><ArrowGlyph /></span>
 			</p>
 		</div>
 	</article>

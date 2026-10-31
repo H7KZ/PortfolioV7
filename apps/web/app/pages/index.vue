@@ -94,7 +94,7 @@ useHead(() => {
 		</section>
 
 		<section v-if="page.now.items?.length" class="site-container pb-18 md:pb-24 lg:pb-30" aria-labelledby="now-label">
-			<div class="flex flex-col gap-3.5 rounded-md border border-line bg-surface p-5 lg:px-7 lg:py-6">
+			<div class="flex flex-col gap-2.5 rounded-md border border-line bg-surface p-5 lg:gap-3.5 lg:px-7 lg:py-6">
 				<h2 id="now-label" class="m-0 flex">
 					<UiStatus tone="live">{{ page.now.label }}</UiStatus>
 				</h2>

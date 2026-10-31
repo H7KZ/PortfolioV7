@@ -53,7 +53,7 @@ useSeo(() => ({
 		</header>
 
 		<div v-if="page.impact?.length" class="site-container pb-(--section-gap)">
-			<dl class="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-6">
+			<dl class="grid grid-cols-2 gap-x-3 gap-y-3.5 md:gap-y-3 lg:grid-cols-4 lg:gap-6">
 				<StatTile
 					v-for="item in page.impact"
 					:key="item.id ?? item.label"
