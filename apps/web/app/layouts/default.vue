@@ -30,7 +30,13 @@ useHead(() => {
 			{ key: 'author', name: 'author', content: s?.name },
 			{ key: 'keywords', name: 'keywords', content: s?.keywords ?? undefined },
 			{ key: 'og:site_name', property: 'og:site_name', content: s?.name },
-			...(image ? [{ key: 'og:image', property: 'og:image', content: absoluteUrl(image) }] : [])
+			...(image
+				? [
+						{ key: 'og:image', property: 'og:image', content: absoluteUrl(image) },
+						{ key: 'og:image:alt', property: 'og:image:alt', content: s?.imageAlt ?? s?.name },
+						{ key: 'twitter:image', name: 'twitter:image', content: absoluteUrl(image) }
+					]
+				: [])
 		],
 		script:
 			s && isProfilePage.value

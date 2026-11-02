@@ -10,27 +10,6 @@
       "files": ["kreditozrouti-mobile.avif", "kreditozrouti-mobile.webp"]
     },
     {
-      "name": "disenchantment-thumbnail-crop",
-      "source": "img_dark/projects-disenchantment-thumbnail-crop.png",
-      "width": 920,
-      "height": 622,
-      "description": "Disenchantment hero crop",
-      "files": [
-        "disenchantment-thumbnail-crop-800.avif",
-        "disenchantment-thumbnail-crop-800.webp",
-        "disenchantment-thumbnail-crop.avif",
-        "disenchantment-thumbnail-crop.webp"
-      ]
-    },
-    {
-      "name": "disenchantment-anvil",
-      "source": "img/projects-disenchantment-anvil.jpg",
-      "width": 1600,
-      "height": 816,
-      "description": "Disenchantment anvil GUI",
-      "files": ["disenchantment-anvil-800.avif", "disenchantment-anvil-800.webp", "disenchantment-anvil.avif", "disenchantment-anvil.webp"]
-    },
-    {
       "name": "portrait",
       "source": "img/profile.png",
       "width": 900,
@@ -398,6 +377,171 @@
         "intedat-company-hd-1600.webp",
         "intedat-company-hd-800.avif",
         "intedat-company-hd-800.webp"
+      ]
+    },
+    {
+      "name": "disenchantment-world-hd",
+      "source": "Disenchantment repo assets/hero.jpg, 1920 px",
+      "width": 1920,
+      "height": 1013,
+      "description": "Disenchantment hero, in-game library",
+      "files": [
+        "disenchantment-world-hd.avif",
+        "disenchantment-world-hd.webp",
+        "disenchantment-world-hd-1600.avif",
+        "disenchantment-world-hd-1600.webp",
+        "disenchantment-world-hd-800.avif",
+        "disenchantment-world-hd-800.webp"
+      ]
+    },
+    {
+      "name": "disenchantment-compare-hd",
+      "source": "Disenchantment repo assets/gifs/before-after.gif, frame 48, 2x nearest neighbour",
+      "width": 2400,
+      "height": 952,
+      "description": "Vanilla anvil next to Disenchantment",
+      "files": [
+        "disenchantment-compare-hd.avif",
+        "disenchantment-compare-hd.webp",
+        "disenchantment-compare-hd-1600.avif",
+        "disenchantment-compare-hd-1600.webp",
+        "disenchantment-compare-hd-800.avif",
+        "disenchantment-compare-hd-800.webp"
+      ]
+    },
+    {
+      "name": "disenchantment-anvil-hd",
+      "source": "Disenchantment repo assets/screenshots/anvil-result.png, 3x nearest neighbour",
+      "width": 2340,
+      "height": 1650,
+      "description": "Disenchantment anvil result",
+      "files": [
+        "disenchantment-anvil-hd.avif",
+        "disenchantment-anvil-hd.webp",
+        "disenchantment-anvil-hd-1600.avif",
+        "disenchantment-anvil-hd-1600.webp",
+        "disenchantment-anvil-hd-800.avif",
+        "disenchantment-anvil-hd-800.webp"
+      ]
+    },
+    {
+      "name": "disenchantment-gui-hd",
+      "source": "Disenchantment repo assets/screenshots/gui-enchantments.png, 3x nearest neighbour",
+      "width": 2700,
+      "height": 2040,
+      "description": "Disenchantment admin GUI",
+      "files": [
+        "disenchantment-gui-hd.avif",
+        "disenchantment-gui-hd.webp",
+        "disenchantment-gui-hd-1600.avif",
+        "disenchantment-gui-hd-1600.webp",
+        "disenchantment-gui-hd-800.avif",
+        "disenchantment-gui-hd-800.webp"
+      ]
+    },
+    {
+      "name": "ohlidame-hero-hd",
+      "source": "Local build of ohlidame.cz at 2x, same page as live",
+      "width": 2400,
+      "height": 1457,
+      "description": "Ohlídáme home page",
+      "files": [
+        "ohlidame-hero-hd.avif",
+        "ohlidame-hero-hd.webp",
+        "ohlidame-hero-hd-1600.avif",
+        "ohlidame-hero-hd-1600.webp",
+        "ohlidame-hero-hd-800.avif",
+        "ohlidame-hero-hd-800.webp"
+      ]
+    },
+    {
+      "name": "ohlidame-report-hd",
+      "source": "Owner report of the fictional Test shop at 2x, local stack",
+      "width": 2400,
+      "height": 1457,
+      "description": "Report summary and profile questions",
+      "files": [
+        "ohlidame-report-hd.avif",
+        "ohlidame-report-hd.webp",
+        "ohlidame-report-hd-1600.avif",
+        "ohlidame-report-hd-1600.webp",
+        "ohlidame-report-hd-800.avif",
+        "ohlidame-report-hd-800.webp"
+      ]
+    },
+    {
+      "name": "ohlidame-scope-hd",
+      "source": "Owner report of the fictional Test shop at 2x, local stack",
+      "width": 2400,
+      "height": 1071,
+      "description": "What the scan reached",
+      "files": [
+        "ohlidame-scope-hd.avif",
+        "ohlidame-scope-hd.webp",
+        "ohlidame-scope-hd-1600.avif",
+        "ohlidame-scope-hd-1600.webp",
+        "ohlidame-scope-hd-800.avif",
+        "ohlidame-scope-hd-800.webp"
+      ]
+    },
+    {
+      "name": "ohlidame-deep-hd",
+      "source": "Owner report of the fictional Test shop at 2x, local stack",
+      "width": 2400,
+      "height": 1406,
+      "description": "Deep check offer",
+      "files": [
+        "ohlidame-deep-hd.avif",
+        "ohlidame-deep-hd.webp",
+        "ohlidame-deep-hd-1600.avif",
+        "ohlidame-deep-hd-1600.webp",
+        "ohlidame-deep-hd-800.avif",
+        "ohlidame-deep-hd-800.webp"
+      ]
+    },
+    {
+      "name": "ohlidame-progress-hd",
+      "source": "Scan of the fictional Test shop at 2x, local stack",
+      "width": 2400,
+      "height": 1200,
+      "description": "Scan progress",
+      "files": [
+        "ohlidame-progress-hd.avif",
+        "ohlidame-progress-hd.webp",
+        "ohlidame-progress-hd-1600.avif",
+        "ohlidame-progress-hd-1600.webp",
+        "ohlidame-progress-hd-800.avif",
+        "ohlidame-progress-hd-800.webp"
+      ]
+    },
+    {
+      "name": "ohlidame-guides-hd",
+      "source": "Local build of ohlidame.cz at 2x",
+      "width": 2400,
+      "height": 1457,
+      "description": "Public guides",
+      "files": [
+        "ohlidame-guides-hd.avif",
+        "ohlidame-guides-hd.webp",
+        "ohlidame-guides-hd-1600.avif",
+        "ohlidame-guides-hd-1600.webp",
+        "ohlidame-guides-hd-800.avif",
+        "ohlidame-guides-hd-800.webp"
+      ]
+    },
+    {
+      "name": "ohlidame-shop-hd",
+      "source": "Fictional Test shop at 2x",
+      "width": 2400,
+      "height": 1457,
+      "description": "Test shop",
+      "files": [
+        "ohlidame-shop-hd.avif",
+        "ohlidame-shop-hd.webp",
+        "ohlidame-shop-hd-1600.avif",
+        "ohlidame-shop-hd-1600.webp",
+        "ohlidame-shop-hd-800.avif",
+        "ohlidame-shop-hd-800.webp"
       ]
     }
   ]

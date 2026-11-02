@@ -21,6 +21,8 @@ const body = computed(() => {
 })
 const postUrl = computed(() => absoluteUrl(`/blog/${post.value.slug}`))
 const tags = computed(() => (post.value.tags ?? []).filter(tag => tag !== 'EN'))
+// A post tagged EN has no Czech text, so /cs shows the English one and screen readers must not read it as Czech.
+const contentLang = computed(() => (locale.value !== 'en' && post.value.tags?.includes('EN') ? 'en' : undefined))
 const description = computed(() => post.value.meta?.description ?? post.value.description ?? tags.value.join(', '))
 const publishedIso = computed(() => new Date(post.value.date).toISOString())
 const shareTitle = computed(() => page.value.shareLabel.replace(/^◆\s*/, ''))
@@ -79,17 +81,17 @@ useHead(() => ({
 						<time :datetime="publishedIso">{{
 							formatDate(post.date, dateLocale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
 						}}</time
-						><template v-if="post.readingTime"> · {{ post.readingTime }} {{ page.minutesLong }}</template>
+						><template v-if="post.readingTime"> · {{ post.readingTime }}&nbsp;{{ page.minutesLong }}</template>
 					</p>
 					<UiTags :tags="tags" />
 				</div>
-				<h1 class="type-display-l">{{ post.title }}</h1>
+				<h1 class="type-display-l" :lang="contentLang">{{ post.title }}</h1>
 
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div class="post-body" v-html="body.lead"></div>
+				<div class="post-body" :lang="contentLang" v-html="body.lead"></div>
 				<TocBox v-if="page.tocLabel" class="lg:hidden" variant="inline" :label="page.tocLabel" :items="data.toc" />
 				<!-- eslint-disable-next-line vue/no-v-html -->
-				<div v-if="body.rest" class="post-body" v-html="body.rest"></div>
+				<div v-if="body.rest" class="post-body" :lang="contentLang" v-html="body.rest"></div>
 
 				<aside class="flex flex-col gap-4 rounded-md border border-line bg-surface p-[21px] sm:flex-row sm:items-center sm:p-6">
 					<div class="flex min-w-0 flex-1 flex-col gap-1">
@@ -311,6 +313,7 @@ useHead(() => ({
 .post-body :deep(img) {
 	display: block;
 	width: 100%;
+	height: auto;
 	max-height: 560px;
 	object-fit: contain;
 	border-radius: var(--radius-md);

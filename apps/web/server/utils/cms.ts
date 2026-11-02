@@ -81,6 +81,11 @@ export function resolve<T>(value: T): T {
 	return out as T
 }
 
+/** Slugs are lowercase ASCII words. Anything else cannot match a document, so it never reaches the CMS or the content cache. */
+export function isSlug(value: string | undefined): value is string {
+	return value !== undefined && /^[A-Za-z0-9._-]{1,120}$/.test(value)
+}
+
 export function readLocale(event: H3Event): Locale {
 	const locale = getQuery(event).locale
 	return locale === 'cs' ? 'cs' : 'en'

@@ -3,7 +3,8 @@ export function formatDate(
 	locale: string | null | undefined,
 	options: Intl.DateTimeFormatOptions = { month: 'short', year: 'numeric', timeZone: 'UTC' }
 ): string {
-	return new Date(date).toLocaleDateString(locale ?? 'en', options)
+	// Keeps a date on one line; the Czech format puts plain spaces between day, month and year.
+	return new Date(date).toLocaleDateString(locale ?? 'en', options).replace(/ /g, '\u00a0')
 }
 
 /**

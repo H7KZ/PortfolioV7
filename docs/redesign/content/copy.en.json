@@ -57,7 +57,7 @@
         "eyebrowCommand": "whoami  # Jan Komínek · freelance fullstack engineer · Prague, CZ",
         "eyebrowCommandShort": "whoami  # Prague, CZ",
         "headline": "From empty repo\nto production.",
-        "valueProp": "A zero-trust data provenance platform, an EV charging network with live payments, and a course scheduler I still run today. Built end to end, from infrastructure to UI. Seven companies and 12+ shipped projects since 2022.",
+        "valueProp": "A compliance SaaS I own end to end, an EV charging network with live payments, and a course scheduler I still run today. Built end to end, from infrastructure to UI. Seven companies and 12+ shipped projects since 2022.",
         "primaryCta": { "label": "Start a project", "href": "/contact" },
         "secondaryCta": { "label": "View résumé", "href": "/resume" },
         "availability": "Available for part-time B2B work, about 10 hours a week, hybrid in Prague or remote.",
@@ -79,7 +79,7 @@
       },
       "more": {
         "heading": "More work.",
-        "sub": "Current client work, what I’m building and smaller projects.",
+        "sub": "Current client work, a longer engagement and smaller projects.",
         "items": [
           {
             "meta": "VEROC Group · Now",
@@ -90,11 +90,11 @@
             "external": true
           },
           {
-            "meta": "Own product · Building",
-            "title": "Ohlídáme",
-            "description": "Checks an e-shop’s public pages against selected obligations and explains the gaps without legalese.",
-            "linkLabel": "In development",
-            "href": null
+            "meta": "Intedat · 2024–2026",
+            "title": "Intedat",
+            "description": "Almost two years of features shipped end to end on a data platform, plus a search rebuild and the delivery pipeline behind it.",
+            "linkLabel": "Read case study",
+            "href": "/projects/intedat"
           },
           {
             "meta": "CORAC Engineering · 2025–2026",
@@ -277,14 +277,16 @@
       "title": "Privacy policy.",
       "updatedLabel": "Updated",
       "bindingNote": "Also available in Czech. If the versions differ, the Czech one prevails.",
-      "tocLabel": "On this page"
+      "tocLabel": "On this page",
+      "metaDescription": "Who is responsible for your data on jankominek.com, what the contact form and website statistics keep, and what rights you have."
     },
     "terms": {
       "label": "cat ./terms.md",
       "title": "Terms of use.",
       "updatedLabel": "Updated",
       "bindingNote": "Also available in Czech. If the versions differ, the Czech one prevails.",
-      "tocLabel": "On this page"
+      "tocLabel": "On this page",
+      "metaDescription": "Terms for using jankominek.com: content and intellectual property, code samples, liability, links and governing law."
     }
   },
   "collections": {
@@ -337,13 +339,232 @@
     "testimonialsNote": "Quotes are LinkedIn recommendations, quoted verbatim in English in both locales. The home shows three; the cut point and 'Read more' come from home.testimonials.quoteLimit. Marek Vospěl, Petr Krejci and Zdeněk Glazer stay in the CMS with home visibility off.",
     "projects": [
       {
-        "slug": "iont_platform",
-        "redirectFrom": ["/projects/iont_info", "/projects/iont_charge", "/projects/iont_admin"],
+        "slug": "ohlidame",
         "order": 1,
         "card": {
           "show": true,
           "size": "featured",
           "badge": "Flagship",
+          "year": "2026",
+          "meta": "Own product / Founder",
+          "description": "A Czech compliance SaaS I own end to end: product, business, architecture and operations. Built with AI agents, from first commit to production in 61 days.",
+          "chips": ["Next.js", "BullMQ", "Playwright", "AI agents"]
+        },
+        "kicker": "Own product · 2026",
+        "title": "Ohlídáme.",
+        "lede": "A self-serve SaaS that checks a Czech e-shop against the rules it must follow and explains in plain Czech what to fix. It is my own business: I own the product, the architecture and every decision, and I built it with AI agents.",
+        "role": "Founder, product and engineering",
+        "timeline": "Aug 2026 – present",
+        "sector": "Compliance · Czech e-commerce",
+        "impact": [
+          {
+            "label": "Launch",
+            "value": "61 days",
+            "sub": "First commit to production"
+          },
+          {
+            "label": "AI agents",
+            "value": "706 commits",
+            "sub": "Of 872, co-authored with Claude"
+          },
+          {
+            "label": "Coverage",
+            "value": "10 modules",
+            "sub": "Regulations on one crawler"
+          }
+        ],
+        "challenge": [
+          "Every Czech e-shop answers to a long list of consumer, data and product rules, and the Czech Trade Inspection fines the shops that miss them. A lawyer’s review costs around 30,000 CZK, so a small shop often finds out what it got wrong only when an inspector does.",
+          "Ohlídáme reads a shop’s public pages, checks them against selected obligations and says what is missing, which paragraph it comes from and how to fix it. The scan is free. A deeper check for 490 CZK covers 70 products instead of 20 and adds ready-to-use fixes and a signed protocol.",
+          "There is no client and no team. I chose the market, set the price, wrote the terms and the privacy records, designed the system and run production. In a company these would be separate chief roles; here they are one person working with AI agents, who wrote most of the code while the decisions stayed with me."
+        ],
+        "contributions": [
+          {
+            "title": "Product, business and brand",
+            "body": "Set the free-scan funnel, the 490 CZK deep check, refunds and Stripe billing, the plain-speaking brand and the public guides that bring shops in."
+          },
+          {
+            "title": "Architecture",
+            "body": "One crawler and ten regulation modules. A module is a set of pure functions that never fetch anything, and CI fails the build if that boundary is crossed."
+          },
+          {
+            "title": "Findings owners can trust",
+            "body": "A FAIL needs certainty: the right page confirmed and the required element clearly absent. Anything less is advice or an honest “could not tell”, and every finding links to its legal source."
+          },
+          {
+            "title": "Engineering with AI agents",
+            "body": "Ran Claude Code and OpenAI Codex as the engineering team. A domain glossary, 33 decision records and per-package rules keep them consistent; I set the direction, review and answer for the result."
+          },
+          {
+            "title": "Test strategy",
+            "body": "A fictional Test shop with 64 variants, a conformance suite and Playwright journeys against the production images. There is more test code than product code."
+          },
+          {
+            "title": "Privacy and operations",
+            "body": "Anyone can scan a shop, but detail goes only to a verified owner and unclaimed data is deleted after about eight days. Production runs on one self-hosted VPS with monitoring, immutable releases and backup drills."
+          }
+        ],
+        "stack": [
+          "Next.js",
+          "TypeScript",
+          "Express",
+          "Kysely",
+          "MySQL",
+          "Redis",
+          "BullMQ",
+          "Playwright",
+          "Stripe",
+          "Docker",
+          "Traefik",
+          "Grafana",
+          "Claude Code",
+          "OpenAI Codex"
+        ],
+        "architecture": {
+          "nodes": [
+            {
+              "key": "web",
+              "name": "Web app",
+              "tech": "Next.js SSR · i18n"
+            },
+            {
+              "key": "ai",
+              "name": "Stripe",
+              "tech": "Checkout · webhooks",
+              "external": true
+            },
+            {
+              "key": "traefik",
+              "name": "Traefik",
+              "tech": "TLS · CrowdSec · behind Cloudflare"
+            },
+            {
+              "key": "api",
+              "name": "API",
+              "tech": "Express · Kysely · scan evaluator"
+            },
+            {
+              "key": "mcp",
+              "name": "Regulation modules",
+              "tech": "Pure functions · no I/O"
+            },
+            {
+              "key": "redis",
+              "name": "Redis",
+              "tech": "BullMQ queues · progress"
+            },
+            {
+              "key": "mysql",
+              "name": "MySQL",
+              "tech": "Scans · findings · purchases"
+            },
+            {
+              "key": "scraper",
+              "name": "Scraper workers",
+              "tech": "HTTP first · Playwright when needed"
+            },
+            {
+              "key": "insis",
+              "name": "Public e-shops",
+              "tech": "Pages the scan reads",
+              "external": true
+            }
+          ],
+          "edges": [
+            {
+              "from": "web",
+              "to": "traefik",
+              "kind": "request"
+            },
+            {
+              "from": "ai",
+              "to": "traefik",
+              "kind": "sync"
+            },
+            {
+              "from": "traefik",
+              "to": "api",
+              "kind": "request"
+            },
+            {
+              "from": "api",
+              "to": "mcp",
+              "kind": "sync"
+            },
+            {
+              "from": "api",
+              "to": "redis",
+              "kind": "async",
+              "label": "enqueue"
+            },
+            {
+              "from": "api",
+              "to": "mysql",
+              "kind": "request",
+              "label": "reads + writes",
+              "labelShort": "writes"
+            },
+            {
+              "from": "redis",
+              "to": "scraper",
+              "kind": "async",
+              "bidirectional": true,
+              "label": "jobs · evidence"
+            },
+            {
+              "from": "scraper",
+              "to": "insis",
+              "kind": "async"
+            }
+          ],
+          "legend": {
+            "request": "User request",
+            "sync": "Sync call",
+            "async": "Async scan over BullMQ"
+          },
+          "observability": "Observability: Alloy → Prometheus and Loki → Grafana. Alertmanager → Discord. Umami for analytics.",
+          "caption": "A pnpm and Turborepo monorepo on one VPS. The API creates a scan and returns at once. A scraper worker walks a finite plan and hands the evidence back through an authenticated ingest, and pure regulation modules turn it into findings, so no rule ever touches the network.",
+          "textAlternative": "Browsers reach the Next.js web app and Stripe sends webhooks, both through Traefik to the Express API. The API calls pure regulation modules, reads and writes MySQL and enqueues scans in Redis. Scraper workers take jobs from Redis, read public e-shops and return evidence."
+        },
+        "hero": {
+          "path": "~/projects/ohlidame",
+          "image": "ohlidame-hero-hd"
+        },
+        "gallery": [
+          {
+            "path": "~/projects/ohlidame/report",
+            "image": "ohlidame-report-hd"
+          },
+          {
+            "path": "~/projects/ohlidame/scope",
+            "image": "ohlidame-scope-hd"
+          },
+          {
+            "path": "~/projects/ohlidame/progress",
+            "image": "ohlidame-progress-hd"
+          },
+          {
+            "path": "~/projects/ohlidame/deep-check",
+            "image": "ohlidame-deep-hd"
+          },
+          {
+            "path": "~/projects/ohlidame/guides",
+            "image": "ohlidame-guides-hd"
+          },
+          {
+            "path": "~/projects/ohlidame/test-shop",
+            "image": "ohlidame-shop-hd"
+          }
+        ],
+        "factsToConfirm": ["61 days to production", "30,000 CZK lawyer review", "Trade Inspection fines wording"]
+      },
+      {
+        "slug": "iont_platform",
+        "redirectFrom": ["/projects/iont_info", "/projects/iont_charge", "/projects/iont_admin"],
+        "order": 2,
+        "card": {
+          "show": true,
+          "size": "featured",
           "year": "2023–2024",
           "meta": "IONT tech / Fullstack",
           "description": "Driver app, ČSOB payment gateway and on-device admin panel for a public EV-charging network, from an empty repository to launch in five months.",
@@ -406,7 +627,7 @@
       {
         "slug": "deeptrace",
         "redirectFrom": ["/projects/corac_sith"],
-        "order": 2,
+        "order": 3,
         "card": {
           "show": true,
           "size": "featured",
@@ -461,7 +682,7 @@
       },
       {
         "slug": "kreditozrouti",
-        "order": 3,
+        "order": 4,
         "card": {
           "show": true,
           "size": "featured",
@@ -552,10 +773,10 @@
       },
       {
         "slug": "intedat",
-        "order": 4,
+        "order": 5,
         "isNew": true,
         "card": {
-          "show": true,
+          "show": false,
           "size": "featured",
           "year": "2024–2026",
           "meta": "Intedat / Fullstack",
@@ -590,7 +811,7 @@
       },
       {
         "slug": "corac_scorecard",
-        "order": 5,
+        "order": 6,
         "card": { "show": false },
         "kicker": "CORAC Engineering · 2025–2026",
         "title": "Scorecard.",
@@ -632,7 +853,7 @@
       },
       {
         "slug": "disenchantment",
-        "order": 6,
+        "order": 7,
         "card": { "show": false },
         "kicker": "Personal project · 2024",
         "title": "Disenchantment.",
@@ -667,9 +888,11 @@
           }
         ],
         "stack": ["Java", "Spigot API", "Maven", "IntelliJ IDEA", "Git", "YAML"],
-        "hero": { "path": "~/projects/disenchantment", "image": "disenchantment-thumbnail-crop" },
+        "hero": { "path": "~/projects/disenchantment", "image": "disenchantment-world-hd" },
         "gallery": [
-          { "path": "~/projects/disenchantment/anvil", "image": "disenchantment-anvil" },
+          { "path": "~/projects/disenchantment/compare", "image": "disenchantment-compare-hd" },
+          { "path": "~/projects/disenchantment/anvil", "image": "disenchantment-anvil-hd" },
+          { "path": "~/projects/disenchantment/admin-gui", "image": "disenchantment-gui-hd" },
           {
             "path": "~/projects/disenchantment/repo",
             "image": "disenchantment-repo-hd"
@@ -677,7 +900,7 @@
         ]
       }
     ],
-    "projectsNote": "Next-case-study order follows 'order' and wraps: IONT platform → DeepTrace → Kreditožrouti → Intedat → Scorecard → Disenchantment → IONT platform. Archived (published, card.show false, never linked): pangolin, noteful. 'iont_charge' and 'iont_admin' redirect to iont_platform.",
+    "projectsNote": "Next-case-study order follows 'order' and wraps: Ohlídáme → IONT platform → DeepTrace → Kreditožrouti → Intedat → Scorecard → Disenchantment → Ohlídáme. Archived (published, card.show false, never linked): pangolin, noteful. 'iont_charge' and 'iont_admin' redirect to iont_platform.",
     "experience": {
       "work": [
         {
@@ -779,11 +1002,16 @@
         {
           "order": 2,
           "current": true,
-          "dates": "Sep 2026 – present",
-          "duration": "in development",
-          "role": "Ohlídáme",
-          "organization": "Own product · Czech e-commerce",
-          "description": "See in a minute what your e-shop is missing for its customers. Ohlídáme checks an e-shop’s public pages against selected obligations, clearly and without legalese. Not affiliated with ČOI.",
+          "dates": "Aug 2026 – present",
+          "duration": "live",
+          "role": "Ohlídáme · founder & sole owner",
+          "organization": "ohlidame.cz · Czech e-commerce",
+          "description": "Self-serve SaaS that checks an e-shop’s public pages against selected obligations, clearly and without legalese. I own the product, the business, the architecture and operations. Not affiliated with ČOI.",
+          "highlights": [
+            "First commit to production in 61 days, built with AI agents: 706 of 872 commits co-authored with Claude",
+            "One crawler and ten regulation modules, with the boundary enforced in CI",
+            "Pricing, billing, terms, privacy records, infrastructure and operations, all owned by one person"
+          ],
           "chips": ["System architecture", "Claude Code", "OpenAI Codex"]
         }
       ],

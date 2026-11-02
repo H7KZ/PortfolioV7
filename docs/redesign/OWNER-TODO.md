@@ -33,20 +33,21 @@ These stay exactly as written until you confirm them.
 
 The hash in the DeepTrace copy and alt text was corrected from SHA-256 to SHA-512, which is what the app computes (`crypto.subtle.digest`). Nothing needed from you.
 
-| Claim                                                               | Field                                                                                    |
-| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| IONT: "ČSOB-certified", "five months" to launch                     | Projects > IONT platform > Case study > `lede`, `impact`, and Home card > `description`  |
-| DeepTrace: "Supports 1000+ nodes"                                   | Projects > DeepTrace > Case study > `contributions`                                      |
-| Contact: "on-site Thursdays and Fridays"                            | Globals > Contact > `intro`                                                              |
-| Scorecard shown as a case study, not linked on LinkedIn             | Projects > Scorecard; Home page > More work                                              |
-| "Seven companies", "12+ shipped projects"                           | Home page > Hero > `valueProp`; Résumé > `bio`, Impact                                   |
-| "500+ connections · 6 recommendations"                              | Globals > Contact > `linkedinSub`. Typed text, update it by hand when the numbers change |
-| "Right now" rows: VEROC Group, Ohlídáme, 200+ students, teaching C# | Home page > Now > `items`                                                                |
-| Kreditožrouti: "589 visitors", "204 finished setup", "35%"          | Projects > Kreditožrouti > Case study > `impact`                                         |
+| Claim                                                                                              | Field                                                                                    |
+| -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Ohlídáme: "61 days", "706 commits", "around 30,000 CZK" for a lawyer, the Trade Inspection wording | Projects > Ohlídáme > Case study; Blog > `ohlidame_61_days_with_ai_agents`; Résumé       |
+| IONT: "ČSOB-certified", "five months" to launch                                                    | Projects > IONT platform > Case study > `lede`, `impact`, and Home card > `description`  |
+| DeepTrace: "Supports 1000+ nodes"                                                                  | Projects > DeepTrace > Case study > `contributions`                                      |
+| Contact: "on-site Thursdays and Fridays"                                                           | Globals > Contact > `intro`                                                              |
+| Scorecard shown as a case study, not linked on LinkedIn                                            | Projects > Scorecard; Home page > More work                                              |
+| "Seven companies", "12+ shipped projects"                                                          | Home page > Hero > `valueProp`; Résumé > `bio`, Impact                                   |
+| "500+ connections · 6 recommendations"                                                             | Globals > Contact > `linkedinSub`. Typed text, update it by hand when the numbers change |
+| "Right now" rows: VEROC Group, Ohlídáme, 200+ students, teaching C#                                | Home page > Now > `items`                                                                |
+| Kreditožrouti: "589 visitors", "204 finished setup", "35%"                                         | Projects > Kreditožrouti > Case study > `impact`                                         |
 
 ## 4. Home
 
-- **Flagship is now IONT platform** (badge and first position, EN and CS). Nothing else is needed for the slot: it has a hero image, three metrics, four chips and a card description.
+- **Flagship is now Ohlídáme** (badge and first position, EN and CS). IONT platform moves to second place. The home grid stays at four cards, so Intedat moved to More work; its case study stays at `/projects/intedat`. To swap it back, set `card.show` on the project and remove the row from `globals.home.more.items`.
 - **Decide:** the hero sentence still lists the projects in the old order, DeepTrace first: "A zero-trust data provenance platform, an EV charging network with live payments, and a course scheduler". To lead with IONT, change `globals.home.hero.valueProp` in both copy files. Left as it is because it is your sentence.
 - **Check:** the recommendations link now shows at every width and opens `https://www.linkedin.com/in/jan-kominek/details/recommendations/`, as do the "Read more" links on the quotes. LinkedIn asks logged-out visitors to sign in on that page. If you prefer the public profile, empty Home page > Sections > `allRecommendationsUrl`.
 - **Check:** `{count}` in the link is the number of published testimonials, six today (three shown, three hidden). Keep the collection in step with LinkedIn.
@@ -58,7 +59,14 @@ Each row is one window on the case study. Field: Projects > project > Case study
 
 Every image was rebuilt at 2400 px where a sharp source exists, so it stays crisp on 2× screens. The site also serves 1600 and 800 px sizes.
 
-### IONT platform (flagship)
+### Ohlídáme (flagship)
+
+The hero and the guides are the current site at 2×. Rows 1 to 4 are a real scan on a local stack, run against the fictional Test shop, so no real shop appears. Row 6 is that Test shop. Before launch, confirm the figures below. Numbers come from the repository on 2026-10-31: 872 commits, 706 with a Claude co-author, first commit 2026-08-26, first production release 2026-10-26.
+
+- **Read:** the blog post `ohlidame_61_days_with_ai_agents` is written in your voice from the repository's decision records and handoffs. Check the opinions, not only the facts. Its Czech version sits in the same post with the locale set to Czech.
+- **Refresh:** the numbers in the post, the case study and the résumé are fixed text. They do not update as the repository grows.
+
+### IONT platform
 
 All rows and the hero are sharp and come from the original 4K to 9K files. Rows 5 and 6 use the design mockups, row 6 also the real pairing screen. Row 7 shows three installed chargers, from the iont.tech photos you approved.
 
@@ -85,7 +93,7 @@ The hero and row 1 are fresh 2× captures of the running app, filled with made-u
 
 ### Disenchantment
 
-**To do:** new in-game captures, yours by hand. Row 2 is a fresh 2× capture of the GitHub repository. The hero (920 px) and the anvil row (from an 800 px GIF) stay as they are until then, because no sharper source exists.
+The hero and rows 1 to 3 come from the plugin repository's `assets/`, recorded on Paper 26.3. The hero is the 1920 px library shot, row 1 a still from `before-after.gif`, row 2 the anvil result, row 3 the enchantments GUI. Rows 1 to 3 are enlarged 2× or 3× without smoothing, so the game's pixels stay crisp. Row 4 is a fresh 2× capture of the GitHub repository. The GIFs are not used, because the site shows still images.
 
 ## 6. Blog
 
@@ -115,3 +123,31 @@ In this order. Until step 3 production keeps serving V6, and steps 3 and 4 belon
 5. Set the production admin password (1.4) and the new production API keys (1.2, 1.3).
 6. Verify as in the seed runbook: home, one case study, résumé and contact in EN and under `/cs`, the 301s from the old project URLs, and a test message through the contact form.
 7. Once production has been stable for a while, ask for the `v7_cleanup` migration, which drops the V6-only fields (see `STATE.md`).
+
+## 9. From the full pre-launch check
+
+Found by [FULL-CHECK-REPORT.md](FULL-CHECK-REPORT.md) (2026-11-01). None blocks the code; each needs you or an account only you have. The report row for each gives the evidence.
+
+| #    | What                                                                                                                                                                                                                                                                                                                                                          | Where                                           |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| 9.1  | Turn off Rocket Loader and Email Address Obfuscation. Production HTML carries both. They can break V7 hydration and rewrite `mailto:` links. Check on dev first.                                                                                                                                                                                              | Cloudflare, Speed > Optimization; Scrape Shield |
+| 9.2  | HSTS is `max-age=0` on every host. Set a real value (start at six months) once all subdomains are HTTPS.                                                                                                                                                                                                                                                      | Cloudflare SSL/TLS > Edge Certificates          |
+| 9.3  | `/media/*` on production serves a textbook PDF and exam PDFs from posts that are now drafts (30 files). Copyright risk. Delete the media or keep the posts private.                                                                                                                                                                                           | Production CMS, Media                           |
+| 9.4  | Privacy policy wording: it says no cookies (the `locale` cookie exists, one year), says the Cal.com calendar loads on scroll (V7 only links to it), and says nothing is stored in the browser (the opt-out stores `umami.disabled`).                                                                                                                          | Privacy                                         |
+| 9.5  | The "Updated" date on Privacy and Terms is `updatedAt`, which every save and every seed run overwrites. A separate date field needs a schema change and migration. Say if you want it.                                                                                                                                                                        | Decision                                        |
+| 9.6  | Archived projects stay live at `/projects/noteful`, `pangolin`, `portfolio_v5`, `portfolio_v4` with V6 text (em dashes included). Not linked, not in the sitemap. Redirect, 404 or keep?                                                                                                                                                                      | Decision                                        |
+| 9.7  | `cv.pdf` is the V6 file: untagged, no language, title has an em dash, "~20 h a week" (site says 10), "around 350 students" (site 589 visitors), 4 editions (site 5). Export a new tagged PDF with title and language.                                                                                                                                         | Résumé > `cv`                                   |
+| 9.8  | Dependency bump: undici 7.30.1, payload 3.92.1, next 16.4.3. `pnpm audit --prod` lists 2 critical and 13 high, mostly transitive in dev tooling and the admin editor. The web image itself carries `@intlify/*` 11.4.12, `undici` 6.28.0 and `brace-expansion` 5.0.9 (high advisories, low exposure). Add vue-i18n 11.4.14 to the bump. Dependabot can do it. | Decision                                        |
+| 9.9  | The contact form has a rate limit and an Origin check but no honeypot or captcha. Turnstile needs a site key from your Cloudflare.                                                                                                                                                                                                                            | Cloudflare Turnstile, then ask                  |
+| 9.10 | CSP keeps `'unsafe-inline'` for scripts (the `js` class script and `window.__NUXT__`). Hashes or a nonce remove it, at the cost of a build step. Accept or ask.                                                                                                                                                                                               | Decision                                        |
+| 9.11 | Mail: SPF `~all`, DMARC `p=none`, no MTA-STS, no TLS-RPT, DKIM selectors not found. Tighten DMARC once mail flows.                                                                                                                                                                                                                                            | Cloudflare DNS                                  |
+| 9.12 | `og:locale` is `en` and `cs`; Facebook expects `en_US` and `cs_CZ`. `google: notranslate` meta blocks browser translation. Both are one-line changes if you want them.                                                                                                                                                                                        | Decision                                        |
+| 9.13 | The web container limit is 256M. Local production process reached about 300 MB working set under load. Check `docker stats` on dev after a few days and raise the limit if it nears the cap.                                                                                                                                                                  | `deployment/compose`                            |
+| 9.14 | If the CMS is down, pages still render from cache but `/media/*` and `/cv.pdf` fail (live proxy) and images vanish. A Cloudflare cache rule for `/media/*` covers it. The CMS fetch timeout is 10 s twice, 5 s is enough.                                                                                                                                     | Cloudflare Cache Rules; `server/utils/cms.ts`   |
+| 9.15 | Uploads in the CMS have no size limit (admin only). Set one if anyone else gets admin access.                                                                                                                                                                                                                                                                 | Decision                                        |
+| 9.16 | Compose hardening flags are absent: `read_only`, `cap_drop: [ALL]`, `no-new-privileges`. `node:24-alpine` is not pinned by digest. Healthcheck only covers `/robots.txt`.                                                                                                                                                                                     | `deployment/compose`                            |
+| 9.17 | Mobile LCP is 3.0 to 3.2 s on `/`, `/blog` and `/projects/iont_platform` (performance 92 to 94, budget 95). Same as 7.6 with newer numbers; the cost is the Nuxt JavaScript on the lab's critical path.                                                                                                                                                       | Decision                                        |
+| 9.18 | Manifest `theme_color` is `#ffffff`, the site is `#0b0d10`. `humans.txt` says "Last update: 2026-09-22". `og:type` is `article` on case studies. Low.                                                                                                                                                                                                         | Decision                                        |
+| 9.19 | Privacy and Terms keep stored HTML with `li value` attributes (vnu errors on 6 rendered pages, harmless). They clear on the next save of Privacy and Terms in the CMS.                                                                                                                                                                                        | Privacy, Terms                                  |
+| 9.20 | Workflows (zizmor): `_build.yml:88` expands `${{ inputs.service }}` inside a `run` block (move it to an `env` variable); checkouts without `persist-credentials: false`; `secrets: inherit` on 8 calls. Deployment files are not mine to change here.                                                                                                         | `.github/workflows`                             |
+| 9.21 | `x-powered-by: Nuxt` is sent on responses; the `locale` cookie has no `Secure` flag on production (`cookieSecure` in the i18n config). Low.                                                                                                                                                                                                                   | Decision                                        |

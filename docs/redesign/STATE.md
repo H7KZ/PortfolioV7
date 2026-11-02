@@ -41,6 +41,10 @@ Branch: feat/v7-redesign (from develop, which contains main) · Last update: 202
 
 Measured through a local gzip proxy, as Cloudflare compresses in production. Observed (unthrottled) LCP is about 0.2 s; the simulated LCP is dominated by about 150 kB of Nuxt, Vue and i18n JavaScript that Lighthouse puts on the critical path. Done: CSS inlined, one font preload, CMS text files kept out of page payloads. Not met: Performance ≥ 95 and LCP ≤ 2.0 s. Next levers, each a trade-off for the owner: drop @nuxtjs/i18n runtime messages, or lazy-hydrate below-the-fold sections.
 
+## Full pre-launch check (2026-11-01)
+
+Report: [FULL-CHECK-REPORT.md](FULL-CHECK-REPORT.md), one row per check from [FULL-CHECK.md](FULL-CHECK.md). Twenty-eight defects fixed in the working tree (not committed): open redirects in `/_preview/exit` and `/cs//host`, `/media` errors, archived projects in the sitemap, `/resume/` duplicates, CSP without Cal.com, LCP preload and blog list image, overflow at 240 px, Czech typography and dates, five wrong alt texts, unbounded contact body, junk slugs filling the content cache, the contact form posting into the URL without JavaScript, missing `Vary` and `nosniff`, `li value` in rich text. Harness on the final build: 102 passed, 96 visual skipped. Mobile Lighthouse is 100 on home, résumé and contact; `/blog` (93) and `/projects/iont_platform` (92) stay under the 95 budget in the lab (observed LCP about 150 ms on the project page). Docker tools ran (gitleaks, Trivy, OSV, Hadolint, Dockle, zizmor, Semgrep, Nuclei, ZAP baseline, LanguageTool EN); ZAP full did not finish in 25 minutes and Docker fell over. Not run: dev host checks (no tunnel), native Czech review. New owner decisions: [OWNER-TODO.md](OWNER-TODO.md) section 9.
+
 ## Decisions
 
 - Gallery is a new `screens` array on projects; the V6 `gallery` upload field stays until `v7_cleanup`.
@@ -84,8 +88,7 @@ Owner checklist (SPEC 15):
 2. Seed production with `docs/runbooks/v7-content-seed.md`, dry run first.
 3. Turn off Cloudflare Web Analytics automatic setup for the zone.
 4. Confirm the facts: DeepTrace "1000+ nodes"; IONT "ČSOB-certified" and "five months"; contact "on-site Thursdays and Fridays"; Scorecard shown as a case study.
-5. Replace the Disenchantment hero and anvil row with new in-game captures; no other screenshots remain (see `OWNER-TODO.md`).
-6. Have `/cs` read once by a native speaker.
-7. Deploy production through the Deploy workflow.
+5. Have `/cs` read once by a native speaker.
+6. Deploy production through the Deploy workflow.
 
 Known gaps: G4 visual match waits for Figma access; Lighthouse performance 88 to 93 against a 95 budget.

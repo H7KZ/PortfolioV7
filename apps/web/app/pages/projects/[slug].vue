@@ -57,24 +57,9 @@ useSeo(() => ({
 	]
 }))
 
-useHead(() => {
-	const source = hero.value?.formats.avif ?? hero.value?.url
-	return {
-		link:
-			hero.value && source
-				? [
-						{
-							key: 'preload-hero',
-							rel: 'preload',
-							as: 'image',
-							href: source,
-							type: hero.value.formats.avif ? 'image/avif' : undefined,
-							fetchpriority: 'high'
-						}
-					]
-				: []
-	}
-})
+const HERO_SIZES = '(min-width: 1280px) 1200px, 100vw'
+
+useHead(() => ({ link: hero.value ? [imagePreload('preload-hero', hero.value, HERO_SIZES)] : [] }))
 </script>
 
 <template>
@@ -106,7 +91,7 @@ useHead(() => {
 				:image="hero"
 				priority
 				:ratio="hero ? undefined : HERO_PLACEHOLDER_RATIO"
-				sizes="(min-width: 1280px) 1200px, 100vw"
+				:sizes="HERO_SIZES"
 				:placeholder-kicker="labels.placeholderLabel"
 				:placeholder-suffix="labels.placeholderSuffix"
 				:placeholder-label="project.heroPlaceholderLabel"

@@ -17,21 +17,8 @@ const {
 	imgClass?: string
 }>()
 
-const SMALL_WIDTH = 800
-const MEDIUM_WIDTH = 1600
-
-function srcset(full: string | null, small: string | null, medium: string | null): string | undefined {
-	if (!full) return undefined
-	const entries = [
-		small ? `${small} ${SMALL_WIDTH}w` : null,
-		medium ? `${medium} ${MEDIUM_WIDTH}w` : null,
-		image.width ? `${full} ${image.width}w` : full
-	].filter(Boolean)
-	return entries.join(', ')
-}
-
-const avif = computed(() => srcset(image.formats.avif, image.formats.avif800, image.formats.avif1600))
-const webp = computed(() => srcset(image.url, image.formats.webp800, image.formats.webp1600))
+const avif = computed(() => avifSrcset(image))
+const webp = computed(() => webpSrcset(image))
 </script>
 
 <template>

@@ -348,6 +348,7 @@
 	h3,
 	h4 {
 		color: var(--color-ink);
+		overflow-wrap: anywhere;
 	}
 
 	::selection {
@@ -365,6 +366,14 @@
 /* Fallbacks for visitors without JavaScript; the head script marks the page as scripted before it paints. */
 .js .nojs-only {
 	display: none;
+}
+
+/* Below the narrowest designed width a button wraps instead of scrolling the page sideways. */
+@media (max-width: 319px) {
+	.type-button {
+		flex-shrink: 1;
+		white-space: normal;
+	}
 }
 
 /* Dot grid, fade and green glow behind the top of each page only (SPEC 4.4). Three layers as in Figma: dots, then the fade into the page colour, then the glow on top. */
