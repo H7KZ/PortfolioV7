@@ -1,7 +1,9 @@
 /**
  * Writes the V7 redesign copy and images into Payload.
  *
- *   pnpm --filter @portfolio/cms run seed:v7 [--dry-run]
+ *   pnpm --filter @portfolio/cms run seed:v7 [-- --dry-run]
+ *
+ * The `--` matters: without it the flag does not reach this script and the run writes.
  *
  * Reads docs/redesign/content/copy.{en,cs}.json and docs/redesign/assets (override with V7_COPY_DIR and
  * V7_ASSETS_DIR). English is written first and Czech second, reusing the English array row ids so localized
@@ -46,13 +48,41 @@ const ALT: Record<string, Record<Locale, string>> = {
 		en: 'Two DeepTrace hash-chain checks side by side: every block passes on the left, tampered block 411 is flagged on the right, demo data',
 		cs: 'Dvě kontroly řetězce hashů v DeepTrace vedle sebe: vlevo projdou všechny bloky, vpravo je označený pozměněný blok 411, ukázková data'
 	},
+	'ohlidame-hero-hd': {
+		en: 'Ohlídáme home page: a free e-shop check with an address field next to a sample result listing four tasks with their Czech law paragraphs and a fix',
+		cs: 'Úvodní stránka Ohlídáme: bezplatná kontrola e-shopu s polem pro adresu vedle ukázky výsledku se čtyřmi úkoly, paragrafy a postupem opravy'
+	},
+	'ohlidame-report-hd': {
+		en: 'Ohlídáme report of a fictional test shop: one thing left to fix, a bar of passed and waiting checks, and questions about how the shop sells',
+		cs: 'Výsledek Ohlídáme pro smyšlený testovací e-shop: zbývá jedna věc k opravě, pruh hotových a čekajících kontrol a otázky, jak e-shop prodává'
+	},
+	'ohlidame-scope-hd': {
+		en: 'Ohlídáme report panel listing the pages it read, the product sample and what it could not reach, with the reason for each',
+		cs: 'Panel výsledku Ohlídáme se seznamem načtených stránek, vzorkem produktů a tím, co se nepodařilo získat, u každé položky s důvodem'
+	},
+	'ohlidame-deep-hd': {
+		en: 'Ohlídáme offer for the 490 CZK deep check: 70 products instead of 20, with a comparison table of the free and deep check',
+		cs: 'Nabídka hlubší kontroly Ohlídáme za 490 Kč: 70 produktů místo 20 a tabulka porovnání bezplatné a hlubší kontroly'
+	},
+	'ohlidame-progress-hd': {
+		en: 'Ohlídáme scan in progress with seven steps, from preparing a safe scan through reading legal pages to the result',
+		cs: 'Probíhající kontrola Ohlídáme se sedmi kroky, od přípravy bezpečné kontroly přes čtení právních stránek po výsledek'
+	},
+	'ohlidame-guides-hd': {
+		en: 'Ohlídáme public guide for e-shops: a list of Czech obligations such as the 30-day discount rule and the withdrawal button',
+		cs: 'Veřejná příručka Ohlídáme pro e-shopy: seznam povinností, například pravidlo 30 dnů u slev a tlačítko pro odstoupení'
+	},
+	'ohlidame-shop-hd': {
+		en: 'Fictional test e-shop used to exercise Ohlídáme, labelled as selling nothing, with a list of made-up paper machines',
+		cs: 'Smyšlený testovací e-shop pro ověřování Ohlídáme, označený jako nic neprodávající, se seznamem vymyšlených papírových strojů'
+	},
 	'iont-photos-hd': {
 		en: 'Three installed IONT chargers: an e:car charging post, a smaller e:car unit in a garden and a wall-mounted e:bike charger',
 		cs: 'Tři nainstalované nabíječky IONT: stojan e:car, menší jednotka e:car v zahradě a nástěnná nabíječka e:bike'
 	},
 	'kreditozrouti-usage-hd': {
 		en: 'Umami dashboard of Kreditožrouti: 589 visitors, 783 visits, 2.14k views, 13% bounce rate and monthly bars from June to October',
-		cs: 'Přehled Umami pro Kreditožrouty: 589 návštěvníků, 783 návštěv, 2,14 tis. zobrazení, 13% míra okamžitého opuštění a měsíční sloupce od června do října'
+		cs: 'Přehled Umami pro Kreditožrouty: 589 návštěvníků, 783 návštěv, 2,14 tis. zobrazení, 13 % míra okamžitého opuštění a měsíční sloupce od června do října'
 	},
 	'scorecard-report-hd': {
 		en: 'Two pages of an exported Scorecard PDF: the compliance overview with charts and the cyber-risk treatment table, demo data',
@@ -94,6 +124,22 @@ const ALT: Record<string, Record<Locale, string>> = {
 		en: 'Kreditožrouti course list with faculty, ECTS and schedule columns next to the filters',
 		cs: 'Seznam předmětů v Kreditožroutech se sloupci fakulta, ECTS a rozvrh vedle filtrů'
 	},
+	'disenchantment-world-hd': {
+		en: 'Minecraft library with an anvil and an enchanting table among bookshelves, with enchanted swords, tools and books on display',
+		cs: 'Knihovna v Minecraftu s kovadlinou a očarovacím stolem mezi regály, kolem vystavené očarované meče, nástroje a knihy'
+	},
+	'disenchantment-compare-hd': {
+		en: 'Two anvil screens side by side: vanilla Minecraft refuses a sword and a book, with Disenchantment the anvil offers an enchanted book holding all five enchantments of the sword for 18 levels',
+		cs: 'Dvě obrazovky kovadliny vedle sebe: vanilla Minecraft meč a knihu odmítne, s Disenchantment kovadlina nabídne očarovanou knihu se všemi pěti očarováními meče za 18 úrovní'
+	},
+	'disenchantment-anvil-hd': {
+		en: 'Anvil screen with Disenchantment: a sword and books in the input slots and an enchanted book with Mending as the result for 15 levels',
+		cs: 'Obrazovka kovadliny s Disenchantment: meč a knihy ve vstupních polích a očarovaná kniha s Mending jako výsledek za 15 úrovní'
+	},
+	'disenchantment-gui-hd': {
+		en: 'Disenchantment admin GUI listing enchantments, with a tooltip showing Looting set to keep on disenchant and enabled on shatter',
+		cs: 'Administrátorské GUI Disenchantment se seznamem očarování a popiskem, že se Looting při odčarování ponechá a při rozdělení je povolený'
+	},
 	'disenchantment-repo-hd': {
 		en: 'GitHub repository of Disenchantment with its files, stars, forks and releases',
 		cs: 'Repozitář Disenchantment na GitHubu se soubory, hvězdičkami, forky a vydáními'
@@ -130,31 +176,36 @@ const ALT: Record<string, Record<Locale, string>> = {
 		en: 'Scorecard dashboard: overall compliance, compliance by treatment parameter and treatments planned by deadline, above the treatment table',
 		cs: 'Přehled Scorecard: celková shoda, shoda podle parametrů opatření a opatření plánovaná podle termínu nad tabulkou opatření'
 	},
-	'disenchantment-thumbnail-crop': {
-		en: 'Minecraft anvil with an enchanted item and the Disenchantment result slot',
-		cs: 'Kovadlina v Minecraftu s očarovaným předmětem a výsledkem pluginu Disenchantment'
-	},
-	'disenchantment-anvil': {
-		en: 'Disenchantment anvil screen moving an enchantment from a sword onto a book',
-		cs: 'Obrazovka kovadliny Disenchantment přesouvající očarování z meče do knihy'
-	},
 	portrait: {
-		en: 'Jan Komínek, smiling, in a dark jacket against a plain background',
-		cs: 'Jan Komínek s úsměvem v tmavé bundě na jednobarevném pozadí'
+		en: 'Jan Komínek, smiling, in glasses and a white shirt, cut out from his background',
+		cs: 'Jan Komínek s úsměvem, v brýlích a bílé košili, vystřižený z pozadí'
 	},
 	'portrait-resume': {
-		en: 'Portrait of Jan Komínek',
-		cs: 'Portrét Jana Komínka'
+		en: 'Jan Komínek sitting in the snow in a cap and backpack, with a dog next to him',
+		cs: 'Jan Komínek sedí ve sněhu v čepici a s batohem, vedle něj pes'
 	},
 	'post-traefik-cover': {
-		en: 'Diagram of Traefik routing requests from Cloudflare to Docker containers',
-		cs: 'Schéma Traefiku, který směruje požadavky z Cloudflare do kontejnerů Dockeru'
+		en: 'Cloudflare form for creating an API token with the Zone DNS Edit permission for one zone and a client IP filter',
+		cs: 'Formulář Cloudflare pro vytvoření API tokenu s oprávněním Zone DNS Edit pro jednu zónu a filtrem IP adres klienta'
+	}
+}
+
+/** Alt text of the two screenshots inside the Traefik post, whose media came from V6 with the post title as alt. */
+const TRAEFIK_IMAGE_ALT: Record<string, Record<Locale, string>> = {
+	'posts-traefik_with_cloudflare_inside_docker_simplified-image-1.webp': {
+		en: 'Cloudflare API token form: Zone DNS Edit permission, one zone, client IP filter',
+		cs: 'Formulář Cloudflare pro API token: oprávnění Zone DNS Edit, jedna zóna, filtr IP adres klienta'
+	},
+	'posts-traefik_with_cloudflare_inside_docker_simplified-image_2-1.webp': {
+		en: 'Cloudflare API token form: Zone Zone Read permission, one zone, client IP filter',
+		cs: 'Formulář Cloudflare pro API token: oprávnění Zone Zone Read, jedna zóna, filtr IP adres klienta'
 	}
 }
 
 /** Strings the design needs that the copy JSON does not carry yet. */
-const EXTRA: Record<Locale, { navLabel: string; newTabLabel: string; primarySkillLabel: string; personDescription: string }> = {
+const EXTRA: Record<Locale, { homeTitle: string; navLabel: string; newTabLabel: string; primarySkillLabel: string; personDescription: string }> = {
 	en: {
+		homeTitle: 'Jan Komínek · Fullstack Engineer · Prague',
 		navLabel: 'Main navigation',
 		newTabLabel: '(opens in a new tab)',
 		primarySkillLabel: '(daily)',
@@ -162,6 +213,7 @@ const EXTRA: Record<Locale, { navLabel: string; newTabLabel: string; primarySkil
 			'Freelance fullstack engineer based in Prague, Czech Republic. Takes products from an empty repository to production with TypeScript, Vue, React, Node.js, PostgreSQL and Docker. Seven companies since 2022; creates and runs Kreditožrouti, a live course scheduler. Available for part-time B2B work, around 10 hours a week, hybrid in Prague or fully remote. Not the Czech actor of the same name.'
 	},
 	cs: {
+		homeTitle: 'Jan Komínek · Fullstack Engineer · Praha',
 		navLabel: 'Hlavní navigace',
 		newTabLabel: '(otevře se v nové kartě)',
 		primarySkillLabel: '(denně)',
@@ -196,9 +248,21 @@ assertLocalDatabase()
 
 const payload: Payload = await getPayload({ config })
 const editorConfig = await editorConfigFactory.default({ config: payload.config })
+/** Czech typography: a one-letter word stays with the next word, and a number with its unit. */
+function czechSpaces(text: string): string {
+	return text.replace(/(?<=^|[\s(„])([ksvzouaiKSVZOUAI]) (?=\S)/g, '$1 ').replace(/(\d) (Kč|%|min|km|kW|GB|MB)(?![\p{L}])/gu, '$1 $2')
+}
+
+function withCzechSpaces<T>(value: T): T {
+	if (typeof value === 'string') return czechSpaces(value) as T
+	if (Array.isArray(value)) return value.map(withCzechSpaces) as T
+	if (typeof value !== 'object' || value === null) return value
+	return Object.fromEntries(Object.entries(value).map(([key, nested]) => [key, withCzechSpaces(nested)])) as T
+}
+
 const copy: Record<Locale, Json> = {
 	en: JSON.parse(await fs.readFile(path.join(COPY_DIR, 'copy.en.json'), 'utf8')),
-	cs: JSON.parse(await fs.readFile(path.join(COPY_DIR, 'copy.cs.json'), 'utf8'))
+	cs: withCzechSpaces(JSON.parse(await fs.readFile(path.join(COPY_DIR, 'copy.cs.json'), 'utf8')))
 }
 const manifest = JSON.parse(await fs.readFile(path.join(ASSETS_DIR, 'manifest.json'), 'utf8')) as {
 	assets: { name: string; width: number; height: number; files: string[] }[]
@@ -484,7 +548,7 @@ async function importGlobals(): Promise<void> {
 				allRecommendationsLabel: testimonials.allRecommendationsLabel,
 				allRecommendationsUrl: testimonials.allRecommendationsUrl,
 				quoteLimit: testimonials.quoteLimit,
-				meta: { description: hero.valueProp }
+				meta: { title: EXTRA[locale].homeTitle, description: hero.valueProp }
 			}
 		},
 		true
@@ -597,7 +661,8 @@ async function importGlobals(): Promise<void> {
 					title: page.title,
 					updatedLabel: page.updatedLabel,
 					bindingNote: page.bindingNote,
-					tocLabel: page.tocLabel
+					tocLabel: page.tocLabel,
+					meta: { description: page.metaDescription }
 				}
 			},
 			true
@@ -801,7 +866,7 @@ interface CopyProject {
 	gallery: { path: string; image?: string; crop?: 'default' | 'strip'; placeholder?: { label: string; spec: string } }[]
 }
 
-const NEW_PROJECT_DATES: Record<string, string> = { intedat: '2024-09-01T00:00:00.000Z' }
+const NEW_PROJECT_DATES: Record<string, string> = { intedat: '2024-09-01T00:00:00.000Z', ohlidame: '2026-08-26T00:00:00.000Z' }
 
 async function findProject(slug: string): Promise<{ id: number; slug: string } | null> {
 	const found = await payload.find({ collection: 'projects', where: { slug: { equals: slug } }, limit: 1, depth: 0, draft: true })
@@ -900,6 +965,13 @@ async function firstExisting(paths: string[]): Promise<{ id: number; slug: strin
 		if (found) return found
 	}
 	return null
+}
+
+async function importPostImageAlts(): Promise<void> {
+	for (const [filename, alt] of Object.entries(TRAEFIK_IMAGE_ALT)) {
+		const id = await findMedia(filename)
+		if (id) await writeDocument('media', filename, id, locale => ({ alt: alt[locale] }))
+	}
 }
 
 async function importPostCover(): Promise<void> {
@@ -1010,6 +1082,54 @@ async function renderPosts(): Promise<void> {
 	}
 }
 
+/** Posts written for V7. The body is `docs/redesign/content/posts/<slug>.<locale>.md`. */
+const V7_POSTS: {
+	slug: string
+	date: string
+	readingTime: number
+	tags: string[]
+	thumbnail: string
+	title: Record<Locale, string>
+	description: Record<Locale, string>
+}[] = [
+	{
+		slug: 'ohlidame_61_days_with_ai_agents',
+		date: '2026-11-01T00:00:00.000Z',
+		readingTime: 6,
+		tags: ['AI agents', 'SaaS', 'Infrastructure'],
+		thumbnail: 'ohlidame-hero-hd',
+		title: {
+			en: '61 days to production: building a compliance SaaS with AI agents',
+			cs: '61 dní do produkce: SaaS na kontrolu e-shopů postavený s AI agenty'
+		},
+		description: {
+			en: 'How I took Ohlídáme from first commit to production alone with AI agents: the problem, the guardrails, the infrastructure and what went wrong.',
+			cs: 'Jak jsem Ohlídáme dovedl od prvního commitu do produkce sám s AI agenty: problém, mantinely, infrastruktura a co se nepovedlo.'
+		}
+	}
+]
+
+async function importV7Posts(): Promise<void> {
+	for (const post of V7_POSTS) {
+		const found = await payload.find({ collection: 'posts', where: { slug: { equals: post.slug } }, limit: 1, depth: 0, draft: false })
+		const bodies = {
+			en: await fs.readFile(path.join(COPY_DIR, 'posts', `${post.slug}.en.md`), 'utf8'),
+			cs: czechSpaces(await fs.readFile(path.join(COPY_DIR, 'posts', `${post.slug}.cs.md`), 'utf8'))
+		}
+		await writeDocument('posts', post.slug, found.docs[0] ? Number(found.docs[0].id) : null, locale => ({
+			slug: post.slug,
+			date: post.date,
+			readingTime: post.readingTime,
+			tags: post.tags,
+			thumbnail: image(post.thumbnail),
+			title: locale === 'cs' ? czechSpaces(post.title.cs) : post.title.en,
+			description: locale === 'cs' ? czechSpaces(post.description.cs) : post.description.en,
+			content: convertMarkdownToLexical({ editorConfig, markdown: bodies[locale].trim() }),
+			_status: 'published'
+		}))
+	}
+}
+
 async function importRedirects(): Promise<void> {
 	const projects = pick<CopyProject[]>('en', 'collections.projects')
 	const rows = projects.flatMap(project =>
@@ -1038,7 +1158,9 @@ await importTestimonials()
 await importExperience()
 await importProjects()
 await importPostCover()
+await importPostImageAlts()
 await importPostText()
+await importV7Posts()
 await renderPosts()
 await importRedirects()
 log(`done · ${changed} ${DRY_RUN ? 'would change' : 'changed'} · ${unchanged} unchanged`)

@@ -122,7 +122,7 @@
         "eyebrowCommand": "whoami  # Jan Komínek · fullstack engineer na volné noze · Praha, CZ",
         "eyebrowCommandShort": "whoami  # Praha, CZ",
         "headline": "Od prázdného repa\naž do produkce.",
-        "valueProp": "Zero-trust platforma pro ověřování původu dat, síť nabíjecích stanic s ostrými platbami a rozvrhovač předmětů, který dodnes provozuju. Postavené celé, od infrastruktury po UI. Od roku 2022 sedm firem a přes 12 dodaných projektů.",
+        "valueProp": "SaaS na kontrolu e-shopů, který celý vlastním, síť nabíjecích stanic s ostrými platbami a rozvrhovač předmětů, který dodnes provozuju. Postavené celé, od infrastruktury po UI. Od roku 2022 sedm firem a přes 12 dodaných projektů.",
         "primaryCta": {
           "label": "Začít projekt",
           "href": "/contact"
@@ -166,7 +166,7 @@
       },
       "more": {
         "heading": "Další práce.",
-        "sub": "Aktuální práce pro klienty, co právě stavím a menší projekty.",
+        "sub": "Aktuální práce pro klienty, delší spolupráce a menší projekty.",
         "items": [
           {
             "meta": "VEROC Group · Teď",
@@ -177,11 +177,11 @@
             "external": true
           },
           {
-            "meta": "Vlastní produkt · Ve vývoji",
-            "title": "Ohlídáme",
-            "description": "Zkontroluje veřejné stránky e-shopu proti vybraným povinnostem a vysvětlí nedostatky bez právničiny.",
-            "linkLabel": "Ve vývoji",
-            "href": null
+            "meta": "Intedat · 2024–2026",
+            "title": "Intedat",
+            "description": "Skoro dva roky funkcí dodaných celých na datové platformě, k tomu přestavba vyhledávání a pipeline, která to všechno dodává.",
+            "linkLabel": "Číst případovou studii",
+            "href": "/projects/intedat"
           },
           {
             "meta": "CORAC Engineering · 2025–2026",
@@ -446,14 +446,16 @@
       "title": "Ochrana osobních údajů.",
       "updatedLabel": "Aktualizováno",
       "bindingNote": "K dispozici i v angličtině. Při rozdílech mezi verzemi platí česká.",
-      "tocLabel": "Na této stránce"
+      "tocLabel": "Na této stránce",
+      "metaDescription": "Kdo odpovídá za vaše údaje na jankominek.com, co ukládá kontaktní formulář a statistiky návštěvnosti a jaká máte práva."
     },
     "terms": {
       "label": "cat ./podminky.md",
       "title": "Podmínky užívání.",
       "updatedLabel": "Aktualizováno",
       "bindingNote": "K dispozici i v angličtině. Při rozdílech mezi verzemi platí česká.",
-      "tocLabel": "Na této stránce"
+      "tocLabel": "Na této stránce",
+      "metaDescription": "Podmínky užívání webu jankominek.com: obsah a duševní vlastnictví, ukázky kódu, odpovědnost, odkazy a rozhodné právo."
     }
   },
   "collections": {
@@ -506,13 +508,232 @@
     "testimonialsNote": "Quotes are LinkedIn recommendations, quoted verbatim in English in both locales. The home shows three; the cut point and 'Read more' come from home.testimonials.quoteLimit. Marek Vospěl, Petr Krejci and Zdeněk Glazer stay in the CMS with home visibility off.",
     "projects": [
       {
-        "slug": "iont_platform",
-        "redirectFrom": ["/projects/iont_info", "/projects/iont_charge", "/projects/iont_admin"],
+        "slug": "ohlidame",
         "order": 1,
         "card": {
           "show": true,
           "size": "featured",
           "badge": "Vlajková loď",
+          "year": "2026",
+          "meta": "Vlastní produkt / Zakladatel",
+          "description": "Český SaaS na kontrolu e-shopů, který celý vlastním: produkt, byznys, architekturu i provoz. Postavený s AI agenty, od prvního commitu do produkce za 61 dní.",
+          "chips": ["Next.js", "BullMQ", "Playwright", "AI agents"]
+        },
+        "kicker": "Vlastní produkt · 2026",
+        "title": "Ohlídáme.",
+        "lede": "Samoobslužný SaaS, který zkontroluje český e-shop proti pravidlům, jež musí dodržovat, a srozumitelně vysvětlí, co opravit. Je to můj vlastní byznys: vlastním produkt, architekturu i každé rozhodnutí a postavil jsem ho s AI agenty.",
+        "role": "Zakladatel, produkt a vývoj",
+        "timeline": "srpen 2026 – dosud",
+        "sector": "Compliance · Český e-commerce",
+        "impact": [
+          {
+            "label": "Spuštění",
+            "value": "61 dní",
+            "sub": "Od prvního commitu do produkce"
+          },
+          {
+            "label": "AI agenti",
+            "value": "706 commitů",
+            "sub": "Z 872, Claude jako spoluautor"
+          },
+          {
+            "label": "Pokrytí",
+            "value": "10 modulů",
+            "sub": "Pravidla nad jedním crawlerem"
+          }
+        ],
+        "challenge": [
+          "Každý český e-shop se řídí dlouhým seznamem pravidel pro spotřebitele, data a produkty a Česká obchodní inspekce pokutuje ty, kdo je nedodrží. Kontrola od právníka stojí kolem 30 000 Kč, takže malý e-shop se o svých chybách často dozví až od inspektora.",
+          "Ohlídáme přečte veřejné stránky e-shopu, zkontroluje je proti vybraným povinnostem a řekne, co chybí, ze kterého paragrafu to plyne a jak to opravit. Kontrola je zdarma. Hlubší kontrola za 490 Kč projde 70 produktů místo 20 a přidá hotové opravy a podepsaný protokol.",
+          "Není tu klient ani tým. Vybral jsem trh, nastavil cenu, napsal podmínky a záznamy o zpracování, navrhl systém a provozuju produkci. Ve firmě by to byly samostatné ředitelské role, tady je to jeden člověk a AI agenti, kteří napsali většinu kódu, zatímco rozhodnutí zůstala na mně."
+        ],
+        "contributions": [
+          {
+            "title": "Produkt, byznys a značka",
+            "body": "Nastavil jsem bezplatnou kontrolu jako vstup, hlubší kontrolu za 490 Kč, vracení peněz a platby přes Stripe, srozumitelnou značku i veřejné příručky, které e-shopy přivádějí."
+          },
+          {
+            "title": "Architektura",
+            "body": "Jeden crawler a deset modulů s pravidly. Modul je sada čistých funkcí, které nic nestahují, a když někdo tuhle hranici překročí, CI shodí build."
+          },
+          {
+            "title": "Výsledky, kterým jde věřit",
+            "body": "FAIL vyžaduje jistotu: potvrzená správná stránka a povinný prvek jasně chybí. Cokoli slabšího je doporučení nebo poctivé „nelze ověřit“ a každý výsledek odkazuje na právní zdroj."
+          },
+          {
+            "title": "Vývoj s AI agenty",
+            "body": "Claude Code a OpenAI Codex fungovaly jako vývojářský tým. Slovník domény, 33 záznamů rozhodnutí a pravidla pro každý balíček je drží v jedné linii. Já určuju směr, kontroluju a za výsledek odpovídám."
+          },
+          {
+            "title": "Testovací strategie",
+            "body": "Smyšlený Testovací e-shop se 64 variantami, konformní sada a Playwright cesty proti produkčním obrazům. Testovacího kódu je víc než produktového."
+          },
+          {
+            "title": "Soukromí a provoz",
+            "body": "Zkontrolovat jde kterýkoli e-shop, ale podrobnosti dostane jen ověřený majitel a nepřevzatá data se po zhruba osmi dnech smažou. Produkce běží na jednom vlastním VPS s monitoringem, neměnnými vydáními a nácvikem obnovy."
+          }
+        ],
+        "stack": [
+          "Next.js",
+          "TypeScript",
+          "Express",
+          "Kysely",
+          "MySQL",
+          "Redis",
+          "BullMQ",
+          "Playwright",
+          "Stripe",
+          "Docker",
+          "Traefik",
+          "Grafana",
+          "Claude Code",
+          "OpenAI Codex"
+        ],
+        "architecture": {
+          "nodes": [
+            {
+              "key": "web",
+              "name": "Webová aplikace",
+              "tech": "Next.js SSR · i18n"
+            },
+            {
+              "key": "ai",
+              "name": "Stripe",
+              "tech": "Platby · webhooky",
+              "external": true
+            },
+            {
+              "key": "traefik",
+              "name": "Traefik",
+              "tech": "TLS · CrowdSec · za Cloudflare"
+            },
+            {
+              "key": "api",
+              "name": "API",
+              "tech": "Express · Kysely · vyhodnocení kontroly"
+            },
+            {
+              "key": "mcp",
+              "name": "Moduly s pravidly",
+              "tech": "Čisté funkce · bez I/O"
+            },
+            {
+              "key": "redis",
+              "name": "Redis",
+              "tech": "Fronty BullMQ · průběh"
+            },
+            {
+              "key": "mysql",
+              "name": "MySQL",
+              "tech": "Kontroly · výsledky · nákupy"
+            },
+            {
+              "key": "scraper",
+              "name": "Scraper workery",
+              "tech": "Nejdřív HTTP · Playwright, když je potřeba"
+            },
+            {
+              "key": "insis",
+              "name": "Veřejné e-shopy",
+              "tech": "Stránky, které kontrola čte",
+              "external": true
+            }
+          ],
+          "edges": [
+            {
+              "from": "web",
+              "to": "traefik",
+              "kind": "request"
+            },
+            {
+              "from": "ai",
+              "to": "traefik",
+              "kind": "sync"
+            },
+            {
+              "from": "traefik",
+              "to": "api",
+              "kind": "request"
+            },
+            {
+              "from": "api",
+              "to": "mcp",
+              "kind": "sync"
+            },
+            {
+              "from": "api",
+              "to": "redis",
+              "kind": "async",
+              "label": "do fronty"
+            },
+            {
+              "from": "api",
+              "to": "mysql",
+              "kind": "request",
+              "label": "čtení + zápis",
+              "labelShort": "zápis"
+            },
+            {
+              "from": "redis",
+              "to": "scraper",
+              "kind": "async",
+              "bidirectional": true,
+              "label": "úlohy · důkazy"
+            },
+            {
+              "from": "scraper",
+              "to": "insis",
+              "kind": "async"
+            }
+          ],
+          "legend": {
+            "request": "Požadavek uživatele",
+            "sync": "Synchronní volání",
+            "async": "Asynchronní kontrola přes BullMQ"
+          },
+          "observability": "Observabilita: Alloy → Prometheus a Loki → Grafana. Alertmanager → Discord. Umami na analytiku.",
+          "caption": "Monorepo v pnpm a Turborepu na jednom VPS. API založí kontrolu a hned odpoví. Scraper worker projde konečný plán a vrátí důkazy přes autentizovaný ingest a čisté moduly s pravidly z nich udělají výsledky, takže žádné pravidlo nesahá na síť.",
+          "textAlternative": "Prohlížeče přistupují k webu v Next.js a Stripe posílá webhooky, obojí přes Traefik do Express API. API volá čisté moduly s pravidly, čte a zapisuje do MySQL a řadí kontroly do fronty v Redisu. Scraper workery berou úlohy z Redisu, čtou veřejné e-shopy a vracejí důkazy."
+        },
+        "hero": {
+          "path": "~/projects/ohlidame",
+          "image": "ohlidame-hero-hd"
+        },
+        "gallery": [
+          {
+            "path": "~/projects/ohlidame/report",
+            "image": "ohlidame-report-hd"
+          },
+          {
+            "path": "~/projects/ohlidame/scope",
+            "image": "ohlidame-scope-hd"
+          },
+          {
+            "path": "~/projects/ohlidame/progress",
+            "image": "ohlidame-progress-hd"
+          },
+          {
+            "path": "~/projects/ohlidame/deep-check",
+            "image": "ohlidame-deep-hd"
+          },
+          {
+            "path": "~/projects/ohlidame/guides",
+            "image": "ohlidame-guides-hd"
+          },
+          {
+            "path": "~/projects/ohlidame/test-shop",
+            "image": "ohlidame-shop-hd"
+          }
+        ],
+        "factsToConfirm": ["61 days to production", "30,000 CZK lawyer review", "Trade Inspection fines wording"]
+      },
+      {
+        "slug": "iont_platform",
+        "redirectFrom": ["/projects/iont_info", "/projects/iont_charge", "/projects/iont_admin"],
+        "order": 2,
+        "card": {
+          "show": true,
+          "size": "featured",
           "year": "2023–2024",
           "meta": "IONT tech / Fullstack",
           "description": "Aplikace pro řidiče, platební brána ČSOB a administrace přímo v nabíječce pro veřejnou síť nabíjecích stanic. Od prázdného repozitáře ke spuštění za pět měsíců.",
@@ -602,7 +823,7 @@
       {
         "slug": "deeptrace",
         "redirectFrom": ["/projects/corac_sith"],
-        "order": 2,
+        "order": 3,
         "card": {
           "show": true,
           "size": "featured",
@@ -663,7 +884,7 @@
       },
       {
         "slug": "kreditozrouti",
-        "order": 3,
+        "order": 4,
         "card": {
           "show": true,
           "size": "featured",
@@ -687,7 +908,7 @@
           },
           {
             "label": "Onboarding",
-            "value": "35%",
+            "value": "35 %",
             "sub": "Z 589 návštěvníků dokončí nastavení"
           },
           {
@@ -855,10 +1076,10 @@
       },
       {
         "slug": "intedat",
-        "order": 4,
+        "order": 5,
         "isNew": true,
         "card": {
-          "show": true,
+          "show": false,
           "size": "featured",
           "year": "2024–2026",
           "meta": "Intedat / Fullstack",
@@ -911,7 +1132,7 @@
       },
       {
         "slug": "corac_scorecard",
-        "order": 5,
+        "order": 6,
         "card": {
           "show": false
         },
@@ -961,7 +1182,7 @@
       },
       {
         "slug": "disenchantment",
-        "order": 6,
+        "order": 7,
         "card": {
           "show": false
         },
@@ -1012,12 +1233,20 @@
         "stack": ["Java", "Spigot API", "Maven", "IntelliJ IDEA", "Git", "YAML"],
         "hero": {
           "path": "~/projects/disenchantment",
-          "image": "disenchantment-thumbnail-crop"
+          "image": "disenchantment-world-hd"
         },
         "gallery": [
           {
+            "path": "~/projects/disenchantment/compare",
+            "image": "disenchantment-compare-hd"
+          },
+          {
             "path": "~/projects/disenchantment/anvil",
-            "image": "disenchantment-anvil"
+            "image": "disenchantment-anvil-hd"
+          },
+          {
+            "path": "~/projects/disenchantment/admin-gui",
+            "image": "disenchantment-gui-hd"
           },
           {
             "path": "~/projects/disenchantment/repo",
@@ -1128,11 +1357,16 @@
         {
           "order": 2,
           "current": true,
-          "dates": "září 2026 – dosud",
-          "duration": "ve vývoji",
-          "role": "Ohlídáme",
-          "organization": "Vlastní produkt · Český e-commerce",
-          "description": "Za minutu uvidíte, co vašemu e-shopu vůči zákazníkům chybí. Ohlídáme zkontroluje veřejné stránky e-shopu proti vybraným povinnostem, srozumitelně a bez právničiny. Není napojené na ČOI.",
+          "dates": "srpen 2026 – dosud",
+          "duration": "běží",
+          "role": "Ohlídáme · zakladatel a jediný vlastník",
+          "organization": "ohlidame.cz · Český e-commerce",
+          "description": "Samoobslužný SaaS, který zkontroluje veřejné stránky e-shopu proti vybraným povinnostem, srozumitelně a bez právničiny. Vlastním produkt, byznys, architekturu i provoz. Není napojené na ČOI.",
+          "highlights": [
+            "Od prvního commitu do produkce za 61 dní, s AI agenty: 706 z 872 commitů má Clauda jako spoluautora",
+            "Jeden crawler a deset modulů s pravidly, hranici mezi nimi hlídá CI",
+            "Ceny, platby, podmínky, záznamy o zpracování, infrastruktura i provoz na jednom člověku"
+          ],
           "chips": ["System architecture", "Claude Code", "OpenAI Codex"]
         }
       ],
