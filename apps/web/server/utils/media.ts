@@ -17,7 +17,9 @@ export async function proxyMedia(event: H3Event, filename: string, disposition?:
 		setResponseStatus(event, 304)
 		return null
 	}
-	if (!response.ok || !response.body) throw createError({ statusCode: response.status === 404 ? 404 : 502, statusMessage: 'Not Found' })
+	// Payload answers 500 for a file that is not on the disk, so a dead link is not a CMS outage.
+	if (response.status === 404 || response.status === 500) throw createError({ statusCode: 404, statusMessage: 'Not Found' })
+	if (!response.ok || !response.body) throw createError({ statusCode: 502, statusMessage: 'Bad Gateway' })
 
 	for (const header of PASSTHROUGH_HEADERS) {
 		const value = response.headers.get(header)

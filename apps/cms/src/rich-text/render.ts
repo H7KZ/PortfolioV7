@@ -142,18 +142,21 @@ const converters: HTMLConvertersFunction = ({ defaultConverters }) => ({
 		Code: ({ node }: { node: unknown }) => String((node as LexicalNode).fields?.html ?? '')
 	},
 	upload: ({ node }: { node: unknown }) => {
-		const media = (node as LexicalNode).value as { filename?: string; alt?: string; mimeType?: string } | null
+		const media = (node as LexicalNode).value as { filename?: string; alt?: string; mimeType?: string; width?: number; height?: number } | null
 		if (!media?.filename) return ''
 		const src = `/media/${encodeURIComponent(media.filename)}`
 		if (!media.mimeType?.startsWith('image/')) return `<p><a href="${src}" target="_blank" rel="noopener">${escapeHtml(media.filename)}</a></p>`
-		return `<div class="flex justify-center items-center mb-16"><img src="${src}" alt="${escapeHtml(media.alt ?? '')}" class="w-3/4 object-cover" /></div>`
+		const size = media.width && media.height ? ` width="${media.width}" height="${media.height}"` : ''
+		return `<div class="flex justify-center items-center mb-16"><img src="${src}"${size} alt="${escapeHtml(media.alt ?? '')}" class="w-3/4 object-cover" /></div>`
 	}
 })
 
 export async function renderRichText(state: SerializedEditorState | null | undefined, req: PayloadRequest): Promise<string> {
 	if (!state?.root) return ''
 	const prepared = await prepare(state, req)
-	return convertLexicalToHTML({ converters, data: prepared, disableContainer: true })
+	const html = convertLexicalToHTML({ converters, data: prepared, disableContainer: true })
+	// Lexical writes the item number on every <li>, which HTML only allows inside <ol>; the browser numbers an <ol> by itself.
+	return html.replace(/(<li\b[^>]*?)\s+value="\d+"/g, '$1')
 }
 
 export function renderedHtmlHook(sourceField: string): FieldHook {

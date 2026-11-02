@@ -194,7 +194,7 @@ onMounted(() => {
 				</div>
 			</div>
 
-			<form v-else novalidate class="flex flex-col gap-4.5 lg:gap-5" @submit.prevent="submit">
+			<form v-else novalidate method="post" class="flex flex-col gap-4.5 lg:gap-5" @submit.prevent="submit">
 				<div
 					v-if="serverError || broken.length"
 					ref="summary"

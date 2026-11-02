@@ -13,8 +13,13 @@ function safeEqual(a: string, b: string): boolean {
 	return left.length === right.length && timingSafeEqual(left, right)
 }
 
+/** Browsers read a backslash as a slash and drop tabs and newlines, so `/\host` and `/<tab>/host` would leave the site. */
+export function isLocalPath(path: string): boolean {
+	return path.startsWith('/') && !path.startsWith('//') && !/[\s\\]/.test(path)
+}
+
 export function verifyPreviewLink(path: string, expires: string, token: string): boolean {
-	if (!path.startsWith('/') || path.startsWith('//')) return false
+	if (!isLocalPath(path)) return false
 	if (!/^\d+$/.test(expires) || Number(expires) < Date.now()) return false
 	return safeEqual(sign(`${path}|${expires}`), token)
 }

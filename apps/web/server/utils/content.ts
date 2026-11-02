@@ -228,6 +228,16 @@ const loaders = {
 		return { ...page, contentHtml: html, toc }
 	},
 
+	/** Published slugs, so a request for any other slug is answered without a CMS query or a cache entry of its own. */
+	async slugs(): Promise<{ posts: string[]; projects: string[] }> {
+		const query = { locale: 'en' as const, depth: 0, limit: 500, select: { slug: true }, where: PUBLISHED }
+		const [posts, projects] = await Promise.all([
+			cmsFetch<{ docs?: { slug: string }[] } | null>('/posts', query),
+			cmsFetch<{ docs?: { slug: string }[] } | null>('/projects', query)
+		])
+		return { posts: (posts?.docs ?? []).map(doc => doc.slug), projects: (projects?.docs ?? []).map(doc => doc.slug) }
+	},
+
 	async errors(locale: Locale, draft: boolean): Promise<ErrorsData> {
 		return global<ErrorPage>('errors', { locale, draft })
 	},
@@ -250,7 +260,7 @@ const loaders = {
 			fetchRedirects()
 		])
 		return {
-			projects: projects.docs.filter(({ slug }) => !redirects[`/projects/${slug}`]).map(({ slug, updatedAt }) => ({ slug, updatedAt })),
+			projects: projects.docs.filter(({ slug, kicker }) => kicker && !redirects[`/projects/${slug}`]).map(({ slug, updatedAt }) => ({ slug, updatedAt })),
 			posts: posts.docs.map(({ slug, updatedAt }) => ({ slug, updatedAt }))
 		}
 	},

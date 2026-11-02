@@ -6,6 +6,7 @@ export type Locale = (typeof LOCALES)[number]
 /** Every page and page family in docs/redesign/design/frame-map.md. */
 export const ROUTES = [
 	'/',
+	'/projects/ohlidame',
 	'/projects/kreditozrouti',
 	'/projects/deeptrace',
 	'/projects/iont_platform',
@@ -16,6 +17,7 @@ export const ROUTES = [
 	'/contact',
 	'/blog',
 	'/blog/traefik_with_cloudflare_inside_docker_simplified',
+	'/blog/ohlidame_61_days_with_ai_agents',
 	'/privacy',
 	'/terms'
 ] as const

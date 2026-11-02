@@ -29,25 +29,9 @@ useSeo(() => ({
 	type: 'website'
 }))
 
-useHead(() => {
-	const image = portrait.value
-	const source = image?.formats.avif ?? image?.url
-	return {
-		link:
-			image && source
-				? [
-						{
-							key: 'preload-portrait',
-							rel: 'preload',
-							as: 'image',
-							href: source,
-							type: image.formats.avif ? 'image/avif' : (image.mimeType ?? undefined),
-							fetchpriority: 'high'
-						}
-					]
-				: []
-	}
-})
+const PORTRAIT_SIZES = '(min-width: 1024px) 380px, 90vw'
+
+useHead(() => ({ link: portrait.value ? [imagePreload('preload-portrait', portrait.value, PORTRAIT_SIZES)] : [] }))
 </script>
 
 <template>
@@ -81,7 +65,7 @@ useHead(() => {
 				class="relative m-0 h-[400px] w-full overflow-hidden rounded-lg border border-line bg-surface md:col-start-2 md:row-span-5 md:row-start-3 md:self-start lg:row-span-1 lg:row-start-auto lg:h-[520px] lg:self-auto"
 			>
 				<div class="absolute top-[27px] left-1/2 aspect-[380/603] w-[270px] -translate-x-1/2 md:top-[23px] md:w-[244px] lg:top-[-43px] lg:w-[380px]">
-					<ResponsiveImage v-if="portrait" :image="portrait" priority sizes="(min-width: 1024px) 380px, 90vw" img-class="object-top" />
+					<ResponsiveImage v-if="portrait" :image="portrait" priority :sizes="PORTRAIT_SIZES" img-class="object-top" />
 				</div>
 				<figcaption
 					v-if="caption?.user"

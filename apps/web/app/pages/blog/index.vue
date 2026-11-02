@@ -31,8 +31,14 @@ useSeo(() => ({
 	image: page.value.meta?.image,
 	type: 'website'
 }))
+const CARD_SIZES = '(min-width: 1024px) 360px, 100vw'
+const firstImage = computed(() => cards.value.find(card => card.image)?.image ?? null)
+
 useHead(() => ({
-	link: [{ key: 'rss', rel: 'alternate', type: 'application/rss+xml', title: page.value.feedTitle, href: '/feed.xml' }]
+	link: [
+		{ key: 'rss', rel: 'alternate', type: 'application/rss+xml', title: page.value.feedTitle, href: '/feed.xml' },
+		...(firstImage.value ? [imagePreload('preload-first-post', firstImage.value, CARD_SIZES)] : [])
+	]
 }))
 </script>
 
@@ -56,20 +62,20 @@ useHead(() => ({
 						v-if="image"
 						class="h-[200px] w-full shrink-0 overflow-hidden md:h-[320px] lg:order-3 lg:h-60 lg:w-[360px] lg:rounded-md lg:border lg:border-line"
 					>
-						<ResponsiveImage :image="image" alt="" sizes="(min-width: 1024px) 360px, 100vw" img-class="h-full w-full object-cover" />
+						<ResponsiveImage :image="image" alt="" :priority="image === firstImage" :sizes="CARD_SIZES" img-class="h-full w-full object-cover" />
 					</div>
 					<div class="hidden w-40 shrink-0 flex-col gap-1.5 type-mono-s lg:flex">
 						<time :datetime="post.date" class="text-ink-soft">{{
 							formatDate(post.date, dateLocale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
 						}}</time>
-						<span v-if="post.readingTime" class="text-faint">{{ post.readingTime }} {{ page.minutesLong }}</span>
+						<span v-if="post.readingTime" class="text-faint">{{ post.readingTime }}&nbsp;{{ page.minutesLong }}</span>
 					</div>
 					<div class="flex min-w-0 flex-1 flex-col gap-3 px-5 pt-1 pb-[22px] md:px-7 md:pb-7 lg:gap-3.5 lg:p-0">
 						<p class="type-mono-s text-mute lg:hidden">
 							<time :datetime="post.date">{{
 								formatDate(post.date, dateLocale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
 							}}</time
-							><template v-if="post.readingTime"> · {{ post.readingTime }} {{ page.minutesLong }}</template>
+							><template v-if="post.readingTime"> · {{ post.readingTime }}&nbsp;{{ page.minutesLong }}</template>
 						</p>
 						<h2 class="type-h2 text-ink">
 							<NuxtLink
