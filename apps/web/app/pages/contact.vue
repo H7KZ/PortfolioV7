@@ -3,94 +3,89 @@ import type { ContactFormConfig } from '@portfolio/content/contact-form'
 
 import type { ContactData } from '#shared/types/content'
 
+definePageMeta({ contactCta: false })
+
 const data = await useContent<ContactData>('contact')
 const { data: layout } = useLayoutContent()
-const { trackLink } = useAnalytics()
+const { calUrl } = useSiteText()
+const { track, trackLink } = useAnalytics()
 
 const page = computed(() => data.value.page)
 const site = computed(() => layout.value?.site)
+const headingPeriod = computed(() => page.value.heading.endsWith('.'))
+const headingPlain = computed(() => (headingPeriod.value ? page.value.heading.slice(0, -1) : page.value.heading))
 
 useSeo(() => ({
-	title: page.value.meta?.title ?? page.value.heading,
-	description: page.value.meta?.description,
+	title: page.value.meta?.title ?? page.value.heading.replace(/\n/g, ' '),
+	description: page.value.meta?.description ?? page.value.intro,
 	image: page.value.meta?.image,
 	type: 'website'
 }))
+const headingFlat = computed(() => headingPlain.value.replace(/\s*\n\s*/g, ' '))
 </script>
 
 <template>
-	<div
-		class="mx-auto grid max-w-(--max) grid-cols-2 gap-16 px-8 pt-10 pb-30 max-[900px]:grid-cols-1 max-[900px]:gap-12 max-[900px]:px-5 max-[900px]:pt-7 max-[900px]:pb-20"
-	>
-		<!-- LEFT COL -->
-		<div class="max-[900px]:static min-[900px]:sticky min-[900px]:top-8 min-[900px]:self-start">
-			<div class="mono mb-3.5 text-[11px] tracking-widest text-(--fg-4) uppercase">{{ page.label }}</div>
-			<h1 class="serif mt-0 mb-5 text-[clamp(32px,5vw,56px)] leading-none tracking-[-0.025em]">{{ page.heading }}</h1>
-			<p class="m-0 max-w-115 text-[17px] leading-[1.55] text-(--fg-2)">{{ page.intro }}</p>
-
-			<div class="mt-9 flex flex-col gap-2.5">
-				<a
-					v-if="site"
-					:href="`mailto:${site.email}`"
-					class="group grid grid-cols-[auto_1fr_auto] items-center gap-4.5 rounded-(--radius) border border-(--line) bg-(--bg-2) px-5.5 py-4.5 text-(--fg) no-underline transition-[border-color,transform] duration-200 hover:translate-x-1 hover:border-(--fg-5)"
-					@click="trackLink('mailto:')"
-				>
-					<div class="mono grid h-9 w-9 place-items-center rounded-lg border border-(--line) bg-(--bg-3) text-[12px] text-(--fg-3)">@</div>
-					<div class="flex flex-col gap-0.5">
-						<span class="text-[14px] font-medium">{{ page.emailLabel }}</span>
-						<span class="mono text-[11px] text-(--fg-4)">{{ site.email }}</span>
-					</div>
-					<div class="text-(--fg-4) transition-colors duration-200 group-hover:text-(--accent)">→</div>
-				</a>
-				<a
-					v-if="site"
-					:href="site.linkedinUrl"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="group grid grid-cols-[auto_1fr_auto] items-center gap-4.5 rounded-(--radius) border border-(--line) bg-(--bg-2) px-5.5 py-4.5 text-(--fg) no-underline transition-[border-color,transform] duration-200 hover:translate-x-1 hover:border-(--fg-5)"
-					@click="trackLink(site.linkedinUrl)"
-				>
-					<div class="mono grid h-9 w-9 place-items-center rounded-lg border border-(--line) bg-(--bg-3) text-[12px] text-(--fg-3)">in</div>
-					<div class="flex flex-col gap-0.5">
-						<span class="text-[14px] font-medium">{{ page.linkedinLabel }}</span>
-						<span class="mono text-[11px] text-(--fg-4)">{{ page.linkedinSub }}</span>
-					</div>
-					<div class="text-(--fg-4) transition-colors duration-200 group-hover:text-(--accent)">→</div>
-				</a>
-				<a
-					href="#calendar"
-					class="group grid grid-cols-[auto_1fr_auto] items-center gap-4.5 rounded-(--radius) border border-(--line) bg-(--bg-2) px-5.5 py-4.5 text-(--fg) no-underline transition-[border-color,transform] duration-200 hover:translate-x-1 hover:border-(--fg-5)"
-				>
-					<div class="mono grid h-9 w-9 place-items-center rounded-lg border border-(--line) bg-(--bg-3) text-[12px] text-(--fg-3)">📅</div>
-					<div class="flex flex-col gap-0.5">
-						<span class="text-[14px] font-medium">{{ page.bookCallLabel }}</span>
-						<span class="mono text-[11px] text-(--fg-4)">{{ page.bookCallSub }}</span>
-					</div>
-					<div class="text-(--fg-4) transition-colors duration-200 group-hover:text-(--accent)">→</div>
-				</a>
+	<div class="site-container flex flex-col pb-(--section-gap) lg:flex-row lg:items-start lg:gap-12 lg:pt-18 lg:pb-36">
+		<div class="flex flex-col pb-6 lg:min-w-0 lg:flex-1 lg:gap-6 lg:pb-0">
+			<div class="flex flex-col gap-4 pt-9 pb-6 md:gap-5 md:pt-14 md:pb-8 lg:gap-6 lg:pt-0 lg:pb-0">
+				<p class="type-mono-s text-mute"><span class="text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
+				<h1 class="type-display-l">
+					<span class="whitespace-pre-line max-lg:hidden">{{ headingPlain }}</span
+					><span class="lg:hidden">{{ headingFlat }}</span
+					><span v-if="headingPeriod" class="text-accent">.</span>
+				</h1>
+				<p class="type-body-l text-ink-soft">{{ page.intro }}</p>
 			</div>
 
-			<div class="mt-10 rounded-(--radius) border border-dashed border-(--line-2) px-5.5 py-4.5 text-[13px] leading-[1.6] text-(--fg-3)">
-				<div class="mono mb-3.5 text-[11px] tracking-widest text-(--accent) uppercase">{{ page.includeLabel }}</div>
-				<p class="m-0">{{ page.includeText }}</p>
-			</div>
+			<ul class="flex list-none flex-col gap-2.5 p-0 lg:gap-3">
+				<li v-if="site">
+					<ChannelRow
+						icon="@"
+						:label="page.emailLabel"
+						:sub="page.emailSub ?? site.email"
+						:href="`mailto:${site.email}`"
+						@select="trackLink('mailto:')"
+					/>
+				</li>
+				<li v-if="site">
+					<ChannelRow
+						icon="in"
+						:label="page.linkedinLabel"
+						:sub="page.linkedinSub"
+						:href="site.linkedinUrl"
+						external
+						@select="trackLink(site.linkedinUrl)"
+					/>
+				</li>
+				<li v-if="calUrl">
+					<ChannelRow
+						:label="page.bookCallLabel"
+						:sub="page.bookCallSub"
+						:href="calUrl"
+						external
+						@select="track('book-call', { from: 'contact-channels' })"
+					>
+						<template #icon>cal</template>
+					</ChannelRow>
+				</li>
+			</ul>
+
+			<section class="flex flex-col gap-2.5 rounded-lg border border-line bg-surface p-6 max-lg:hidden" aria-labelledby="include-title">
+				<h2 id="include-title" class="type-mono-label text-mute">{{ page.includeLabel }}</h2>
+				<p class="type-body text-ink-soft">{{ page.includeText }}</p>
+			</section>
 		</div>
 
-		<!-- RIGHT COL -->
-		<div>
-			<div class="mb-5 rounded-lg border border-(--line) bg-(--bg-2) p-7">
-				<div class="mb-6 flex items-end justify-between border-b border-(--line) pb-4.5">
-					<h3 class="serif m-0 text-[20px] font-normal">{{ page.briefTitle }}</h3>
-					<div class="mono text-[11px] tracking-widest text-(--fg-4) uppercase">{{ page.briefStep }}</div>
-				</div>
-				<ContactForm :config="data.form as ContactFormConfig" :email="site?.email ?? ''" />
-			</div>
+		<div class="flex flex-col gap-4 lg:w-[560px] lg:shrink-0">
+			<ContactForm :config="data.form as ContactFormConfig" :title="page.briefTitle" :step="page.briefStep" :sent-label="page.briefSentLabel" />
 
-			<div id="calendar" class="rounded-lg border border-(--line) bg-(--bg-2) p-7">
-				<div class="mono mb-3.5 text-[11px] tracking-widest text-(--fg-4) uppercase">{{ page.skipFormLabel }}</div>
-				<p class="mt-0 mb-5 text-[14px] leading-[1.55] text-(--fg-2)">{{ page.skipFormText }}</p>
-				<CalendarCallPicker v-if="site" :cal-link="site.calLink" />
-			</div>
+			<section class="flex flex-col items-start gap-3 rounded-md border border-line bg-surface p-5 md:p-7 lg:rounded-lg" aria-labelledby="skip-form">
+				<h2 id="skip-form" class="type-mono-label text-mute">{{ page.skipFormLabel }}</h2>
+				<p class="type-h4 text-ink">{{ page.skipFormText }}</p>
+				<UiButton v-if="calUrl && page.skipFormCta" kind="secondary" :href="calUrl" external @click="track('book-call', { from: 'contact-skip-form' })">
+					<GlyphLabel :text="page.skipFormCta" new-tab />
+				</UiButton>
+			</section>
 		</div>
 	</div>
 </template>

@@ -35,7 +35,8 @@ export const ContactSubmissions: CollectionConfig = {
 			type: 'row',
 			fields: [
 				{ name: 'company', type: 'text' },
-				{ name: 'budget', type: 'number' }
+				{ name: 'budgetRange', type: 'text', admin: { description: 'Key of the budget option the visitor picked.' } },
+				{ name: 'budget', type: 'number', admin: { description: 'V6 slider value, kept for older submissions.' } }
 			]
 		},
 		{ name: 'message', type: 'textarea', required: true },

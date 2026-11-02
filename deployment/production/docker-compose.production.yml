@@ -4,8 +4,8 @@
 #              database. Application images use CI-provided digests; networks and
 #              volumes live in networks.yml / volumes.yml and are merged at deploy.
 #
-# The CMS is global: development (dev.jankominek.com) reads it too, over
-# portfolio-cms-network. cms.jankominek.com is protected by Cloudflare Access.
+# Development runs its own CMS (cms-dev.jankominek.com) and never reads this one.
+# cms.jankominek.com is protected by Cloudflare Access.
 #
 # Router names carry the ${PROJECT} suffix so production and development never
 # collide on the one shared Infrastructure Traefik.
@@ -18,7 +18,7 @@
 #   WEB_IMAGE_REFERENCE, CMS_IMAGE_REFERENCE (full digest references)
 #   PROJECT, DOMAIN, CMS_DOMAIN, UMAMI_WEBSITE_ID (optional)
 #   POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
-#   PAYLOAD_SECRET, PREVIEW_SECRET, REVALIDATE_SECRET (same value in development)
+#   PAYLOAD_SECRET (same value in development), PREVIEW_SECRET, REVALIDATE_SECRET
 #   CMS_READ_API_KEY, CMS_CONTACT_API_KEY, DISCORD_WEBHOOK_URL (optional)
 # ==============================================================================
 
@@ -86,8 +86,7 @@ services:
       - SITE_URL=https://${DOMAIN}
       - PREVIEW_SECRET=${PREVIEW_SECRET}
       - REVALIDATE_SECRET=${REVALIDATE_SECRET}
-      # Every web that caches CMS content. A missing development container only logs a warning.
-      - REVALIDATE_URLS=http://portfolio-web:3000/_internal/revalidate,http://portfolio-dev-web:3000/_internal/revalidate
+      - REVALIDATE_URLS=http://portfolio-web:3000/_internal/revalidate
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
       - MEDIA_DIR=/data/media
     volumes:

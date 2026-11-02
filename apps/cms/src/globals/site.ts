@@ -19,7 +19,8 @@ export const Site = defineGlobal({
 						{ name: 'email', type: 'email', required: true },
 						{ name: 'linkedinUrl', type: 'text', required: true },
 						{ name: 'calLink', type: 'text', required: true, admin: { description: 'Cal.com event, e.g. jankominek/30min' } },
-						text('skipToContent', { required: true, admin: { description: 'Screen-reader link at the top of every page.' } })
+						text('skipToContent', { required: true, admin: { description: 'Screen-reader link at the top of every page.' } }),
+						text('newTabLabel', { admin: { description: 'Read by screen readers after links that open in a new tab, e.g. (opens in a new tab).' } })
 					]
 				},
 				{

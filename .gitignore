@@ -23,3 +23,6 @@
 .claude/**/worktrees/
 .claude/files/
 .claude/sessions/
+
+/docs/redesign/reference/
+/apps/web/tests/redesign/out/

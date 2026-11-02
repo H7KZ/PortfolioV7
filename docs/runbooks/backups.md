@@ -17,7 +17,7 @@ Every run captures both components (every 4 h at :45 UTC, `00/4:45`) into `daily
 
 Not backed up: Traefik certificates (re-issued by ACME on a standalone server), container images (in GHCR), and the pre-migration dumps in `~/portfolio/dumps` (a separate, unpruned safety net for bad migrations).
 
-There is one CMS for both environments, so schema changes cannot be tried on development; they go from local testing to production guarded only by the pre-migration dump.
+Development has its own CMS and database ([Development CMS](development-cms.md)), not backed up: refresh it from a production copy. Schema changes are tried there before production, which is still guarded by the pre-migration dump.
 
 ## Owner setup (once for all repositories)
 

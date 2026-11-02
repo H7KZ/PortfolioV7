@@ -4,52 +4,167 @@ import type { LegalPage } from '#shared/types/content'
 const { page } = defineProps<{ page: LegalPage }>()
 
 const locale = useLocaleCode()
+const dateLocale = computed(() => (locale.value === 'en' ? 'en-GB' : locale.value))
+
+const title = computed(() => (page.title.endsWith('.') ? { plain: page.title.slice(0, -1), accent: '.' } : { plain: page.title, accent: '' }))
+
+/** A section made of nothing but a bullet list is the short summary; the design lifts it into a callout above the text. */
+const SUMMARY = /<h2(?:\s[^>]*)?>([^<]*)<\/h2>\s*(<ul class="list-bullet">(?:(?!<h2)[\s\S])*?<\/ul>)\s*(?=<h2|$)/
+const split = computed(() => {
+	const html = demoteHeadings(page.contentHtml)
+	const match = SUMMARY.exec(html)
+	if (!match) return { summary: null, body: html }
+	return { summary: { label: match[1], list: match[2] }, body: html.replace(match[0], '') }
+})
+const toc = computed(() => page.toc.filter(item => split.value.body.includes(`id="${item.id}"`)))
 </script>
 
 <template>
-	<div class="mx-auto max-w-(--max) px-8 max-sm:px-5">
-		<div class="mx-auto max-w-200 pt-10">
-			<header class="mb-10 border-b border-(--line) pb-8">
-				<div class="mono mb-3.5 text-[11px] tracking-widest text-(--fg-4) uppercase">{{ page.label }}</div>
-				<h1 class="serif m-0 mb-4 text-[clamp(32px,5vw,56px)] leading-none tracking-[-0.025em]">
-					{{ page.title }}<span class="text-(--fg-3)">.</span>
+	<article class="site-container pt-9 pb-[72px] md:pt-14 md:pb-24 lg:pt-16 lg:pb-36">
+		<div class="lg:flex lg:items-start lg:gap-[120px]">
+			<div class="flex max-w-[800px] min-w-0 flex-col gap-4 lg:flex-1 lg:gap-[22px]">
+				<p class="type-mono-s text-mute"><span class="text-accent" aria-hidden="true">$ </span>{{ page.label }}</p>
+				<h1 class="type-display-l">
+					{{ title.plain }}<span class="text-accent">{{ title.accent }}</span>
 				</h1>
-				<p class="mono m-0 text-[12px] tracking-[0.04em] text-(--fg-4)">
-					{{ page.updatedLabel }}: {{ formatDate(page.updatedAt, locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) }}
-				</p>
-				<p v-if="page.bindingNote" class="mt-3 mb-0 text-[13px] leading-[1.55] text-(--fg-3)">{{ page.bindingNote }}</p>
-			</header>
+				<div class="flex flex-col items-start gap-4 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-2 lg:gap-y-2">
+					<span
+						class="inline-flex items-center gap-[7px] rounded-full border border-line bg-surface-2 py-[5px] pr-2.5 pl-[9px] type-mono-label text-mute"
+					>
+						<span class="size-1.5 shrink-0 rounded-full bg-faint" aria-hidden="true"></span>
+						<span
+							>{{ page.updatedLabel }}
+							<time :datetime="page.updatedAt">{{
+								formatDate(page.updatedAt, dateLocale, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+							}}</time></span
+						>
+					</span>
+					<p v-if="page.bindingNote" class="type-mono-s text-mute">{{ page.bindingNote }}</p>
+				</div>
 
-			<!-- eslint-disable-next-line vue/no-v-html -->
-			<article class="legal-prose prose w-full text-[15px] leading-[1.7] text-(--fg-2) prose-neutral prose-invert" v-html="page.contentHtml"></article>
+				<section v-if="split.summary" class="flex flex-col gap-2.5 rounded-md border border-accent bg-accent-soft px-5 py-[18px] lg:px-6 lg:py-[22px]">
+					<p class="type-mono-label text-accent">{{ split.summary.label }}</p>
+					<!-- eslint-disable-next-line vue/no-v-html -->
+					<div class="legal-body max-w-[701px]" v-html="split.summary.list"></div>
+				</section>
 
-			<slot />
-
-			<ContactFooter />
+				<!-- eslint-disable-next-line vue/no-v-html -->
+				<div class="legal-body" v-html="split.body"></div>
+				<slot />
+			</div>
+			<div v-if="page.tocLabel && toc.length" class="sticky top-24 hidden shrink-0 lg:block">
+				<TocBox :label="page.tocLabel" :items="toc" />
+			</div>
 		</div>
-	</div>
+	</article>
 </template>
 
 <style scoped>
-.legal-prose :deep(h2) {
-	color: var(--fg);
-	font-family: var(--font-serif), serif;
-	font-weight: 300;
-	letter-spacing: -0.02em;
+.legal-body {
+	display: flex;
+	flex-direction: column;
+	gap: inherit;
+	font-family: var(--font-sans);
+	font-size: 16px;
+	line-height: 26px;
+	color: var(--color-ink-soft);
 }
 
-.legal-prose :deep(p),
-.legal-prose :deep(li) {
-	color: var(--fg-2);
+.legal-body :deep(> *) {
+	margin: 0;
+	max-width: 680px;
 }
 
-.legal-prose :deep(strong) {
-	color: var(--fg);
+.legal-body :deep(h2) {
+	scroll-margin-top: 96px;
+	margin-top: 28px;
+	font-size: 20px;
 	font-weight: 500;
+	line-height: 1.25;
+	letter-spacing: -0.3px;
+	color: var(--color-ink);
 }
 
-.legal-prose :deep(a) {
-	color: var(--accent);
-	text-decoration-color: var(--accent-ring);
+.legal-body :deep(strong) {
+	font-weight: inherit;
+}
+
+.legal-body :deep(a) {
+	color: var(--color-ink);
+	text-decoration: underline;
+	text-decoration-color: var(--color-control);
+	text-underline-offset: 4px;
+}
+
+.legal-body :deep(a:hover) {
+	text-decoration-color: var(--color-ink);
+}
+
+.legal-body :deep(a[href^='mailto:']) {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--color-accent);
+	text-decoration: none;
+}
+
+.legal-body :deep(ul) {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	max-width: none;
+	padding: 0;
+	list-style: none;
+	font-size: 16px;
+	line-height: 1.56;
+}
+
+.legal-body :deep(li) {
+	position: relative;
+	padding-left: 21px;
+}
+
+.legal-body :deep(li::before) {
+	content: '›';
+	position: absolute;
+	left: 0;
+	font-family: var(--font-mono);
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.4;
+	color: var(--color-accent);
+}
+
+.legal-body :deep(code) {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	color: var(--color-accent);
+}
+
+@media (min-width: 768px) {
+	.legal-body {
+		font-size: 17px;
+		line-height: 1.52;
+	}
+
+	.legal-body :deep(h2) {
+		font-size: 22px;
+		line-height: 27px;
+		letter-spacing: -0.4px;
+	}
+
+	.legal-body :deep(ul) {
+		font-size: 17px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.legal-body {
+		font-size: 16px;
+		line-height: 26px;
+	}
+
+	.legal-body :deep(h2) {
+		margin-top: 42px;
+	}
 }
 </style>

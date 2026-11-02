@@ -6,230 +6,176 @@ const data = await useContent<ProjectData>(`projects/${String(route.params.slug)
 const { data: layout } = useLayoutContent()
 const absoluteUrl = useAbsoluteUrl()
 const href = useHref()
-const locale = useLocaleCode()
 
 const project = computed(() => data.value.project)
 const labels = computed(() => data.value.labels)
 const site = computed(() => layout.value?.site)
-const thumbnail = computed(() => asMedia(project.value.thumbnail))
-const gallery = computed(() => (project.value.gallery ?? []).map(item => asMedia(item)).filter(item => item !== null))
-
-const isRich = computed(() => project.value.layout === 'caseStudy')
+const hero = computed(() => asMedia(project.value.thumbnail))
+const screens = computed(() =>
+	[...(project.value.screens ?? [])]
+		.map(screen => ({ ...screen, media: asMedia(screen.image ?? null) }))
+		.sort((a, b) => Number(Boolean(b.media)) - Number(Boolean(a.media)))
+)
 const projectUrl = computed(() => absoluteUrl(`/projects/${project.value.slug}`))
-const summary = computed(
-	() => project.value.lede ?? (project.value.tags ?? []).filter(tag => !['Work', 'Personal'].includes(tag)).join(', ') ?? project.value.title
-)
-
-const metaItems = computed(() =>
+const facts = computed(() =>
 	[
-		project.value.role ? { label: labels.value.roleLabel, value: project.value.role } : null,
-		project.value.team ? { label: labels.value.teamLabel, value: project.value.team } : null,
-		project.value.timeline ? { label: labels.value.timelineLabel, value: project.value.timeline } : null,
-		project.value.sector ? { label: labels.value.sectorLabel, value: project.value.sector } : null
-	].filter(item => item !== null)
+		{ label: labels.value.roleLabel, value: project.value.role },
+		{ label: labels.value.timelineLabel, value: project.value.timeline },
+		{ label: labels.value.sectorLabel, value: project.value.sector }
+	].filter(item => item.value)
 )
+const title = computed(() => {
+	const raw = project.value.title
+	return raw.endsWith('.') ? { text: raw.slice(0, -1), dot: true } : { text: raw, dot: false }
+})
+const SECTION = 'site-container grid lg:grid-cols-[minmax(0,360fr)_minmax(0,840fr)] lg:gap-0'
+const HEADING = 'm-0 type-h3 text-ink'
+const HERO_PLACEHOLDER_RATIO = 'aspect-[348/271] md:aspect-[1198/671]'
+const SHOT_PLACEHOLDER_RATIO = 'aspect-[348/271] md:aspect-16/10'
+/** Screenshots show in full; only a shot marked as a strip is cropped, and only on desktop. */
+const STRIP_RATIO = 'aspect-[348/203] md:aspect-[686/399] lg:aspect-[1198/400]'
+const hasArchitecture = computed(() => (project.value.architecture?.nodes?.length ?? 0) > 0)
 
 useSeo(() => ({
-	title: project.value.meta?.title ?? `${project.value.title} · ${site.value?.name ?? ''}`,
-	description: project.value.meta?.description ?? `${project.value.title}. ${summary.value.replace(/\.$/, '')}. ${labels.value.metaSuffix ?? ''}`.trim(),
+	title: project.value.meta?.title ?? project.value.title.replace(/\.$/, ''),
+	description: project.value.meta?.description ?? project.value.lede,
 	image: project.value.meta?.image ?? project.value.thumbnail,
+	imageAlt: hero.value?.alt,
 	type: 'article',
 	extra: [
 		{
 			'@context': 'https://schema.org',
 			'@type': 'CreativeWork',
-			name: project.value.title,
+			name: project.value.title.replace(/\.$/, ''),
 			description: project.value.lede ?? project.value.title,
 			url: projectUrl.value,
 			dateCreated: project.value.date,
 			creator: { '@type': 'Person', name: site.value?.name, url: site.value?.siteUrl },
-			keywords: summary.value,
-			image: thumbnail.value ? absoluteUrl(thumbnail.value.url) : undefined,
-			genre: (project.value.tags ?? []).join(', ')
+			keywords: (project.value.stack ?? []).join(', '),
+			image: hero.value ? absoluteUrl(hero.value.url) : undefined
 		}
 	]
 }))
+
+const HERO_SIZES = '(min-width: 1280px) 1200px, 100vw'
+
+useHead(() => ({ link: hero.value ? [imagePreload('preload-hero', hero.value, HERO_SIZES)] : [] }))
 </script>
 
 <template>
-	<div v-if="isRich" class="mx-auto max-w-(--max) px-8 pt-10 pb-0 max-sm:px-5">
-		<NuxtLink
-			:to="href('/')"
-			class="mono mb-10 inline-block text-[12px] tracking-[0.06em] text-(--fg-4) no-underline transition-colors duration-150 hover:text-(--fg)"
-			>{{ labels.backLabel }}</NuxtLink
-		>
-
-		<div class="mb-16 grid grid-cols-[2fr_1fr] gap-12 border-b border-(--line) pb-8 max-md:grid-cols-1 max-md:gap-8">
-			<div>
-				<div class="mb-5 flex flex-wrap items-center gap-3 font-mono text-[11px] tracking-[0.08em] text-(--fg-4) uppercase">
-					<span>{{ labels.caseStudyLabel }}</span>
-					<template v-if="project.client">
-						<span class="inline-block h-1 w-1 rounded-full bg-(--fg-5)"></span>
-						<span>{{ project.client }}</span>
-					</template>
-					<span class="inline-block h-1 w-1 rounded-full bg-(--fg-5)"></span>
-					<span>{{ formatDate(project.date, 'en', { year: 'numeric', timeZone: 'UTC' }) }}</span>
+	<article>
+		<header class="site-container">
+			<div class="flex flex-col gap-4 pt-6 pb-7 md:gap-[18px] md:pt-11 md:pb-10 lg:flex-row lg:items-end lg:gap-16 lg:pt-[72px] lg:pb-14">
+				<div class="flex min-w-0 flex-col items-start gap-4 md:gap-[18px] lg:flex-1 lg:gap-5">
+					<NuxtLink
+						:to="href('/#work')"
+						class="inline-flex min-h-target items-center type-mono-s text-ink-soft no-underline transition-colors duration-150 ease-(--ease) hover:text-ink [&>span[aria-hidden]]:mr-[0.6em] [&>span[aria-hidden]]:text-accent"
+						><GlyphLabel :text="labels.backLabel"
+					/></NuxtLink>
+					<p v-if="project.kicker" class="type-mono-label text-mute">{{ project.kicker }}</p>
+					<h1 class="type-display-l text-ink">{{ title.text }}<span v-if="title.dot" class="text-accent">.</span></h1>
+					<p v-if="project.lede" class="max-w-[700px] type-body-l text-ink-soft">{{ project.lede }}</p>
 				</div>
-				<h1 class="serif m-0 mb-5 text-[clamp(40px,6vw,80px)] leading-[1] font-light tracking-[-0.03em] text-(--fg)">
-					{{ project.title }}<span class="text-(--fg-3)">.</span>
-				</h1>
-				<p class="m-0 max-w-[640px] text-[clamp(16px,1.5vw,20px)] leading-[1.45] text-(--fg-2)">{{ project.lede }}</p>
+				<dl v-if="facts.length" class="m-0 grid w-full md:grid-cols-3 md:gap-6 lg:w-[340px] lg:shrink-0 lg:grid-cols-1 lg:gap-0">
+					<div v-for="fact in facts" :key="fact.label" class="flex flex-col gap-1 border-t border-line py-3 lg:py-3.5">
+						<dt class="type-mono-label text-faint">{{ fact.label }}</dt>
+						<dd class="m-0 type-body text-ink">{{ fact.value }}</dd>
+					</div>
+				</dl>
 			</div>
+		</header>
 
-			<div v-if="metaItems.length > 0" class="grid grid-cols-2 content-center gap-x-8 gap-y-6 max-sm:grid-cols-2">
-				<div v-for="item in metaItems" :key="item.label">
-					<div class="mb-1 font-mono text-[10px] tracking-[0.1em] text-(--fg-4) uppercase">{{ item.label }}</div>
-					<div class="text-[14px] text-(--fg)">{{ item.value }}</div>
-				</div>
-			</div>
+		<div class="site-container" :class="project.impact?.length ? 'pb-4 lg:pb-6' : 'pb-(--section-gap)'">
+			<WindowFrame
+				:path="project.heroPath"
+				:image="hero"
+				priority
+				:ratio="hero ? undefined : HERO_PLACEHOLDER_RATIO"
+				:sizes="HERO_SIZES"
+				:placeholder-kicker="labels.placeholderLabel"
+				:placeholder-suffix="labels.placeholderSuffix"
+				:placeholder-label="project.heroPlaceholderLabel"
+				:placeholder-spec="project.heroPlaceholderSpec"
+			/>
 		</div>
 
-		<div v-if="thumbnail" class="mb-16 aspect-[16/7] overflow-hidden rounded-(--radius-lg) border border-(--line)">
-			<img :src="thumbnail.url" :alt="project.title" class="h-full w-full object-cover" />
+		<div v-if="project.impact?.length" class="site-container pb-(--section-gap)">
+			<dl
+				class="m-0 grid gap-2 md:grid-cols-(--cols) md:gap-3 lg:gap-6"
+				:style="{ '--cols': `repeat(${Math.min(project.impact.length, 3)}, minmax(0, 1fr))` }"
+			>
+				<StatTile v-for="item in project.impact" :key="item.id ?? item.label" :label="item.label" :value="item.value" :sub="item.sub" />
+			</dl>
 		</div>
 
-		<div
-			v-if="project.impact?.length"
-			class="mb-16 grid overflow-hidden rounded-(--radius) border border-(--line) bg-(--bg-2)"
-			:style="{ gridTemplateColumns: `repeat(${project.impact.length}, 1fr)` }"
-		>
+		<section v-if="project.contentHtml" :class="[SECTION, 'gap-4 pb-(--block-gap)']" aria-labelledby="challenge">
+			<h2 id="challenge" :class="HEADING">{{ labels.challengeLabel }}</h2>
+			<!-- eslint-disable-next-line vue/no-v-html -->
 			<div
-				v-for="(item, index) in project.impact"
-				:key="item.id ?? item.label"
-				class="p-7 last:border-0 max-sm:border-r-0 max-sm:border-b max-sm:border-(--line)"
-				:class="index < project.impact.length - 1 ? 'border-r border-(--line)' : ''"
-			>
-				<div class="mb-3.5 font-mono text-[10px] tracking-[0.1em] text-(--fg-4) uppercase">◆ {{ item.label }}</div>
-				<div class="serif text-[36px] leading-[1] font-light tracking-[-0.02em] text-(--fg)">{{ item.value }}</div>
-				<div class="mt-1.5 font-mono text-[12px] text-(--fg-4)">{{ item.sub }}</div>
-			</div>
+				class="prose-site prose max-w-[760px]! [&>p]:m-0 [&>p]:type-body-l [&>p+p]:mt-4 lg:[&>p+p]:mt-5"
+				v-html="demoteHeadings(project.contentHtml)"
+			></div>
+		</section>
+
+		<section v-if="project.contributions?.length" :class="[SECTION, 'gap-3 pb-(--block-gap)']" aria-labelledby="owned">
+			<h2 id="owned" :class="HEADING">{{ labels.contributionsLabel }}</h2>
+			<ul class="m-0 grid list-none gap-3 p-0 md:grid-cols-2 lg:gap-5">
+				<li
+					v-for="item in project.contributions"
+					:key="item.id ?? item.title"
+					class="flex flex-col gap-2 rounded-md border border-line bg-surface p-5 md:pb-12 lg:min-h-[218px] lg:gap-2.5 lg:p-6 lg:pb-[54px]"
+				>
+					<h3 class="m-0 type-h4 text-ink">{{ item.title }}</h3>
+					<p class="m-0 type-body text-ink-soft">{{ item.body }}</p>
+				</li>
+			</ul>
+		</section>
+
+		<section v-if="hasArchitecture && project.architecture" :class="[SECTION, 'gap-3.5 pb-(--block-gap)']" aria-labelledby="architecture">
+			<h2 id="architecture" :class="HEADING">{{ labels.architectureLabel }}</h2>
+			<ArchitectureDiagram :architecture="project.architecture" />
+		</section>
+
+		<section v-if="project.stack?.length" :class="[SECTION, 'gap-3.5 pb-(--block-gap)']" aria-labelledby="stack">
+			<h2 id="stack" :class="HEADING">{{ labels.stackLabel }}</h2>
+			<UiTags :tags="project.stack" class="lg:gap-2" />
+		</section>
+
+		<div v-if="screens.length" class="site-container flex flex-col gap-4 pb-(--section-gap) lg:gap-6">
+			<WindowFrame
+				v-for="screen in screens"
+				:key="screen.id ?? screen.path ?? ''"
+				:path="screen.path"
+				:image="screen.media"
+				:ratio="screen.media ? (screen.crop === 'strip' ? STRIP_RATIO : undefined) : SHOT_PLACEHOLDER_RATIO"
+				sizes="(min-width: 1280px) 1200px, 100vw"
+				:placeholder-kicker="labels.placeholderLabel"
+				:placeholder-suffix="labels.placeholderSuffix"
+				:placeholder-label="screen.placeholderLabel"
+				:placeholder-spec="screen.placeholderSpec"
+			/>
 		</div>
 
-		<div class="mb-24 grid grid-cols-[200px_1fr] gap-12 max-md:grid-cols-1 max-md:gap-4">
-			<div class="pt-2 font-mono text-[11px] tracking-[0.1em] text-(--fg-4) uppercase">{{ labels.challengeLabel }}</div>
-			<!-- eslint-disable-next-line vue/no-v-html -->
-			<article
-				class="project-prose prose max-w-[680px] text-[15px] leading-[1.7] text-(--fg-2) prose-neutral prose-invert prose-code:bg-neutral-800! prose-pre:bg-neutral-800!"
-				v-html="project.contentHtml"
-			></article>
-		</div>
-
-		<div v-if="project.contributions?.length" class="mb-24 grid grid-cols-[200px_1fr] gap-12 max-md:grid-cols-1 max-md:gap-4">
-			<div class="pt-2 font-mono text-[11px] tracking-[0.1em] text-(--fg-4) uppercase">{{ labels.contributionsLabel }}</div>
-			<div class="grid grid-cols-2 gap-6 max-sm:grid-cols-1">
-				<div v-for="item in project.contributions" :key="item.id ?? item.title" class="rounded-(--radius) border border-(--line) bg-(--bg-2) p-5">
-					<div class="mb-3 font-mono text-[11px] tracking-[0.08em] text-(--accent)">{{ item.num }}</div>
-					<h4 class="m-0 mb-2 text-[15px] font-medium text-(--fg)">{{ item.title }}</h4>
-					<p class="m-0 text-[13px] leading-[1.5] text-(--fg-3)">{{ item.body }}</p>
-				</div>
-			</div>
-		</div>
-
-		<div v-if="project.stack?.length" class="mb-16 grid grid-cols-[200px_1fr] gap-12 max-md:grid-cols-1 max-md:gap-4">
-			<div class="pt-2 font-mono text-[11px] tracking-[0.1em] text-(--fg-4) uppercase">{{ labels.stackLabel }}</div>
-			<div class="flex flex-wrap gap-1.5">
-				<span v-for="tech in project.stack" :key="tech" class="chip">{{ tech }}</span>
-			</div>
-		</div>
-
-		<div v-if="gallery.length" class="mb-16 grid gap-3 max-sm:grid-cols-1" :style="{ gridTemplateColumns: `repeat(${Math.min(gallery.length, 3)}, 1fr)` }">
-			<div v-for="image in gallery" :key="image.url" class="aspect-video overflow-hidden rounded-(--radius) border border-(--line)">
-				<img :src="image.url" alt="" class="h-full w-full object-cover" loading="lazy" />
-			</div>
-		</div>
-
-		<ContactFooter />
-	</div>
-
-	<div v-else class="mx-auto max-w-(--max) px-8 max-sm:px-5">
-		<div class="mx-auto max-w-200 pt-10">
+		<nav v-if="data.next" class="site-container pb-[72px] md:pb-24" :aria-label="labels.nextLabel ?? undefined">
 			<NuxtLink
-				:to="href('/')"
-				class="mono mb-8 inline-block text-[12px] tracking-[0.06em] text-(--fg-4) no-underline transition-colors duration-150 hover:text-(--fg)"
-				>{{ labels.backLabel }}</NuxtLink
+				:to="href(`/projects/${data.next.slug}`)"
+				class="group grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-1.5 rounded-md border border-line-strong bg-surface p-5 no-underline md:p-7 lg:gap-y-2 lg:rounded-lg lg:px-9 lg:py-8"
 			>
-
-			<header class="mb-8">
-				<div class="mb-4 flex flex-wrap items-center gap-1.5">
-					<span v-for="tag in project.tags ?? []" :key="tag" class="chip">{{ tag }}</span>
-					<span class="mono ml-1 text-[11px] text-(--fg-4)">{{
-						formatDate(project.date, locale, { month: 'long', year: 'numeric', timeZone: 'UTC' })
-					}}</span>
-				</div>
-				<h1 class="serif m-0 text-[clamp(28px,5vw,48px)] leading-[1.1] tracking-[-0.025em] text-(--fg)">{{ project.title }}</h1>
-			</header>
-
-			<div v-if="thumbnail" class="mb-12 overflow-hidden rounded-lg border border-(--line)">
-				<img :src="thumbnail.url" :alt="project.title" class="block h-auto w-full" />
-			</div>
-
-			<!-- eslint-disable-next-line vue/no-v-html -->
-			<article
-				class="project-prose prose w-full text-[16px] leading-[1.7] text-(--fg-2) prose-neutral prose-invert prose-code:bg-neutral-800! prose-pre:bg-neutral-800!"
-				v-html="project.contentHtml"
-			></article>
-
-			<ContactFooter />
-		</div>
-	</div>
+				<span class="type-mono-label text-accent">{{ labels.nextLabel }}</span>
+				<span class="col-start-1 row-start-2 type-h3 text-ink">{{ data.next.title.replace(/\.$/, '') }}</span>
+				<svg
+					class="col-start-2 row-start-2 my-[5.5px] h-4 w-5 shrink-0 text-accent transition-transform duration-200 ease-(--ease) group-hover:translate-x-1 md:my-2 md:h-[19px] md:w-[26px] lg:row-span-2 lg:row-start-1 lg:my-0"
+					viewBox="0 0 26 19"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="3"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path d="M2 9.5H23M15.5 2L23 9.5L15.5 17" />
+				</svg>
+			</NuxtLink>
+		</nav>
+	</article>
 </template>
-
-<style scoped>
-.project-prose :deep(h1),
-.project-prose :deep(h2),
-.project-prose :deep(h3),
-.project-prose :deep(h4) {
-	color: var(--fg);
-	font-family: var(--font-serif), serif;
-	font-weight: 300;
-	letter-spacing: -0.02em;
-}
-
-.project-prose :deep(p) {
-	color: var(--fg-2);
-}
-
-.project-prose :deep(a) {
-	color: var(--accent);
-	text-decoration-color: var(--accent-ring);
-}
-
-.project-prose :deep(a:hover) {
-	text-decoration-color: var(--accent);
-}
-
-.project-prose :deep(hr) {
-	border-color: var(--line);
-}
-
-.project-prose :deep(blockquote) {
-	border-left-color: var(--accent-ring);
-	color: var(--fg-3);
-}
-
-.project-prose :deep(pre),
-.project-prose :deep(code) {
-	background: var(--bg-3) !important;
-	border: 1px solid var(--line);
-}
-
-.project-prose :deep(img) {
-	border-radius: var(--radius);
-	border: 1px solid var(--line);
-}
-
-.project-prose :deep(table th) {
-	color: var(--fg);
-	border-color: var(--line-2);
-}
-
-.project-prose :deep(table td) {
-	border-color: var(--line);
-}
-
-.project-prose :deep(.bg-neutral-900) {
-	background: var(--bg-2) !important;
-	border: 1px solid var(--line);
-	border-radius: var(--radius-lg);
-}
-</style>

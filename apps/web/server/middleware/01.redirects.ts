@@ -8,11 +8,16 @@ export default defineEventHandler(async event => {
 	const locale = url.searchParams.get('locale')
 	if (locale === 'cs' || locale === 'en') {
 		url.searchParams.delete('locale')
-		const bare = url.pathname.replace(/^\/cs(?=\/|$)/, '') || '/'
+		// `/cs//host` loses its prefix here, and a Location of `//host` would leave the site.
+		const bare = url.pathname.replace(/^\/cs(?=\/|$)/, '').replace(/^\/+/, '/') || '/'
 		const pathname = locale === 'cs' ? (bare === '/' ? '/cs' : `/cs${bare}`) : bare
 		const search = url.searchParams.toString()
 		return sendRedirect(event, `${pathname}${search ? `?${search}` : ''}${url.hash}`, 301)
 	}
+
+	// The router also matches `/resume/` and `/RESUME`, and each would be its own canonical page.
+	const normal = url.pathname.toLowerCase().replace(/\/+$/, '').replace(/^\/+/, '/') || '/'
+	if (normal !== url.pathname) return sendRedirect(event, `${normal}${url.search}`, 301)
 
 	const redirects = await content()
 		.redirects()

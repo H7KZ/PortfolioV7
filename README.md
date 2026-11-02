@@ -16,7 +16,7 @@ Cloudflare (proxied; Access on dev., cms., umami.) -> Traefik (public-network) -
 web -> cms over portfolio-cms-network (REST, API keys); cms saves call web /_internal/revalidate
 ```
 
-The site and CMS are one deployable unit per environment: production runs web, CMS and Postgres, development runs web only and reads the production CMS. Traefik is either Infrastructure's (shared host, today) or this repository's own `deployment/ingress` (dedicated server); see [Split to own server](docs/runbooks/split-to-own-server.md).
+The site and CMS are one deployable unit per environment: production runs web, CMS and Postgres, development runs the same with its own CMS and database, filled from a production copy. Traefik is either Infrastructure's (shared host, today) or this repository's own `deployment/ingress` (dedicated server); see [Split to own server](docs/runbooks/split-to-own-server.md).
 
 ## Layout
 
@@ -54,7 +54,7 @@ pnpm dev
 
 ## Deploy
 
-Every push to `main` runs verification, builds the web image and deploys development through **Deploy** on GitHub-hosted runners. Manual **Deploy** selects any source branch, tag or SHA for development or production, independently of the workflow branch. Production deploys one complete web, CMS and Postgres snapshot through the selected source's pinned toolkit. **Rollback** restores or activates immutable snapshots; **Deploy Ingress** (standalone servers only) is manual. **Host Sync** installs the pinned toolkit's units on the VPS before every deploy. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`, tagged with the CalVer release version. A CMS deploy takes a pre-migration database dump on the VPS. Encrypted off-host backups of the CMS database and media run every 4 h (declared in `deployment/backup/`); **Backup Verify** checks them from GitHub. Analytics (Umami) is this repository's own `monitoring` stack (**Deploy Monitoring**), independent of the other repositories on the host.
+Every push to `develop` runs verification, builds the web and CMS images and deploys development through **Deploy** on GitHub-hosted runners. Manual **Deploy** selects any source branch, tag or SHA for development or production, independently of the workflow branch. Production deploys one complete web, CMS and Postgres snapshot through the selected source's pinned toolkit. **Rollback** restores or activates immutable snapshots; **Deploy Ingress** (standalone servers only) is manual. **Host Sync** installs the pinned toolkit's units on the VPS before every deploy. Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`, tagged with the CalVer release version. A CMS deploy takes a pre-migration database dump on the VPS. Encrypted off-host backups of the CMS database and media run every 4 h (declared in `deployment/backup/`); **Backup Verify** checks them from GitHub. Analytics (Umami) is this repository's own `monitoring` stack (**Deploy Monitoring**), independent of the other repositories on the host.
 
 ## Runbooks
 

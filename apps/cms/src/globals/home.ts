@@ -13,6 +13,14 @@ export const Home = defineGlobal({
 				{
 					label: 'Hero',
 					fields: [
+						text('eyebrowCommand', { admin: { description: 'Monospace command line above the headline. The $ prompt is drawn by the site.' } }),
+						text('eyebrowCommandShort', {
+							admin: {
+								description:
+									'Shorter command line for phones, e.g. whoami  # Prague, CZ. Two spaces before the #. Falls back to the main command line when empty.'
+							}
+						}),
+						textarea('headline', { admin: { description: 'A line break in the text becomes a line break on the page.' } }),
 						{
 							name: 'taglines',
 							type: 'array',
@@ -29,8 +37,11 @@ export const Home = defineGlobal({
 							fields: [{ type: 'row', fields: [text('value', { required: true }), text('label', { required: true })] }]
 						},
 						{ name: 'portrait', type: 'upload', relationTo: 'media' },
+						group('portraitCaption', [{ type: 'row', fields: [text('user'), text('path'), text('note')] }], {
+							admin: { description: 'Terminal-style caption bar under the portrait, e.g. jan@prague ~ · shipping since 2022.' }
+						}),
 						group('availability', [{ type: 'row', fields: [text('status', { required: true }), text('detail')] }], {
-							admin: { description: 'Badge on the portrait.' }
+							admin: { description: 'The detail text is the availability line under the buttons.' }
 						}),
 						textarea('geoSummary', { admin: { description: 'Hidden paragraph for screen readers and AI crawlers.' } })
 					]
@@ -40,7 +51,19 @@ export const Home = defineGlobal({
 					fields: [
 						group(
 							'now',
-							[text('label', { required: true }), text('title', { required: true }), textarea('description'), text('date'), text('meta')],
+							[
+								text('label', { required: true }),
+								{
+									name: 'items',
+									type: 'array',
+									admin: { description: 'Key and value rows, e.g. "Running" and "Kreditožrouti, 200+ VŠE students".' },
+									fields: [{ type: 'row', fields: [text('key', { required: true }), text('value', { required: true })] }]
+								},
+								text('title', { required: true, admin: { description: 'V6 only, not shown since V7.' } }),
+								textarea('description'),
+								text('date'),
+								text('meta')
+							],
 							{
 								label: false
 							}
@@ -52,12 +75,48 @@ export const Home = defineGlobal({
 					fields: [
 						sectionHeader('work', 'Selected work'),
 						{ type: 'row', fields: [text('viewProjectLabel', { required: true }), text('readCaseStudyLabel', { required: true })] },
+						group(
+							'more',
+							[
+								text('heading', { required: true }),
+								textarea('sub'),
+								{
+									name: 'items',
+									type: 'array',
+									admin: { description: 'Rows without a link render as plain text.' },
+									fields: [
+										{ type: 'row', fields: [text('meta', { required: true }), text('title', { required: true })] },
+										textarea('description'),
+										{
+											type: 'row',
+											fields: [
+												text('linkLabel'),
+												{ name: 'href', type: 'text' },
+												{ name: 'external', type: 'checkbox', admin: { description: 'Opens in a new tab.' } }
+											]
+										}
+									]
+								}
+							],
+							{ label: 'More work' }
+						),
 						sectionHeader('services', 'Services'),
 						sectionHeader('testimonials', 'Testimonials'),
 						{
 							type: 'row',
 							fields: [
 								text('readMoreLabel', { required: true }),
+								text('allRecommendationsLabel', {
+									admin: {
+										description:
+											'Link under the quotes to all LinkedIn recommendations. {count} becomes the number of testimonials, e.g. "See all {count} recommendations on LinkedIn ↗".'
+									}
+								}),
+								{
+									name: 'allRecommendationsUrl',
+									type: 'text',
+									admin: { description: 'LinkedIn recommendations page. Falls back to the LinkedIn profile from Site settings.' }
+								},
 								{
 									name: 'quoteLimit',
 									type: 'number',

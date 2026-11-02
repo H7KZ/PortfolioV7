@@ -3,168 +3,558 @@
 
 @plugin '@tailwindcss/typography';
 
+/* Classes the CMS writes into stored rich-text HTML. */
 @source inline('flex justify-center items-center mb-16 w-3/4 object-cover');
 
+/* V7 design tokens, from docs/redesign/design/tokens.css (Figma jDa51GQCd58Qv9YBteYeQZ). */
 :root {
-	/* Design tokens */
-	--bg: #0e0e0e;
-	--bg-2: #131313;
-	--bg-3: #181818;
-	--bg-4: #1f1f1f;
-	--line: #242424;
-	--line-2: #2c2c2c;
-	--fg: #f2f2f2;
-	--fg-2: #d4d4d4;
-	--fg-3: #b0b0b0;
-	--fg-4: #808080;
-	--fg-5: #555555;
-	--accent: oklch(0.78 0.16 155);
-	--accent-dim: oklch(0.78 0.16 155 / 0.12);
-	--accent-ring: oklch(0.78 0.16 155 / 0.3);
-
-	--font-sans: 'DM Sans', system-ui, sans-serif;
-	--font-mono: 'Roboto Mono', ui-monospace, monospace;
-	--font-serif: 'Fraunces', serif;
-
-	--radius: 10px;
+	--color-bg: #0b0d10;
+	--color-surface: #111419;
+	--color-surface-2: #171b21;
+	--color-line: #1f252c;
+	--color-line-strong: #2e3640;
+	--color-ink: #f1f3f5;
+	--color-ink-soft: #c9cfd6;
+	--color-mute: #a0a8b2;
+	--color-faint: #949ca6;
+	--color-accent: #5be38f;
+	--color-accent-ink: #06140c;
+	--color-accent-soft: #5be38f1f;
+	--color-accent-hover: #84eaab;
+	--color-control: #5f6874;
+	--color-danger: #ff7b72;
+	--color-danger-soft: #291e22;
+	--color-focus: #5be38f;
+	--radius-sm: 6px;
+	--radius-md: 10px;
 	--radius-lg: 16px;
-	--max: 1360px;
+	--radius-pill: 999px;
+	--font-sans: 'Space Grotesk', 'Space Grotesk Fallback', system-ui, sans-serif;
+	--font-mono: 'JetBrains Mono', 'JetBrains Mono Fallback', ui-monospace, monospace;
+	--container: 1200px;
+	--gutter: clamp(20px, 5.2vw, 40px);
+	--ease: cubic-bezier(0.2, 0, 0, 1);
 
-	/* Legacy aliases for Tailwind @theme */
-	--font-dmsans: 'DM Sans', sans-serif;
-	--font-robotomono: 'Roboto Mono', monospace;
-	--color-background: var(--bg);
+	/* Control heights, the one place to change them: h-control-lg, h-control-sm, h-target and the min-h- and size- forms. Controls under --control-target keep a tap area of that height through tap-target. */
+	--control-lg: 48px;
+	--control-sm: 32px;
+	--control-target: 44px;
 
-	/* Markdown prose overrides */
+	/* Section rhythm: 72 / 48 mobile, 96 / 64 tablet, 120 / 96 desktop. */
+	--section-gap: 72px;
+	--block-gap: 48px;
+}
 
-	code::before {
-		content: '';
+@media (min-width: 768px) {
+	:root {
+		--section-gap: 96px;
+		--block-gap: 64px;
+	}
+}
+
+@media (min-width: 1024px) {
+	:root {
+		--section-gap: 120px;
+		--block-gap: 96px;
+	}
+}
+
+@theme inline {
+	--color-bg: var(--color-bg);
+	--color-surface: var(--color-surface);
+	--color-surface-2: var(--color-surface-2);
+	--color-line: var(--color-line);
+	--color-line-strong: var(--color-line-strong);
+	--color-ink: var(--color-ink);
+	--color-ink-soft: var(--color-ink-soft);
+	--color-mute: var(--color-mute);
+	--color-faint: var(--color-faint);
+	--color-accent: var(--color-accent);
+	--color-accent-ink: var(--color-accent-ink);
+	--color-accent-soft: var(--color-accent-soft);
+	--color-accent-hover: var(--color-accent-hover);
+	--color-control: var(--color-control);
+	--color-danger: var(--color-danger);
+	--color-danger-soft: var(--color-danger-soft);
+	--color-focus: var(--color-focus);
+	--font-sans: var(--font-sans);
+	--font-mono: var(--font-mono);
+	--radius-sm: var(--radius-sm);
+	--radius-md: var(--radius-md);
+	--radius-lg: var(--radius-lg);
+	--spacing-control-lg: var(--control-lg);
+	--spacing-control-sm: var(--control-sm);
+	--spacing-target: var(--control-target);
+	/* Every breakpoint in px: mixing them with the rem defaults puts sm after xl in the built CSS. */
+	--breakpoint-sm: 640px;
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 1024px;
+	--breakpoint-xl: 1440px;
+	--breakpoint-2xl: 1536px;
+}
+
+/* Type styles, one per Figma text style (SPEC 4.2). Line heights are whole pixels: Figma lays text out on rounded line boxes, so fractional values drift a few px per paragraph. */
+@utility type-display-xl {
+	font-family: var(--font-sans);
+	font-size: 40px;
+	font-weight: 700;
+	line-height: 39px;
+	letter-spacing: -1.6px;
+
+	@media (min-width: 768px) {
+		font-size: 52px;
+		line-height: 52px;
+		letter-spacing: -1.9px;
 	}
 
-	code {
-		font-family: var(--font-mono), monospace;
+	@media (min-width: 1024px) {
+		font-size: 64px;
+		line-height: 60px;
+		letter-spacing: -3.4px;
+	}
+}
+
+@utility type-display-l {
+	font-family: var(--font-sans);
+	font-size: 34px;
+	font-weight: 700;
+	line-height: 35px;
+	letter-spacing: -1px;
+
+	@media (min-width: 768px) {
+		font-size: 52px;
+		line-height: 52px;
+		letter-spacing: -1.9px;
+	}
+}
+
+/* The Contact CTA is a component with only Desktop and Mobile sizes, so it keeps the mobile type through tablet. */
+@utility type-display-l-lg {
+	font-family: var(--font-sans);
+	font-size: 34px;
+	font-weight: 700;
+	line-height: 35px;
+	letter-spacing: -1px;
+
+	@media (min-width: 1024px) {
+		font-size: 52px;
+		line-height: 52px;
+		letter-spacing: -1.9px;
+	}
+}
+
+@utility type-body-l-lg {
+	font-family: var(--font-sans);
+	font-size: 17px;
+	font-weight: 400;
+	line-height: 26px;
+
+	@media (min-width: 1024px) {
+		font-size: 18px;
+		line-height: 27px;
+	}
+}
+
+@utility type-h2 {
+	font-family: var(--font-sans);
+	font-size: 26px;
+	font-weight: 700;
+	line-height: 29px;
+	letter-spacing: -0.7px;
+
+	@media (min-width: 768px) {
+		font-size: 36px;
+		line-height: 39px;
+		letter-spacing: -1.1px;
+	}
+}
+
+/* Section headers keep the mobile size through tablet. */
+@utility type-h2-section {
+	font-family: var(--font-sans);
+	font-size: 26px;
+	font-weight: 700;
+	line-height: 29px;
+	letter-spacing: -0.7px;
+
+	@media (min-width: 1024px) {
+		font-size: 36px;
+		line-height: 39px;
+		letter-spacing: -1.1px;
+	}
+}
+
+@utility type-h3 {
+	font-family: var(--font-sans);
+	font-size: 20px;
+	font-weight: 500;
+	line-height: 25px;
+	letter-spacing: -0.3px;
+
+	@media (min-width: 768px) {
+		font-size: 22px;
+		line-height: 27px;
+		letter-spacing: -0.4px;
+	}
+}
+
+/* The Desktop/H3 style at every width, for cards that never step down. */
+@utility type-h3-desktop {
+	font-family: var(--font-sans);
+	font-size: 22px;
+	font-weight: 500;
+	line-height: 27px;
+	letter-spacing: -0.4px;
+}
+
+@utility type-h4 {
+	font-family: var(--font-sans);
+	font-size: 18px;
+	font-weight: 500;
+	line-height: 24px;
+	letter-spacing: -0.0111em;
+}
+
+@utility type-body-l {
+	font-family: var(--font-sans);
+	font-size: 17px;
+	font-weight: 400;
+	line-height: 26px;
+
+	@media (min-width: 768px) {
+		font-size: 18px;
+		line-height: 27px;
+	}
+}
+
+@utility type-body {
+	font-family: var(--font-sans);
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 26px;
+}
+
+@utility type-body-medium {
+	font-family: var(--font-sans);
+	font-size: 16px;
+	font-weight: 500;
+	line-height: 24px;
+}
+
+@utility type-body-s {
+	font-family: var(--font-sans);
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 22px;
+}
+
+@utility type-quote {
+	font-family: var(--font-sans);
+	font-size: 17px;
+	font-weight: 400;
+	line-height: 27px;
+}
+
+@utility type-mono-label {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 16px;
+}
+
+@utility type-mono-s {
+	font-family: var(--font-mono);
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 20px;
+}
+
+@utility type-mono-m {
+	font-family: var(--font-mono);
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 21px;
+}
+
+@utility type-stat {
+	font-family: var(--font-sans);
+	font-size: 32px;
+	font-weight: 700;
+	line-height: 32px;
+	letter-spacing: -0.0375em;
+}
+
+@utility type-button {
+	font-family: var(--font-sans);
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 15px;
+}
+
+/* Centered 1200px column with the responsive side gutter. */
+/* Lets a control look shorter than the tap area SPEC 9 asks for. */
+@utility tap-target {
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset-inline: 0;
+		top: 50%;
+		height: var(--control-target);
+		translate: 0 -50%;
+	}
+}
+
+@utility site-container {
+	width: 100%;
+	max-width: calc(var(--container) + 2 * var(--gutter));
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+
+/* Desktop sections: 360px label column, 840px content column (SPEC 4.3). */
+@utility section-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 24px;
+
+	@media (min-width: 1024px) {
+		grid-template-columns: minmax(0, 360fr) minmax(0, 840fr);
+		gap: 0;
+	}
+}
+
+@layer base {
+	html {
+		background: var(--color-bg);
+		color: var(--color-ink-soft);
+		font-family: var(--font-sans);
+		font-size: 16px;
+		line-height: 1.6;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-rendering: optimizeLegibility;
+		color-scheme: dark;
+	}
+
+	body {
+		background: var(--color-bg);
+		min-height: 100%;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		color: var(--color-ink);
+		overflow-wrap: anywhere;
+	}
+
+	::selection {
+		background: var(--color-accent-soft);
+		color: var(--color-ink);
+	}
+
+	/* One ring for every interactive element: the 'Focus ring' layer in Figma (2px, 2px gap). */
+	:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+		outline: 2px solid var(--color-focus);
+		outline-offset: 2px;
+	}
+}
+
+/* Fallbacks for visitors without JavaScript; the head script marks the page as scripted before it paints. */
+.js .nojs-only {
+	display: none;
+}
+
+/* Below the narrowest designed width a button wraps instead of scrolling the page sideways. */
+@media (max-width: 319px) {
+	.type-button {
+		flex-shrink: 1;
+		white-space: normal;
+	}
+}
+
+/* Dot grid, fade and green glow behind the top of each page only (SPEC 4.4). Three layers as in Figma: dots, then the fade into the page colour, then the glow on top. */
+.page-backdrop {
+	--backdrop-height: 720px;
+	--backdrop-fade: linear-gradient(180deg, rgb(11 13 16 / 0.25), rgb(11 13 16));
+	--backdrop-glow: radial-gradient(ellipse 278.6px 400px at 64.3% 360px, rgb(91 227 143 / 0.12), rgb(91 227 143 / 0) 70%);
+	position: absolute;
+	inset: 0 0 auto;
+	height: var(--backdrop-height);
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 0;
+	background-image: radial-gradient(circle at 12px 12px, rgb(255 255 255 / 0.08) 1px, rgb(255 255 255 / 0) 1.4px);
+	background-size: 24px 24px;
+}
+
+.page-backdrop::before,
+.page-backdrop::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+}
+
+.page-backdrop::before {
+	background-image: var(--backdrop-fade);
+}
+
+.page-backdrop::after {
+	background-image: var(--backdrop-glow);
+}
+
+@media (min-width: 768px) {
+	.page-backdrop {
+		--backdrop-height: 820px;
+		--backdrop-glow: radial-gradient(ellipse 548.6px 455.6px at 64.3% 410px, rgb(91 227 143 / 0.12), rgb(91 227 143 / 0) 70%);
+	}
+}
+
+@media (min-width: 1024px) {
+	.page-backdrop {
+		--backdrop-height: 900px;
+		--backdrop-fade: linear-gradient(180deg, rgb(11 13 16 / 0.2), rgb(11 13 16));
+		--backdrop-glow: radial-gradient(ellipse 900px 450px at calc(50% + 360px) 360px, rgb(91 227 143 / 0.1), rgb(91 227 143 / 0) 70%);
+	}
+
+	.page-backdrop--flat-lg {
+		--backdrop-glow: none;
+	}
+
+	.page-backdrop--home {
+		--backdrop-height: 1100px;
+		--backdrop-fade:
+			linear-gradient(90deg, rgb(11 13 16 / 0.85) 0%, rgb(11 13 16 / 0) 45%, rgb(11 13 16 / 0) 100%),
+			linear-gradient(180deg, rgb(11 13 16 / 0) 0%, rgb(11 13 16 / 0.35) 55%, rgb(11 13 16) 100%);
+		--backdrop-glow: radial-gradient(ellipse 800px 611.1px at calc(50% + 480px) 464px, rgb(91 227 143 / 0.14), rgb(91 227 143 / 0) 70%);
+	}
+}
+
+.live-dot {
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	flex-shrink: 0;
+	border-radius: 999px;
+	background: var(--color-accent);
+}
+
+/* Long-form text from the CMS: posts, legal pages, case study challenge. */
+.prose-site {
+	--tw-prose-body: var(--color-ink-soft);
+	--tw-prose-headings: var(--color-ink);
+	--tw-prose-lead: var(--color-ink-soft);
+	--tw-prose-links: var(--color-ink);
+	--tw-prose-bold: var(--color-ink);
+	--tw-prose-counters: var(--color-mute);
+	--tw-prose-bullets: var(--color-control);
+	--tw-prose-hr: var(--color-line);
+	--tw-prose-quotes: var(--color-ink-soft);
+	--tw-prose-quote-borders: var(--color-line-strong);
+	--tw-prose-captions: var(--color-mute);
+	--tw-prose-code: var(--color-ink);
+	--tw-prose-pre-code: var(--color-ink-soft);
+	--tw-prose-pre-bg: var(--color-surface-2);
+	--tw-prose-th-borders: var(--color-line-strong);
+	--tw-prose-td-borders: var(--color-line);
+	font-family: var(--font-sans);
+	font-size: 16px;
+	line-height: 26px;
+	max-width: 68ch;
+
+	:where(h2, h3, h4) {
+		font-weight: 700;
+		letter-spacing: -0.02em;
+	}
+
+	:where(a) {
+		text-decoration-color: var(--color-control);
+		text-underline-offset: 4px;
+		transition: text-decoration-color 150ms var(--ease);
+	}
+
+	:where(a):hover {
+		text-decoration-color: var(--color-ink);
+	}
+
+	:where(code):not(pre code) {
+		font-family: var(--font-mono);
+		font-size: 0.875em;
 		font-weight: 400;
-		border-radius: 0.25rem;
-		color: #f92672;
-		padding: 0.2rem 0.375rem;
+		background: var(--color-surface-2);
+		border: 1px solid var(--color-line);
+		border-radius: var(--radius-sm);
+		padding: 0.15em 0.4em;
 	}
 
-	code::after {
+	:where(code):not(pre code)::before,
+	:where(code):not(pre code)::after {
 		content: '';
 	}
 
-	blockquote > p::before {
+	:where(pre) {
+		font-family: var(--font-mono);
+		background: var(--color-surface-2) !important;
+		border: 1px solid var(--color-line);
+		border-radius: var(--radius-md);
+		overflow-x: auto;
+	}
+
+	:where(blockquote p)::before,
+	:where(blockquote p)::after {
 		content: '';
 	}
 
-	blockquote p {
+	:where(blockquote) {
 		font-style: normal;
 	}
 
-	blockquote > p::after {
-		content: '';
+	:where(img) {
+		border-radius: var(--radius-md);
+		border: 1px solid var(--color-line);
+	}
+
+	:where(table) {
+		display: block;
+		overflow-x: auto;
 	}
 }
 
-@theme {
-	--breakpoint-2xs: 320px;
-	--breakpoint-xs: 480px;
-	--font-dmsans: var(--font-dmsans);
-	--font-robotomono: var(--font-robotomono);
-	--color-background: var(--color-background);
-}
-
-@layer components {
-	html,
-	body {
-		@apply font-dmsans font-light;
-		color: var(--fg);
-		background: var(--bg);
-		-webkit-font-smoothing: antialiased;
-		text-rendering: optimizeLegibility;
-		font-size: 15px;
-		line-height: 1.5;
-		letter-spacing: -0.005em;
+@media (min-width: 1024px) {
+	.prose-site {
+		font-size: 17px;
+		line-height: 27px;
 	}
 }
 
-/* Subtle grid background */
-.grid-bg {
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	z-index: 0;
-	background-image:
-		linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-	background-size: 96px 96px;
-	mask-image: radial-gradient(ellipse at center, black 40%, transparent 100%);
-	-webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 100%);
-}
-
-/* Font convenience classes */
-.serif {
-	font-family: var(--font-serif), serif;
-	font-weight: 300;
-}
-
-.mono {
-	font-family: var(--font-mono), monospace;
-	font-feature-settings: 'tnum';
-}
-
-/* Chip / tag pill */
-.chip {
-	display: inline-flex;
-	font-family: var(--font-mono), monospace;
-	font-size: 11px;
-	padding: 3px 8px;
-	border-radius: 4px;
-	background: var(--bg-3);
-	color: var(--fg-3);
-	border: 1px solid var(--line);
-	white-space: nowrap;
-}
-
-.chip.accent {
-	color: var(--accent);
-	border-color: var(--accent-ring);
-	background: var(--accent-dim);
-}
-
-/* Scrollbar */
 * {
-	scrollbar-width: auto;
-	scrollbar-color: var(--line-2) var(--bg);
-}
-
-*::-webkit-scrollbar {
-	width: 12px;
-}
-
-*::-webkit-scrollbar-track {
-	background: var(--bg);
-}
-
-*::-webkit-scrollbar-thumb {
-	background-color: var(--line-2);
-	border-radius: 20px;
-	border: 2px solid var(--line-2);
+	scrollbar-color: var(--color-line-strong) var(--color-bg);
 }
 
 @media (prefers-reduced-motion: no-preference) {
 	html {
 		scroll-behavior: smooth;
 	}
-}
 
-/* View Transitions */
-@media (prefers-reduced-motion: no-preference) {
 	::view-transition-old(root) {
-		animation: 150ms ease both vt-fade-out;
+		animation: 150ms var(--ease) both vt-fade-out;
 	}
 
 	::view-transition-new(root) {
-		animation: 200ms ease 80ms both vt-fade-in;
+		animation: 200ms var(--ease) 80ms both vt-fade-in;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
 	}
 }
 
@@ -178,42 +568,4 @@
 	from {
 		opacity: 0;
 	}
-}
-
-/* Animations */
-@keyframes fade-in {
-	from {
-		opacity: 0;
-	}
-}
-
-@keyframes dot-pulse {
-	0%,
-	100% {
-		opacity: 1;
-	}
-	50% {
-		opacity: 0.4;
-	}
-}
-
-/* Accordion */
-.accordion-body {
-	display: grid;
-	grid-template-rows: 0fr;
-	transition: grid-template-rows 280ms ease;
-}
-
-.accordion-body.is-open {
-	grid-template-rows: 1fr;
-}
-
-.accordion-body-inner {
-	overflow: hidden;
-	opacity: 0;
-	transition: opacity 250ms ease 30ms;
-}
-
-.accordion-body.is-open .accordion-body-inner {
-	opacity: 1;
 }

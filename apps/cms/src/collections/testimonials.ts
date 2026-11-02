@@ -29,6 +29,22 @@ export const Testimonials: CollectionConfig = {
 		},
 		text('role', { required: true }),
 		textarea('quote', { required: true }),
-		{ name: 'linkedinUrl', type: 'text', admin: { description: 'Where "Read more" points for long quotes.' } }
+		{ name: 'linkedinUrl', type: 'text', admin: { description: 'Where "Read more" points for long quotes.' } },
+		{
+			type: 'row',
+			fields: [
+				{ name: 'show', type: 'checkbox', defaultValue: true, label: 'Show on the home page' },
+				{
+					name: 'quoteLanguage',
+					type: 'select',
+					defaultValue: 'en',
+					options: [
+						{ label: 'English', value: 'en' },
+						{ label: 'Czech', value: 'cs' }
+					],
+					admin: { description: 'Language the quote is written in, so screen readers pronounce it correctly.' }
+				}
+			]
+		}
 	]
 }

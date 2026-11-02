@@ -7,7 +7,7 @@ Use this to ship code or configuration: what each workflow does, its inputs, and
 | Target        | Workflow          | What it runs                                      | Compose project        | Files                     |
 | ------------- | ----------------- | ------------------------------------------------- | ---------------------- | ------------------------- |
 | `production`  | Deploy            | web, CMS, Postgres                                | `portfolio`            | `deployment/production/`  |
-| `development` | Deploy            | web only, reads the production CMS, noindex       | `portfolio-dev`        | `deployment/development/` |
+| `development` | Deploy            | web, own CMS and Postgres, noindex                | `portfolio-dev`        | `deployment/development/` |
 | `monitoring`  | Deploy Monitoring | self-hosted Umami and its Postgres                | `portfolio-monitoring` | `deployment/monitoring/`  |
 | `ingress`     | Deploy Ingress    | Traefik, socket-proxy, CrowdSec (standalone only) | `global`               | `deployment/ingress/`     |
 
@@ -18,7 +18,7 @@ Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. Analytics (Umami) is this rep
 | Workflow          | File                                        | Trigger                                        | Purpose                                                                                             |
 | ----------------- | ------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | Verify Code       | `verify.yml`                                | pull request, manual, called                   | toolkit pin, type-check, lint, format check                                                         |
-| Deploy            | `deploy.yml`                                | push to `main`, manual                         | verify, build or reuse images, Host Sync, deploy development or production                          |
+| Deploy            | `deploy.yml`                                | push to `develop`, manual                      | verify, build or reuse images, Host Sync, deploy development or production                          |
 | Host Sync         | `host-sync.yml`                             | push to `main` (toolkit files), manual, called | install the pinned toolkit, units and `/etc/toolkit/portfolio.env` on the VPS ([below](#host-sync)) |
 | Deploy Monitoring | `deploy-monitoring.yml`                     | manual                                         | Host Sync, then deploy or stage the Umami stack (`monitoring` target; runs from `main` only)        |
 | Deploy Ingress    | `deploy-ingress.yml`                        | manual                                         | deploy, stage or roll back this repository's own Traefik (standalone servers only)                  |
@@ -27,7 +27,7 @@ Images go to `ghcr.io/h7kz/portfoliov7/{web,cms}`. Analytics (Umami) is this rep
 | Cleanup Registry  | `registry-cleanup.yml`                      | weekly, manual (preview)                       | prune old GHCR image versions; digests retained on the VPS are protected                            |
 | reusable          | `_resolve.yml`, `_build.yml`, `_deploy.yml` | called                                         | resolve a ref to one SHA, build one image, apply one release                                        |
 
-A push to `main` runs Deploy for development. Everything else is manual. Deploy, Host Sync and Rollback post to `ALERT_DISCORD_WEBHOOK_URL` when they fail. The GitHub branch selector picks the workflow implementation; `ref` picks the source independently, so any branch, tag or SHA can be deployed to any target.
+A push to `develop` runs Deploy for development. Everything else is manual. Deploy, Host Sync and Rollback post to `ALERT_DISCORD_WEBHOOK_URL` when they fail. The GitHub branch selector picks the workflow implementation; `ref` picks the source independently, so any branch, tag or SHA can be deployed to any target.
 
 ## Inputs
 

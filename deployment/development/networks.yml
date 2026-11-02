@@ -1,9 +1,10 @@
 # ==============================================================================
 # Networks: Development (portfolio-dev)
-#   public-network:              shared Traefik network (Infrastructure's Traefik, or this
-#                                repository's deployment/ingress on a standalone host).
-#   portfolio-cms-network:       web (both environments) <-> cms. Shared by both
-#                                stacks, so it is external to both.
+#   public-network:                  shared Traefik network (Infrastructure's Traefik, or this
+#                                    repository's deployment/ingress on a standalone host).
+#   portfolio-dev-cms-network:       development web <-> development cms.
+#   portfolio-dev-internal-network:  development cms <-> development postgres only.
+# Development joins no production network.
 # Toolkit creates portfolio-* networks; Infrastructure must provision public-network.
 # ==============================================================================
 
@@ -12,6 +13,10 @@ networks:
     name: public-network
     external: true
 
-  portfolio-cms-network:
-    name: portfolio-cms-network
+  portfolio-dev-cms-network:
+    name: portfolio-dev-cms-network
+    external: true
+
+  portfolio-dev-internal-network:
+    name: portfolio-dev-internal-network
     external: true

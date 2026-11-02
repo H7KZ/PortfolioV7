@@ -1,0 +1,79 @@
+<script setup lang="ts">
+const model = defineModel<string>({ required: true })
+const {
+	id,
+	label,
+	type = 'text',
+	placeholder,
+	error,
+	required = false,
+	disabled = false,
+	autocomplete,
+	multiline = false,
+	rows = 4,
+	maxlength
+} = defineProps<{
+	id: string
+	label: string
+	type?: 'text' | 'email' | 'date'
+	placeholder?: string | null
+	error?: string | null
+	required?: boolean
+	disabled?: boolean
+	autocomplete?: string
+	multiline?: boolean
+	rows?: number
+	maxlength?: number
+}>()
+const emit = defineEmits<{ blur: [] }>()
+
+const errorId = computed(() => `${id}-error`)
+const control = computed(() => [
+	'type-body block w-full rounded-sm border bg-bg px-3.5 py-[13px] text-ink lg:py-3 transition-[border-color,box-shadow] duration-150 ease-(--ease) placeholder:text-faint disabled:cursor-not-allowed',
+	error
+		? 'border-danger shadow-[inset_0_0_0_1px_var(--color-danger)]'
+		: 'border-control hover:border-ink-soft focus:border-accent focus:shadow-[0_0_0_1px_var(--color-accent)]',
+	multiline ? 'min-h-[140px] resize-none lg:min-h-[150px]' : 'min-h-13'
+])
+</script>
+
+<template>
+	<div class="flex flex-col gap-2" :class="disabled ? 'opacity-40' : ''">
+		<label :for="id" class="type-body-s text-ink-soft">{{ label }}</label>
+		<textarea
+			v-if="multiline"
+			:id="id"
+			v-model="model"
+			:name="id"
+			:rows="rows"
+			:placeholder="placeholder ?? undefined"
+			:required="required"
+			:disabled="disabled"
+			:maxlength="maxlength"
+			:aria-invalid="error ? 'true' : undefined"
+			:aria-describedby="error ? errorId : undefined"
+			:class="control"
+			@blur="emit('blur')"
+		></textarea>
+		<input
+			v-else
+			:id="id"
+			v-model="model"
+			:name="id"
+			:type="type"
+			:placeholder="placeholder ?? undefined"
+			:required="required"
+			:disabled="disabled"
+			:autocomplete="autocomplete"
+			:maxlength="maxlength"
+			:aria-invalid="error ? 'true' : undefined"
+			:aria-describedby="error ? errorId : undefined"
+			:class="control"
+			@blur="emit('blur')"
+		/>
+		<p v-if="error" :id="errorId" class="flex items-start gap-2 text-danger">
+			<span aria-hidden="true" class="type-mono-s">!</span>
+			<span class="type-body-s">{{ error }}</span>
+		</p>
+	</div>
+</template>

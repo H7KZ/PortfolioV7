@@ -1,6 +1,15 @@
 # ==============================================================================
 # Volumes: Development (portfolio-dev)
-# The development web is stateless; this file exists because toolkit merges it.
+# External so they survive teardown and version rotation; toolkit creates them.
+# Not backed up: production stays the source of truth, and the development
+# database is rebuilt from a production copy and the V7 seed.
 # ==============================================================================
 
-volumes: {}
+volumes:
+  portfolio-dev-postgres-volume:
+    name: portfolio-dev-postgres-volume
+    external: true
+
+  portfolio-dev-uploads-volume:
+    name: portfolio-dev-uploads-volume
+    external: true

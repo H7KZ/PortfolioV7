@@ -9,7 +9,7 @@ Everything that ships this repository to a server: Compose stacks per target, th
 | `toolkit`, `toolkit.lock`, `vendor/toolkit/` | managed copy of the pinned toolkit release; never edit, repin from the Toolkit repository             |
 | `toolkit.conf`                               | this repository's integration: slug `portfolio`, release targets, backups, jobs, host singletons      |
 | `production/`                                | web, CMS, Postgres (project `portfolio`)                                                              |
-| `development/`                               | web only, reads the production CMS (project `portfolio-dev`)                                          |
+| `development/`                               | web, its own CMS and Postgres, seeded from a production copy (project `portfolio-dev`)                |
 | `monitoring/`                                | self-hosted Umami and its Postgres (project `portfolio-monitoring`), `umami/retain.sh` and its SQL    |
 | `ingress/`                                   | Traefik, socket-proxy, CrowdSec (project `global`) for standalone servers; Cloudflare origin firewall |
 | `backup/`                                    | `components.sh`: what to back up and how to drill it ([runbook](../docs/runbooks/backups.md))         |

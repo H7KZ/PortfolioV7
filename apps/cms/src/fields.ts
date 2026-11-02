@@ -16,8 +16,8 @@ export function sectionHeader(name: string, label?: string, withSub = true): Gro
 	return group(name, [text('label', { required: true }), text('heading', { required: true }), ...(withSub ? [textarea('sub')] : [])], { label })
 }
 
-export function link(name: string, label?: string): GroupField {
-	return group(name, [text('label', { required: true }), text('href', { required: true, localized: false })], { label })
+export function link(name: string, label?: string, required = true): GroupField {
+	return group(name, [text('label', { required }), text('href', { required, localized: false })], { label })
 }
 
 export const chips: Field = {

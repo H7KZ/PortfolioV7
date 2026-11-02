@@ -10,3 +10,10 @@ declare global {
 		Cal: any
 	}
 }
+
+declare module '#app' {
+	interface PageMeta {
+		/** False hides the contact block above the footer. */
+		contactCta?: boolean
+	}
+}

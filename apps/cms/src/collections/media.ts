@@ -36,6 +36,14 @@ export const Media: CollectionConfig = {
 			admin: { description: 'Describes the image for screen readers and search engines.' }
 		},
 		{
+			name: 'formats',
+			type: 'json',
+			admin: {
+				readOnly: true,
+				description: 'Other encodings of this image (AVIF, 800 px wide) uploaded alongside it. The site offers them to browsers that support them.'
+			}
+		},
+		{
 			name: 'legacyPath',
 			type: 'text',
 			index: true,

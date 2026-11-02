@@ -39,7 +39,7 @@ export const Posts: CollectionConfig = {
 		beforeChange: [
 			({ data }) => {
 				if (!data.readingTime && data.content) {
-					data.readingTime = Math.max(1, Math.round(countWords(data.content) / WORDS_PER_MINUTE))
+					data.readingTime = Math.max(1, Math.round(countWords(data.content.root) / WORDS_PER_MINUTE))
 				}
 				return data
 			}

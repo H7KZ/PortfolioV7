@@ -42,14 +42,26 @@ function isMedia(value: Record<string, unknown>): boolean {
 	return typeof value.filename === 'string' && 'mimeType' in value && 'filesize' in value
 }
 
+function siteUrl(filename: unknown): string | null {
+	return typeof filename === 'string' && filename ? `/media/${encodeURIComponent(filename)}` : null
+}
+
 function toMediaView(value: Record<string, unknown>): MediaView {
+	const formats = (value.formats ?? {}) as Record<string, unknown>
 	return {
 		url: `/media/${encodeURIComponent(value.filename as string)}`,
 		filename: value.filename as string,
 		alt: (value.alt as string | null) ?? '',
 		mimeType: (value.mimeType as string | null) ?? null,
 		width: (value.width as number | null) ?? null,
-		height: (value.height as number | null) ?? null
+		height: (value.height as number | null) ?? null,
+		formats: {
+			avif: siteUrl(formats.avif),
+			avif800: siteUrl(formats.avif800),
+			webp800: siteUrl(formats.webp800),
+			avif1600: siteUrl(formats.avif1600),
+			webp1600: siteUrl(formats.webp1600)
+		}
 	}
 }
 
@@ -67,6 +79,11 @@ export function resolve<T>(value: T): T {
 		out[key] = resolve(nested)
 	}
 	return out as T
+}
+
+/** Slugs are lowercase ASCII words. Anything else cannot match a document, so it never reaches the CMS or the content cache. */
+export function isSlug(value: string | undefined): value is string {
+	return value !== undefined && /^[A-Za-z0-9._-]{1,120}$/.test(value)
 }
 
 export function readLocale(event: H3Event): Locale {

@@ -2,6 +2,22 @@ import { buildContactSchema, contactFieldErrors, describeSelections, type Contac
 
 const MAX_BODY_BYTES = 50_000
 
+/** Content-Length can be absent (chunked), so the cap is enforced while reading. */
+async function readJsonBody(event: Parameters<typeof getHeader>[0]): Promise<{ locale?: string; values?: ContactFormValues } | null> {
+	const chunks: Buffer[] = []
+	let size = 0
+	for await (const chunk of event.node.req) {
+		size += (chunk as Buffer).length
+		if (size > MAX_BODY_BYTES) throw createError({ statusCode: 413, statusMessage: 'Payload Too Large' })
+		chunks.push(chunk as Buffer)
+	}
+	try {
+		return JSON.parse(Buffer.concat(chunks).toString('utf8'))
+	} catch {
+		return null
+	}
+}
+
 export default defineEventHandler(async event => {
 	if (Number(getHeader(event, 'content-length') ?? 0) > MAX_BODY_BYTES) throw createError({ statusCode: 413, statusMessage: 'Payload Too Large' })
 	if (!getHeader(event, 'content-type')?.includes('application/json')) throw createError({ statusCode: 415, statusMessage: 'Unsupported Media Type' })
@@ -11,7 +27,7 @@ export default defineEventHandler(async event => {
 	if (origin && origin !== publicConfig.siteUrl && !import.meta.dev) throw createError({ statusCode: 403, statusMessage: 'Forbidden' })
 	if (rateLimited(event)) throw createError({ statusCode: 429, statusMessage: 'Too Many Requests' })
 
-	const body = await readBody<{ locale?: string; values?: ContactFormValues }>(event).catch(() => null)
+	const body = await readJsonBody(event)
 	if (!body?.values) throw createError({ statusCode: 400, statusMessage: 'Bad Request' })
 
 	const locale = body.locale === 'cs' ? 'cs' : 'en'
@@ -32,7 +48,7 @@ export default defineEventHandler(async event => {
 			email: values.email,
 			company: values.company || null,
 			message: values.message,
-			budget: values.budget,
+			budgetRange: values.budget || null,
 			details: describeSelections(values, config),
 			deadline: values.deadline ? new Date(values.deadline).toISOString() : null,
 			locale

@@ -32,7 +32,7 @@ http:
           # Explicitly off: the legacy XSS auditor introduced its own bugs and
           # every current browser ignores or mis-handles it.
           X-XSS-Protection: '0'
-          Permissions-Policy: 'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+          Permissions-Policy: 'camera=(), microphone=(), geolocation=()'
           # Blank value = strip the header entirely. Stops advertising the
           # backend stack to scanners.
           Server: ''

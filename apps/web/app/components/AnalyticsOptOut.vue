@@ -32,18 +32,14 @@ function toggle(): void {
 </script>
 
 <template>
-	<div class="mt-12 rounded-(--radius) border border-(--line) bg-(--bg-2) px-6 py-5">
-		<div class="mono mb-1 text-[10px] tracking-widest text-(--accent) uppercase">◆ {{ title }}</div>
-		<div class="flex flex-wrap items-center justify-between gap-4">
-			<p class="m-0 text-[13px] leading-[1.55] text-(--fg-3)" aria-live="polite">{{ optedOut ? inactiveText : activeText }}</p>
-			<button
-				type="button"
-				:disabled="!ready"
-				class="mono cursor-pointer rounded-md border border-(--line-2) px-3.5 py-2 text-[11px] tracking-wide text-(--fg-3) transition-colors duration-150 hover:border-(--fg-4) hover:text-(--fg) disabled:opacity-50"
-				@click="toggle"
-			>
-				{{ optedOut ? optInLabel : optOutLabel }}
-			</button>
+	<section
+		class="flex flex-col gap-4 rounded-md border border-line bg-surface px-5 py-[22px] sm:flex-row sm:items-center lg:px-6"
+		aria-labelledby="analytics-opt-out"
+	>
+		<div class="flex min-w-0 flex-1 flex-col gap-1">
+			<h2 id="analytics-opt-out" class="type-mono-label text-mute">{{ title }}</h2>
+			<p class="type-body text-ink" aria-live="polite">{{ optedOut ? inactiveText : activeText }}</p>
 		</div>
-	</div>
+		<UiButton kind="secondary" :disabled="!ready" class="self-start sm:self-auto" @click="toggle">{{ optedOut ? optInLabel : optOutLabel }}</UiButton>
+	</section>
 </template>

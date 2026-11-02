@@ -1,0 +1,138 @@
+/* jankominek.com V7 design tokens. Generated from docs/redesign/design/tokens.json (Figma export 2026-10-29). */
+/* Drop into apps/web/app/assets/css/app.css: :root block replaces the V6 tokens, @theme exposes them to Tailwind v4. */
+
+:root {
+	--color-bg: #0b0d10;
+	--color-surface: #111419;
+	--color-surface-2: #171b21;
+	--color-line: #1f252c;
+	--color-line-strong: #2e3640;
+	--color-ink: #f1f3f5;
+	--color-ink-soft: #c9cfd6;
+	--color-mute: #a0a8b2;
+	--color-faint: #949ca6;
+	--color-accent: #5be38f;
+	--color-accent-ink: #06140c;
+	--color-accent-soft: #5be38f1f;
+	--color-accent-hover: #84eaab;
+	--color-control: #5f6874;
+	--color-danger: #ff7b72;
+	--color-danger-soft: #291e22;
+	--color-focus: #5be38f;
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 16px;
+	--radius-pill: 999px;
+	--space-4: 4px;
+	--space-8: 8px;
+	--space-12: 12px;
+	--space-16: 16px;
+	--space-24: 24px;
+	--space-32: 32px;
+	--space-48: 48px;
+	--space-64: 64px;
+	--space-96: 96px;
+	--space-128: 128px;
+	--font-sans: 'Space Grotesk', system-ui, sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, monospace;
+	--container: 1200px;
+	--gutter: clamp(20px, 5.2vw, 40px); /* side padding; the 1200px container centers itself above 1280px */
+
+	/* Fluid type: mobile value at 390px viewport, desktop value at 1440px. Tablet lands between, matching the 768 frames within 1px. */
+	--text-display-xl: clamp(40px, 31.09px + 2.286vw, 64px);
+	--leading-display-xl: 0.94;
+	--tracking-display-xl: -0.04em;
+	--weight-display-xl: 700;
+	--text-display-l: clamp(34px, 27.31px + 1.714vw, 52px);
+	--leading-display-l: 1;
+	--tracking-display-l: -0.0294em;
+	--weight-display-l: 700;
+	--text-h2: clamp(26px, 22.29px + 0.952vw, 36px);
+	--leading-h2: 1.08;
+	--tracking-h2: -0.0269em;
+	--weight-h2: 700;
+	--text-h3: clamp(20px, 19.26px + 0.19vw, 22px);
+	--leading-h3: 1.22;
+	--tracking-h3: -0.015em;
+	--weight-h3: 500;
+	--text-body-l: clamp(17px, 16.63px + 0.095vw, 18px);
+	--leading-body-l: 1.52;
+	--tracking-body-l: 0em;
+	--weight-body-l: 400;
+	--text-h4: 18px;
+	--leading-h4: 1.32;
+	--weight-h4: 500;
+	--tracking-h4: -0.0111em;
+	--text-body: 16px;
+	--leading-body: 1.6;
+	--weight-body: 400;
+	--text-body-medium: 16px;
+	--leading-body-medium: 1.5;
+	--weight-body-medium: 500;
+	--text-body-s: 14px;
+	--leading-body-s: 1.56;
+	--weight-body-s: 400;
+	--text-quote: 17px;
+	--leading-quote: 1.56;
+	--weight-quote: 400;
+	--text-mono-label: 12px;
+	--leading-mono-label: 1.3;
+	--weight-mono-label: 500;
+	--text-mono-s: 13px;
+	--leading-mono-s: 1.5;
+	--weight-mono-s: 400;
+	--text-mono-m: 15px;
+	--leading-mono-m: 1.4;
+	--weight-mono-m: 500;
+	--text-stat: 32px;
+	--leading-stat: 1;
+	--weight-stat: 700;
+	--tracking-stat: -0.0375em;
+	--text-button: 15px;
+	--leading-button: 1;
+	--weight-button: 500;
+}
+
+@theme inline {
+	--color-bg: var(--color-bg);
+	--color-surface: var(--color-surface);
+	--color-surface-2: var(--color-surface-2);
+	--color-line: var(--color-line);
+	--color-line-strong: var(--color-line-strong);
+	--color-ink: var(--color-ink);
+	--color-ink-soft: var(--color-ink-soft);
+	--color-mute: var(--color-mute);
+	--color-faint: var(--color-faint);
+	--color-accent: var(--color-accent);
+	--color-accent-ink: var(--color-accent-ink);
+	--color-accent-soft: var(--color-accent-soft);
+	--color-accent-hover: var(--color-accent-hover);
+	--color-control: var(--color-control);
+	--color-danger: var(--color-danger);
+	--color-danger-soft: var(--color-danger-soft);
+	--color-focus: var(--color-focus);
+	--font-sans: var(--font-sans);
+	--font-mono: var(--font-mono);
+	--radius-sm: var(--radius-sm);
+	--radius-md: var(--radius-md);
+	--radius-lg: var(--radius-lg);
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 1024px;
+	--breakpoint-xl: 1440px;
+}
+
+/* Focus: one ring for every interactive element. Matches the 'Focus ring' layer in Figma (2px, 2px gap). */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+	outline: 2px solid var(--color-focus);
+	outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}

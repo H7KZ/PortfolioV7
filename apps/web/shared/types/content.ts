@@ -28,6 +28,8 @@ export interface MediaView {
 	mimeType: string | null
 	width: number | null
 	height: number | null
+	/** Other encodings uploaded next to the file, as site URLs. */
+	formats: { avif: string | null; avif800: string | null; webp800: string | null; avif1600: string | null; webp1600: string | null }
 }
 
 type IsMedia<T> = [T] extends [Media] ? ([Media] extends [T] ? true : false) : false
@@ -46,17 +48,19 @@ type ResolvedMember<T> =
 export type Relation = number | MediaView | null | undefined
 
 export interface LayoutData {
-	site: Resolved<Site>
+	site: Omit<Resolved<Site>, 'humansTxt' | 'llmsTxt' | 'llmsFullTxt'>
 	navigation: Resolved<Navigation>
 	footer: Resolved<Footer>
 }
 
-export type ProjectCard = Pick<Resolved<Project>, 'id' | 'slug' | 'title' | 'date' | 'thumbnail' | 'card'>
+export type ProjectCard = Pick<Resolved<Project>, 'id' | 'slug' | 'title' | 'date' | 'thumbnail' | 'heroPlaceholderLabel' | 'heroPlaceholderSpec' | 'card'>
 
 export interface HomeData {
-	page: Resolved<Home>
+	page: Omit<Resolved<Home>, 'geoSummary'>
 	projects: ProjectCard[]
 	projectCount: number
+	/** Every published testimonial, including those the home page hides. */
+	testimonialCount: number
 	services: Resolved<Service>[]
 	testimonials: Resolved<Testimonial>[]
 }
@@ -66,21 +70,28 @@ export interface ResumeData {
 	experience: Resolved<Experience>[]
 }
 
-export type PostSummary = Pick<Resolved<Post>, 'id' | 'slug' | 'title' | 'date' | 'description' | 'tags' | 'readingTime'>
+export type PostSummary = Pick<Resolved<Post>, 'id' | 'slug' | 'title' | 'date' | 'description' | 'tags' | 'readingTime' | 'thumbnail'>
 
 export interface BlogData {
 	page: Resolved<Blog>
 	posts: PostSummary[]
 }
 
+export interface TocItem {
+	id: string
+	text: string
+}
+
 export interface PostData {
 	page: Resolved<Blog>
 	post: Resolved<Post>
+	toc: TocItem[]
 }
 
 export interface ProjectData {
 	labels: Resolved<ProjectPage>
 	project: Resolved<Project>
+	next: { slug: string; title: string } | null
 }
 
 export interface ContactData {
@@ -88,6 +99,6 @@ export interface ContactData {
 	form: Resolved<ContactForm>
 }
 
-export type LegalPage = Resolved<Privacy> | Resolved<Term>
+export type LegalPage = (Resolved<Privacy> | Resolved<Term>) & { toc: TocItem[] }
 
 export type ErrorsData = Resolved<ErrorPage>
