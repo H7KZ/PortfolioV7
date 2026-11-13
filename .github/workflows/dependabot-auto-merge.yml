@@ -1,0 +1,71 @@
+# Squash-merges Dependabot's npm and github-actions minor/patch group PRs once Verify Code has passed.
+# Gated here, not by a required-status-check rule, so direct pushes stay possible.
+# workflow_run workflows are read from the default branch (main) only.
+# Docker, compose, major and security-sensitive image PRs are never merged here.
+
+name: Dependabot Auto-merge
+run-name: 'Dependabot Auto-merge · ${{ github.event.workflow_run.head_branch }}'
+
+on:
+  workflow_run:
+    workflows: ['Verify Code']
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  merge:
+    name: Merge Dependabot group
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.actor.login == 'dependabot[bot]' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+    steps:
+      - name: Find the pull request
+        id: pr
+        run: |
+          set -euo pipefail
+          # Same-repo, Dependabot-authored, head still equal to the commit that passed, group title only.
+          number=$(gh pr list --state open --head "$HEAD_BRANCH" --json number,author,headRefOid,isCrossRepository,title \
+            --jq '[.[] | select((.author.login | test("^(app/)?dependabot$")) and .isCrossRepository == false and .headRefOid == env.HEAD_SHA
+                  and (.title | test("bump the (npm|actions)-minor-patch group")))] | if length == 1 then .[0].number else empty end')
+          if [ -z "$number" ]; then
+            echo "No matching group PR for $HEAD_BRANCH at $HEAD_SHA; nothing to merge."
+            exit 0
+          fi
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+
+      - name: Require every check finished and none failed
+        if: steps.pr.outputs.number
+        env:
+          NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+          bad=$(gh pr view "$NUMBER" --json statusCheckRollup --jq '
+            [.statusCheckRollup[]
+             | select((.status // "COMPLETED") != "COMPLETED"
+                      or ((.conclusion // .state // "SUCCESS") | IN("SUCCESS","SKIPPED","NEUTRAL") | not))
+             | (.name // .context)] | join(", ")')
+          if [ -n "$bad" ]; then
+            echo "Not merging: unfinished or failed checks: $bad"
+            exit 0
+          fi
+          echo "ready=true" >> "$GITHUB_ENV"
+
+      - name: Squash-merge
+        if: steps.pr.outputs.number && env.ready == 'true'
+        env:
+          NUMBER: ${{ steps.pr.outputs.number }}
+        run: gh pr merge "$NUMBER" --squash --match-head-commit "$HEAD_SHA"
