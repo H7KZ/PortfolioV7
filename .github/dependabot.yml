@@ -2,11 +2,14 @@
 # Rationale and review procedure: docs/runbooks/dependency-updates.md.
 #
 # Rules shared by every entry:
-#   - weekly, Monday 06:00 Europe/Prague
+#   - monthly, 06:00 Europe/Prague (first run after merge, then the same day each month)
 #   - cooldown: a release must be 7 days old (14 for npm majors) before a version-update PR opens;
 #     security updates ignore the cooldown
-#   - minor and patch updates are grouped per ecosystem; a major update is never grouped, so it
-#     gets its own PR and is reviewed on its own
+#   - minor and patch updates are grouped; a major update is never grouped, so it gets its own PR
+#   - npm: ONE minor/patch group for prod and dev (several npm PRs all rewrite pnpm-lock.yaml and
+#     conflict as soon as one merges)
+#   - only the github-actions and npm minor/patch groups are auto-merged
+#     (.github/workflows/dependabot-auto-merge.yml); everything else is reviewed by hand
 #   - managed toolkit files (deployment/toolkit, deployment/vendor/**) are not listed here on
 #     purpose: the pin moves only through `npm run repin` in the Toolkit repository
 
@@ -20,13 +23,12 @@ updates:
     directory: /
     target-branch: develop
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '06:00'
       timezone: Europe/Prague
     cooldown:
       default-days: 7
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     labels:
       - dependencies
       - github_actions
@@ -42,14 +44,13 @@ updates:
     directory: /
     target-branch: develop
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '06:00'
       timezone: Europe/Prague
     cooldown:
       default-days: 7
       semver-major-days: 14
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 3
     labels:
       - dependencies
       - javascript
@@ -57,12 +58,7 @@ updates:
       prefix: 'build(deps)'
       prefix-development: 'build(deps-dev)'
     groups:
-      production-minor-patch:
-        dependency-type: production
-        patterns: ['*']
-        update-types: ['minor', 'patch']
-      development-minor-patch:
-        dependency-type: development
+      npm-minor-patch:
         patterns: ['*']
         update-types: ['minor', 'patch']
     ignore:
@@ -82,8 +78,7 @@ updates:
       - '/apps/*'
     target-branch: develop
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '06:00'
       timezone: Europe/Prague
     cooldown:
@@ -104,8 +99,8 @@ updates:
         update-types: ['version-update:semver-major']
 
   # Third-party images in the compose files. Images whose tag is a ${VAR} (the app images built here) are not
-  # resolvable and are skipped. Traefik, CrowdSec and the socket proxy and the stateful images below are
-  # never batched: each gets its own PR. Grafana, Loki, Alloy, Prometheus and Alertmanager move together.
+  # resolvable and are skipped. Traefik, CrowdSec, the socket proxy and Umami (migrates its schema on start) are
+  # never batched: each gets its own PR. Postgres is ignored entirely (see below).
   - package-ecosystem: docker-compose
     directories:
       - '/'
@@ -115,13 +110,12 @@ updates:
       - '/deployment/production'
     target-branch: develop
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '06:00'
       timezone: Europe/Prague
     cooldown:
       default-days: 7
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     labels:
       - dependencies
       - docker
@@ -130,9 +124,10 @@ updates:
     groups:
       images-minor-patch:
         patterns: ['*']
-        exclude-patterns: ['mysql', 'mariadb', 'postgres', 'redis', 'traefik', 'crowdsecurity/*', 'tecnativa/*']
+        exclude-patterns: ['mysql', 'mariadb', 'postgres', 'redis', 'traefik', 'crowdsecurity/*', 'tecnativa/*', 'ghcr.io/umami-software/*']
         update-types: ['minor', 'patch']
     ignore:
-      # postgres: a new major cannot read the old data directory; it needs pg_dump/restore or pg_upgrade.
+      # postgres: the toolkit refuses a changed stable data image ("perform an explicit data upgrade first"),
+      # so every version bump, not only a major, would fail at deploy. Change the tag by hand in a
+      # normal PR after a backup and restore proof (docs/runbooks/dependency-updates.md).
       - dependency-name: postgres
-        update-types: ['version-update:semver-major']
