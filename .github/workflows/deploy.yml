@@ -63,9 +63,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  runner:
+    name: Pick runner
+    uses: ./.github/workflows/_runner.yml
+    secrets: inherit
+
   source:
     name: Resolve source
     uses: ./.github/workflows/_resolve.yml
+    secrets: inherit
     with:
       ref: ${{ inputs.ref }}
 
@@ -76,16 +82,17 @@ jobs:
     permissions:
       contents: read
     uses: ./.github/workflows/verify.yml
+    secrets: inherit
     with:
       ref: ${{ needs.source.outputs.sha }}
 
   resolve-images:
     name: Resolve images
-    needs: [source, verify]
+    needs: [runner, source, verify]
     if: >-
       !cancelled() && needs.source.result == 'success' &&
       (needs.verify.result == 'success' || needs.verify.result == 'skipped')
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 10
     permissions:
       contents: read
@@ -208,13 +215,11 @@ jobs:
 
   release:
     name: Tag and publish GitHub Release
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 10
     permissions:
       contents: write
-    needs:
-      - source
-      - deploy
+    needs: [runner, source, deploy]
     if: ${{ !cancelled() && needs.deploy.result == 'success' && inputs.environment == 'production' && inputs.operation == 'deploy' }}
     steps:
       - name: Checkout controller with history and tags

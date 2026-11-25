@@ -54,7 +54,7 @@ jobs:
 
   freshness:
     name: Check freshness
-    needs: source
+    needs: [source]
     if: (github.event_name == 'schedule' && github.event.schedule == '15 6 * * *') || (github.event_name == 'workflow_dispatch' && inputs.check != 'drill')
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -74,7 +74,7 @@ jobs:
 
   drill:
     name: Restore drill
-    needs: source
+    needs: [source]
     if: (github.event_name == 'schedule' && github.event.schedule == '45 6 * * 1') || (github.event_name == 'workflow_dispatch' && inputs.check != 'freshness')
     runs-on: ubuntu-latest
     timeout-minutes: 60

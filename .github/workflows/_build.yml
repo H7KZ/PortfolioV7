@@ -52,9 +52,15 @@ permissions:
   contents: read
 
 jobs:
+  runner:
+    name: Pick runner
+    uses: ./.github/workflows/_runner.yml
+    secrets: inherit
+
   build:
+    needs: [runner]
     name: Build ${{ inputs.service }} image
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 30
 
     permissions:

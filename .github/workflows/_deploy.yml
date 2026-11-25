@@ -7,6 +7,11 @@ name: Deploy Environment (reusable)
 on:
   workflow_call:
     inputs:
+      hosted-only:
+        description: Pin this run to GitHub-hosted runners
+        type: boolean
+        required: false
+        default: false
       environment:
         description: Release target (production, development, monitoring or ingress)
         required: true
@@ -45,9 +50,17 @@ permissions:
   contents: read
 
 jobs:
+  runner:
+    name: Pick runner
+    uses: ./.github/workflows/_runner.yml
+    with:
+      hosted-only: ${{ inputs.hosted-only }}
+    secrets: inherit
+
   deploy:
+    needs: [runner]
     name: Apply release
-    runs-on: ubuntu-latest
+    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
     timeout-minutes: 120
     environment: ${{ inputs.environment }}
     permissions:
